@@ -1,1 +1,13 @@
-<Solution />
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/MasarHub.API/MasarHub.API.csproj" />
+    <Project Path="src/MasarHub.Application/MasarHub.Application.csproj" Id="4ea57e6c-2ed5-42ac-a3cb-18d2478518f1" />
+    <Project Path="src/MasarHub.Domain/MasarHub.Domain.csproj" Id="93779425-31ef-41c7-af2b-868a18ec73af" />
+    <Project Path="src/MasarHub.Infrastructure/MasarHub.Infrastructure.csproj" Id="28f0b6e0-56e5-4b45-9be7-1a95706e9233" />
+  </Folder>
+  <Folder Name="/tests/" />
+</Solution>
