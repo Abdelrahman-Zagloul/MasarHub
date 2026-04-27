@@ -7,23 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MasarHub.Domain\MasarHub.Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Behaviors\" />
     <Folder Include="Abstractions\ExternalServices\" />
     <Folder Include="Abstractions\Jobs\" />
     <Folder Include="Abstractions\Repositories\" />
     <Folder Include="Abstractions\Services\" />
+    <Folder Include="Common\Behaviors\" />
     <Folder Include="Extensions\" />
     <Folder Include="Features\" />
-    <Folder Include="Settings\" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="12.1.1" />
-    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.1" />
+    <ProjectReference Include="..\MasarHub.Domain\MasarHub.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
-﻿
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace MasarHub.Infrastructure.Identity
+namespace MasarHub.Infrastructure.Identities
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

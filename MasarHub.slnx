@@ -5,9 +5,14 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/MasarHub.API/MasarHub.API.csproj" />
-    <Project Path="src/MasarHub.Application/MasarHub.Application.csproj" Id="4ea57e6c-2ed5-42ac-a3cb-18d2478518f1" />
-    <Project Path="src/MasarHub.Domain/MasarHub.Domain.csproj" Id="93779425-31ef-41c7-af2b-868a18ec73af" />
-    <Project Path="src/MasarHub.Infrastructure/MasarHub.Infrastructure.csproj" Id="28f0b6e0-56e5-4b45-9be7-1a95706e9233" />
+  </Folder>
+  <Folder Name="/src/Core/">
+    <Project Path="src/Core/MasarHub.Application/MasarHub.Application.csproj" Id="9d8c2047-a9c1-4fdd-9880-44a624ff96eb" />
+    <Project Path="src/Core/MasarHub.Domain/MasarHub.Domain.csproj" Id="f65a20f0-f362-411b-abbc-65ee4e8839c3" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Infrastructure/MasarHub.Infrastructure.Persistence/MasarHub.Infrastructure.Persistence.csproj" Id="2fb28fc8-8952-449a-a85b-196a15f576d6" />
+    <Project Path="src/Infrastructure/MasarHub.Infrastructure/MasarHub.Infrastructure.csproj" Id="4a0d314f-75a1-4707-b274-b9864dce35e4" />
   </Folder>
   <Folder Name="/tests/" />
 </Solution>

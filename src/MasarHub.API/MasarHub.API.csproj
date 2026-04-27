@@ -23,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MasarHub.Application\MasarHub.Application.csproj" />
-    <ProjectReference Include="..\MasarHub.Infrastructure\MasarHub.Infrastructure.csproj" />
+    <ProjectReference Include="..\Infrastructure\MasarHub.Infrastructure\MasarHub.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
