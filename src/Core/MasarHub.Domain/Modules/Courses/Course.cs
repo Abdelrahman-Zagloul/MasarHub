@@ -208,7 +208,6 @@ namespace MasarHub.Domain.Modules.Courses
             _prerequisites.Clear();
             foreach (var prerequisite in prerequisites.Distinct(StringComparer.OrdinalIgnoreCase))
                 _prerequisites.Add(CoursePrerequisite.Create(prerequisite));
-            _prerequisites.AddRange(prerequisites.Distinct(StringComparer.OrdinalIgnoreCase).Select(CoursePrerequisite.Create));
 
             MarkAsUpdated();
         }

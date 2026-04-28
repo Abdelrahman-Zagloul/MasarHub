@@ -14,6 +14,8 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Categories
             builder.ToTable("Categories", "categories", tb =>
             {
                 tb.HasCheckConstraint("CK_Categories_LevelMax", "[Level] >= 1 AND [Level] <= 3");
+                tb.HasCheckConstraint("CK_Categories_DisplayOrder_Positive", "[DisplayOrder] > 0");
+
             });
 
             builder.Property(c => c.Name)

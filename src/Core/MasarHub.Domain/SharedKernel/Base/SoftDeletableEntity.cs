@@ -10,7 +10,7 @@ namespace MasarHub.Domain.SharedKernel.Base
         protected void MarkAsDeleted()
         {
             if (IsDeleted)
-                throw new DomainException("Entity already deleted.");
+                throw new DomainException(ErrorCodes.General.AlreadyDeleted);
 
             IsDeleted = true;
             DeletedAt = DateTimeOffset.UtcNow;
@@ -20,7 +20,7 @@ namespace MasarHub.Domain.SharedKernel.Base
         protected void Restore()
         {
             if (!IsDeleted)
-                throw new DomainException("Entity is not deleted.");
+                throw new DomainException(ErrorCodes.General.NotDeleted);
 
             IsDeleted = false;
             DeletedAt = null;
