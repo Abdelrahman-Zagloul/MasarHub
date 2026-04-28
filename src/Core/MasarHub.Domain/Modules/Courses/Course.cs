@@ -1,5 +1,6 @@
 ﻿using MasarHub.Domain.SharedKernel;
 using MasarHub.Domain.SharedKernel.Base;
+using MasarHub.Domain.SharedKernel.Exceptions;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -16,7 +17,6 @@ namespace MasarHub.Domain.Modules.Courses
         public CourseLanguage Language { get; private set; }
         public CourseStatus Status { get; private set; }
         public CourseLevel Level { get; private set; }
-
         public string? ThumbnailUrl { get; private set; }
         public DateTimeOffset? PublishedAt { get; private set; }
         public Guid? ApprovedBy { get; private set; }

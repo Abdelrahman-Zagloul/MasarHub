@@ -7,15 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Extensions\" />
     <Folder Include="ExternalServices\" />
+    <Folder Include="Identity\" />
     <Folder Include="Jobs\" />
     <Folder Include="Services\" />
   </ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="10.0.3" />
-	</ItemGroup>
-	<ItemGroup>
-	  <ProjectReference Include="..\..\Core\MasarHub.Application\MasarHub.Application.csproj" />
-	</ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MasarHub.Infrastructure.Persistence\MasarHub.Infrastructure.Persistence.csproj" />
+  </ItemGroup>
 </Project>

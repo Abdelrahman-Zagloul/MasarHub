@@ -1,4 +1,6 @@
-﻿namespace MasarHub.Domain.SharedKernel.Base
+﻿using MasarHub.Domain.SharedKernel.Exceptions;
+
+namespace MasarHub.Domain.SharedKernel.Base
 {
     public abstract class SoftDeletableEntity : BaseEntity
     {
@@ -8,7 +10,7 @@
         protected void MarkAsDeleted()
         {
             if (IsDeleted)
-                throw new InvalidOperationException("Entity already deleted.");
+                throw new DomainException("Entity already deleted.");
 
             IsDeleted = true;
             DeletedAt = DateTimeOffset.UtcNow;
@@ -18,7 +20,7 @@
         protected void Restore()
         {
             if (!IsDeleted)
-                throw new InvalidOperationException("Entity is not deleted.");
+                throw new DomainException("Entity is not deleted.");
 
             IsDeleted = false;
             DeletedAt = null;

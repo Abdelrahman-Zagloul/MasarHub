@@ -1,5 +1,7 @@
 ﻿
 
+using MasarHub.Domain.SharedKernel.Exceptions;
+
 namespace MasarHub.Domain.SharedKernel
 {
     public static class Guard

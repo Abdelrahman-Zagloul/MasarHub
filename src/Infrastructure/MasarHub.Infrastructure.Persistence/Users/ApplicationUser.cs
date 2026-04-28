@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace MasarHub.Infrastructure.Identities
+namespace MasarHub.Infrastructure.Persistence.Users
 {
     public class ApplicationUser : IdentityUser<Guid>
     {

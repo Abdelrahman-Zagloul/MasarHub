@@ -28,6 +28,7 @@ bld/
 [Oo]bj/
 [Ll]og/
 .idea/
+.dotnet/
 # Application logs
 Logs/
 **/Logs/
