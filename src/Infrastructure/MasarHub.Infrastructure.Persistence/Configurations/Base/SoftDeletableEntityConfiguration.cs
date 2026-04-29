@@ -16,6 +16,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Base
                    .HasDefaultValue(false);
 
             builder.Property(e => e.DeletedAt)
+                   .HasColumnType("datetimeoffset")
                    .IsRequired(false);
 
             builder.HasIndex(e => e.IsDeleted);

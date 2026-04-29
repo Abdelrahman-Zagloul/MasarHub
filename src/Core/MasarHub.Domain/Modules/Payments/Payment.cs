@@ -6,52 +6,66 @@ namespace MasarHub.Domain.Modules.Payments
 {
     public sealed class Payment : BaseEntity
     {
-        public Guid UserId { get; private set; }
+        public Guid OrderId { get; private set; }
         public decimal Amount { get; private set; }
+        public DateTimeOffset? PaidAt { get; private set; }
         public PaymentStatus Status { get; private set; }
         public PaymentProvider Provider { get; private set; }
-        public string? ExternalId { get; private set; } = null!;
+        public string? ExternalId { get; private set; }
+        public string? IdempotencyKey { get; private set; }
 
         private Payment() { }
 
-        private Payment(Guid userId, decimal amount, PaymentProvider provider)
+        private Payment(Guid orderId, decimal amount, PaymentProvider provider, string idempotencyKey)
         {
-            UserId = Guard.AgainstEmptyGuid(userId, nameof(userId));
-            Amount = Guard.AgainstNegativeOrZero(amount, nameof(amount));
-            Provider = Guard.AgainstEnumOutOfRange<PaymentProvider>(provider, nameof(provider));
+            OrderId = Guard.AgainstEmptyGuid(orderId, nameof(orderId));
+
+            amount = Guard.AgainstNegativeOrZero(amount, nameof(amount));
+            Amount = Math.Round(amount, 2);
+
+            Provider = Guard.AgainstEnumOutOfRange(provider, nameof(provider));
+
+            IdempotencyKey = Guard.AgainstNullOrWhiteSpace(idempotencyKey, nameof(idempotencyKey));
+
             Status = PaymentStatus.Pending;
         }
 
-        public static Payment Create(Guid userId, decimal amount, PaymentProvider provider)
+        public static Payment Create(Guid orderId, decimal amount, PaymentProvider provider, string idempotencyKey)
         {
-            return new Payment(userId, amount, provider);
+            return new Payment(orderId, amount, provider, idempotencyKey);
         }
 
         public void MarkSucceeded(string externalId)
         {
-            if (Status != PaymentStatus.Pending)
-                throw new DomainException(ErrorCodes.Payment.InvalidStatusTransition);
+            EnsurePending();
+
+            ExternalId = Guard.AgainstNullOrWhiteSpace(externalId, nameof(externalId));
             Status = PaymentStatus.Succeeded;
-            ExternalId = externalId;
+            PaidAt = DateTimeOffset.UtcNow;
+
             MarkAsUpdated();
         }
 
         public void MarkFailed()
         {
-            if (Status != PaymentStatus.Pending)
-                throw new DomainException(ErrorCodes.Payment.InvalidStatusTransition);
+            EnsurePending();
+
             Status = PaymentStatus.Failed;
             MarkAsUpdated();
         }
 
         public void MarkCancelled()
         {
-            if (Status != PaymentStatus.Pending)
-                throw new DomainException(ErrorCodes.Payment.InvalidStatusTransition);
+            EnsurePending();
 
             Status = PaymentStatus.Cancelled;
             MarkAsUpdated();
         }
 
+        private void EnsurePending()
+        {
+            if (Status != PaymentStatus.Pending)
+                throw new DomainException(ErrorCodes.Payment.InvalidStatusTransition);
+        }
     }
 }

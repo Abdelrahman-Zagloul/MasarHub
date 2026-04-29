@@ -1,4 +1,5 @@
 ﻿using MasarHub.Domain.SharedKernel.Base;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MasarHub.Infrastructure.Persistence.Configurations.Base
@@ -10,9 +11,11 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Base
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.CreatedAt)
+                   .HasColumnType("datetimeoffset")
                    .IsRequired();
 
             builder.Property(e => e.UpdatedAt)
+                   .HasColumnType("datetimeoffset")
                    .IsRequired(false);
         }
     }

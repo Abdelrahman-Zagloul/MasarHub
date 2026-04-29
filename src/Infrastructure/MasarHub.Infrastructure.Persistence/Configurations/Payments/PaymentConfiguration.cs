@@ -1,13 +1,12 @@
-﻿using MasarHub.Domain.Modules.Payments;
+﻿using MasarHub.Domain.Modules.Orders;
+using MasarHub.Domain.Modules.Payments;
 using MasarHub.Infrastructure.Persistence.Configurations.Base;
-using MasarHub.Infrastructure.Persistence.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace MasarHub.Infrastructure.Persistence.Configurations.Payments
 {
-    internal sealed class PaymentConfiguration
-        : BaseEntityConfiguration<Payment>, IEntityTypeConfiguration<Payment>
+    internal sealed class PaymentConfiguration : BaseEntityConfiguration<Payment>, IEntityTypeConfiguration<Payment>
     {
         public void Configure(EntityTypeBuilder<Payment> builder)
         {
@@ -20,10 +19,9 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Payments
                     "[Status] <> 'Succeeded' OR [ExternalId] IS NOT NULL");
             });
 
-
-            builder.Property(p => p.UserId)
-                   .HasColumnType("uniqueidentifier")
-                   .IsRequired();
+            builder.Property(p => p.OrderId)
+                 .HasColumnType("uniqueidentifier")
+                 .IsRequired();
 
             builder.Property(p => p.Amount)
                    .HasColumnType("decimal(18,2)")
@@ -43,16 +41,24 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Payments
                    .HasMaxLength(200)
                    .IsRequired(false);
 
-            builder.HasOne<ApplicationUser>()
+            builder.Property(p => p.IdempotencyKey)
+                   .HasMaxLength(200)
+                   .IsRequired(false);
+
+            builder.Property(p => p.PaidAt)
+                   .HasColumnType("datetimeoffset")
+                   .IsRequired(false);
+
+            builder.HasOne<Order>()
                    .WithMany()
-                   .HasForeignKey(p => p.UserId)
-                   .OnDelete(DeleteBehavior.Cascade);
+                   .HasForeignKey(p => p.OrderId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
 
+            builder.HasIndex(p => p.OrderId);
+            builder.HasIndex(p => p.IdempotencyKey)
+                   .IsUnique().HasFilter("[IdempotencyKey] IS NOT NULL");
 
-            builder.HasIndex(p => p.UserId);
-            builder.HasIndex(p => p.Status);
-            builder.HasIndex(p => p.Provider);
             builder.HasIndex(p => new { p.Provider, p.ExternalId })
                    .IsUnique().HasFilter("[ExternalId] IS NOT NULL");
         }
