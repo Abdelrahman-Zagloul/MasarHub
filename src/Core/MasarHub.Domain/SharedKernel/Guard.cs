@@ -52,5 +52,14 @@ namespace MasarHub.Domain.SharedKernel
 
             return value;
         }
+        public static string AgainstInvalidUrl(string value, string propertyName)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new DomainException(ErrorCodes.General.NullOrEmpty, propertyName);
+
+            if (!Uri.IsWellFormedUriString(value, UriKind.Absolute))
+                throw new DomainException(ErrorCodes.General.InvalidUrl, propertyName);
+            return value;
+        }
     }
 }

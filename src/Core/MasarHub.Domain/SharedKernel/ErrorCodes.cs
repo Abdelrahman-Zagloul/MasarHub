@@ -14,6 +14,9 @@
             public const string InvalidEnum = "general.invalid_enum";
             public const string AlreadyDeleted = "general.already_deleted";
             public const string NotDeleted = "general.not_deleted";
+            public const string InvalidUrl = "general.invalid_url";
+            public const string TooManyItems = "general.too_many_items";
+            public const string Duplicate = "general.duplicate";
         }
 
         public static class Category
