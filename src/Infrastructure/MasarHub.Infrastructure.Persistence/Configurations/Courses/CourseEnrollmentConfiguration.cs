@@ -1,4 +1,5 @@
 ﻿using MasarHub.Domain.Modules.Courses;
+using MasarHub.Domain.Modules.Payments;
 using MasarHub.Infrastructure.Persistence.Configurations.Base;
 using MasarHub.Infrastructure.Persistence.Users;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses
                    .IsRequired();
 
             builder.Property(e => e.PaidAmount)
-                   .HasColumnType("decimal(10,2)")
+                   .HasColumnType("decimal(18,2)")
                    .IsRequired();
 
             builder.Property(e => e.PaymentId)
@@ -49,6 +50,11 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses
                    .WithMany()
                    .HasForeignKey(e => e.UserId)
                    .OnDelete(DeleteBehavior.Restrict);
+
+            builder.HasOne<Payment>()
+               .WithOne()
+               .HasForeignKey<CourseEnrollment>(e => e.PaymentId)
+               .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(e => e.CourseId);
 

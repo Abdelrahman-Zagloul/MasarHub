@@ -40,5 +40,17 @@
             public const string MissingPayment = "course_enrollment.missing_payment";
             public const string InvalidPayment = "course_enrollment.invalid_payment";
         }
+        public static class Payment
+        {
+            public const string InvalidStatusTransition = "payment.invalid_status_transition";
+        }
+        public static class Coupon
+        {
+            public const string Expired = "coupon.expired";
+            public const string Exhausted = "coupon.exhausted";
+            public const string NotApplicableToCourse = "coupon.invalid_course";
+            public const string InvalidPercentage = "coupon.invalid_percentage";
+            public const string InvalidExpiration = "coupon.invalid_expiration";
+        }
     }
 }
