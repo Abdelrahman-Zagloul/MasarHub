@@ -1,4 +1,4 @@
-﻿using MasarHub.Infrastructure.Persistence.Users;
+﻿using MasarHub.Infrastructure.Persistence.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -15,6 +15,13 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Identity
                 .HasColumnType("nvarchar")
                 .HasMaxLength(100)
                 .IsRequired();
+
+            builder.Property(x => x.ProfileImagePublicId)
+               .HasColumnType("nvarchar")
+               .HasMaxLength(100)
+               .IsRequired(false);
+
+
         }
     }
 }

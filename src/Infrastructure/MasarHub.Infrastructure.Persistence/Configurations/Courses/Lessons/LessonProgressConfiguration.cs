@@ -1,6 +1,6 @@
 ﻿using MasarHub.Domain.Modules.Courses.Lessons;
 using MasarHub.Infrastructure.Persistence.Configurations.Base;
-using MasarHub.Infrastructure.Persistence.Users;
+using MasarHub.Infrastructure.Persistence.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

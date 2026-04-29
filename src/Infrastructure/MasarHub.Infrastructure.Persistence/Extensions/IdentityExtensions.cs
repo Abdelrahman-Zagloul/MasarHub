@@ -1,5 +1,5 @@
 ﻿using MasarHub.Infrastructure.Persistence.Contexts;
-using MasarHub.Infrastructure.Persistence.Users;
+using MasarHub.Infrastructure.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
