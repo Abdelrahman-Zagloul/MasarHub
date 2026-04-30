@@ -112,5 +112,13 @@
             public const string AttemptLimitExceeded = "Exam.AttemptLimitExceeded";
             public const string ExamTimeExpired = "Exam.ExamTimeExpired";
         }
+
+        public static class CourseAnnouncement
+        {
+            public const string AlreadyPublished = "course_announcement.already_published";
+            public const string CannotEditAfterPublish = "course_announcement.cannot_edit_after_publish";
+            public const string InvalidScheduleTime = "course_announcement.invalid_schedule_time";
+            public const string InvalidExpirationTime = "course_announcement.invalid_expiration_time";
+        }
     }
 }
