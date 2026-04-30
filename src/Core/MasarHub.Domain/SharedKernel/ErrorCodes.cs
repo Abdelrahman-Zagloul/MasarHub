@@ -78,5 +78,39 @@
         {
             public const string FileUrlAlreadySet = "certificate.file_url_already_set";
         }
+        public static class Exam
+        {
+            // Exam-level errors
+            public const string InvalidPassingScore = "Exam.InvalidPassingScore";
+            public const string InvalidTotalMarks = "Exam.InvalidTotalMarks";
+
+            public const string CannotModifyPublishedExam = "Exam.CannotModifyPublishedExam";
+            public const string CannotUnpublishAfterAttempts = "Exam.CannotUnpublishAfterAttempts";
+
+
+            // Question-level errors
+            public const string MissingQuestions = "Exam.MissingQuestions";
+            public const string QuestionNotFound = "Exam.QuestionNotFound";
+            public const string InvalidQuestionExamRelation = "Exam.InvalidQuestionExamRelation";
+            public const string DuplicateQuestion = "Exam.DuplicateQuestion";
+            public const string InvalidQuestionType = "Exam.InvalidQuestionType";
+
+
+
+            // Option-level errors
+            public const string OptionNotFound = "Exam.OptionNotFound";
+            public const string MultipleCorrectOptionsNotAllowed = "Exam.MultipleCorrectOptionsNotAllowed";
+            public const string TrueFalseMaxOptions = "Exam.TrueFalseMaxOptions";
+            public const string TrueFalseMustHaveTwoOptions = "Exam.TrueFalseMustHaveTwoOptions";
+            public const string TrueFalseMustHaveOneCorrect = "Exam.TrueFalseMustHaveOneCorrect";
+            public const string SingleChoiceMustHaveOneCorrect = "Exam.SingleChoiceMustHaveOneCorrect";
+            public const string MultipleChoiceMustHaveAtLeastTwoCorrect = "Exam.MultipleChoiceMustHaveAtLeastTwoCorrect";
+            public const string QuestionMustHaveOptions = "Exam.QuestionMustHaveOptions";
+
+
+            // Attempt-level errors
+            public const string AttemptLimitExceeded = "Exam.AttemptLimitExceeded";
+            public const string ExamTimeExpired = "Exam.ExamTimeExpired";
+        }
     }
 }
