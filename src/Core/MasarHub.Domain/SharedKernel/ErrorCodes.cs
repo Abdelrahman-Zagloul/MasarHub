@@ -74,5 +74,9 @@
             public const string InvalidPercentage = "coupon.invalid_percentage";
             public const string InvalidExpiration = "coupon.invalid_expiration";
         }
+        public static class Certificate
+        {
+            public const string FileUrlAlreadySet = "certificate.file_url_already_set";
+        }
     }
 }
