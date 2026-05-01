@@ -1,4 +1,5 @@
-﻿using MasarHub.Domain.SharedKernel;
+﻿using MasarHub.Domain.Modules.Categories.Events;
+using MasarHub.Domain.SharedKernel;
 using MasarHub.Domain.SharedKernel.Base;
 using MasarHub.Domain.SharedKernel.Exceptions;
 
@@ -23,8 +24,9 @@ namespace MasarHub.Domain.Modules.Categories
             DisplayOrder = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
 
             ParentCategoryId = parentCategoryId;
-        }
 
+            RaiseDomainEvent(new CategoryCreatedEvent(Id));
+        }
         public static Category CreateRoot(string name, string slug, int displayOrder)
         {
             return new Category(name, slug, 1, displayOrder, null);

@@ -1,3 +1,4 @@
+using MasarHub.Application.Extensions;
 using MasarHub.Infrastructure.Extensions;
 
 namespace MasarHub.API
@@ -14,7 +15,9 @@ namespace MasarHub.API
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
-            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.
+                AddInfrastructure(builder.Configuration)
+                .AddApplication();
 
             var app = builder.Build();
 

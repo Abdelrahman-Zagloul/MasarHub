@@ -9,6 +9,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Base
         protected void ConfigureBase(EntityTypeBuilder<TEntity> builder)
         {
             builder.HasKey(e => e.Id);
+            builder.Ignore(e => e.DomainEvents);
 
             builder.Property(e => e.CreatedAt)
                    .HasColumnType("datetimeoffset")
