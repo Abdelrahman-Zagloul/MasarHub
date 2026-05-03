@@ -21,7 +21,7 @@ namespace MasarHub.Infrastructure.ExternalServices
             _logger = logger;
             _database = redis.GetDatabase();
         }
-        public async Task<T?> GetAsync<T>(string key)
+        public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
         {
             try
             {
@@ -34,7 +34,7 @@ namespace MasarHub.Infrastructure.ExternalServices
                 return default;
             }
         }
-        public async Task SetAsync<T>(string key, T value, TimeSpan expiration)
+        public async Task SetAsync<T>(string key, T value, TimeSpan expiration, CancellationToken ct = default)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace MasarHub.Infrastructure.ExternalServices
                 _logger.LogError("Error occurred while setting cache value for key: {Key}", key);
             }
         }
-        public async Task RemoveAsync(string key)
+        public async Task RemoveAsync(string key, CancellationToken ct = default)
         {
             try
             {
@@ -56,6 +56,6 @@ namespace MasarHub.Infrastructure.ExternalServices
                 _logger.LogError("Error occurred while removing cache value for key: {Key}", key);
             }
         }
-    }
 
+    }
 }
