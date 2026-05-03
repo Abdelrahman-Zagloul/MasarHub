@@ -1,5 +1,6 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -14,63 +15,79 @@ namespace MasarHub.Domain.Modules.Courses
         public DateTimeOffset? CompletedAt { get; private set; }
 
         private CourseProgress() { }
+
         private CourseProgress(Guid userId, Guid courseId, int totalLessons)
         {
-            UserId = Guard.AgainstEmptyGuid(userId, nameof(userId));
-            CourseId = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
-            TotalLessons = Guard.AgainstNegativeOrZero(totalLessons, nameof(totalLessons));
+            UserId = userId;
+            CourseId = courseId;
+            TotalLessons = totalLessons;
         }
 
-        public static CourseProgress Create(Guid userId, Guid courseId, int totalLessons)
+        public static Result<CourseProgress> Create(Guid userId, Guid courseId, int totalLessons)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstEmptyGuid(courseId, nameof(courseId)),
+                Guard.AgainstNegativeOrZero(totalLessons, nameof(totalLessons))
+            );
+
+            if (error is not null)
+                return error;
+
             return new CourseProgress(userId, courseId, totalLessons);
         }
-        public void UpdateTotalLessons(int totalLessons)
-        {
-            TotalLessons = Guard.AgainstNegativeOrZero(totalLessons, nameof(totalLessons));
 
+        public Result UpdateTotalLessons(int totalLessons)
+        {
+            var error = Guard.AgainstNegativeOrZero(totalLessons, nameof(totalLessons));
+            if (error is not null)
+                return error;
+
+            TotalLessons = totalLessons;
             if (CompletedLessons > TotalLessons)
                 CompletedLessons = TotalLessons;
 
             Recalculate();
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void UpdateProgress(int completedLessons)
-        {
-            CompletedLessons = Guard.AgainstNegative(completedLessons, nameof(completedLessons));
 
+        public Result UpdateProgress(int completedLessons)
+        {
+            var error = Guard.AgainstNegative(completedLessons, nameof(completedLessons));
+            if (error is not null)
+                return error;
+
+            CompletedLessons = completedLessons;
             if (CompletedLessons > TotalLessons)
                 CompletedLessons = TotalLessons;
 
             Recalculate();
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void Reset()
+
+        public Result Reset()
         {
             CompletedLessons = 0;
             ProgressPercentage = 0;
             IsCompleted = false;
             CompletedAt = null;
-
             MarkAsUpdated();
+            return Result.Success();
         }
+
+        public Result Delete() => MarkAsDeleted();
+
         private void Recalculate()
         {
-            if (TotalLessons == 0)
-            {
-                ProgressPercentage = 0;
-                return;
-            }
-
             ProgressPercentage = Math.Round((decimal)CompletedLessons / TotalLessons * 100, 2);
 
             if (CompletedLessons >= TotalLessons)
             {
                 CompletedLessons = TotalLessons;
                 IsCompleted = true;
-
-                if (CompletedAt is null)
-                    CompletedAt = DateTimeOffset.UtcNow;
+                CompletedAt ??= DateTimeOffset.UtcNow;
             }
             else
             {

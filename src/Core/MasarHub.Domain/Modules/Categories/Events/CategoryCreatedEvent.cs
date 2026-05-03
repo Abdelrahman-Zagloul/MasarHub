@@ -1,4 +1,4 @@
-﻿using MasarHub.Domain.SharedKernel.Events;
+﻿using MasarHub.Domain.Common.Events;
 
 namespace MasarHub.Domain.Modules.Categories.Events
 {

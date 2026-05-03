@@ -1,6 +1,6 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -18,38 +18,52 @@ namespace MasarHub.Domain.Modules.Courses
 
         private CourseEnrollment(Guid userId, Guid courseId, Guid orderId, decimal paidAmount)
         {
-            UserId = Guard.AgainstEmptyGuid(userId, nameof(userId));
-            CourseId = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
-            OrderId = Guard.AgainstEmptyGuid(orderId, nameof(orderId));
-            PaidAmount = Guard.AgainstNegative(paidAmount, nameof(paidAmount));
-
+            UserId = userId;
+            CourseId = courseId;
+            OrderId = orderId;
+            PaidAmount = paidAmount;
             Status = EnrollmentStatus.Active;
             EnrolledAt = DateTimeOffset.UtcNow;
         }
 
-
-        public static CourseEnrollment Create(Guid userId, Guid courseId, Guid orderId, decimal paidAmount)
+        public static Result<CourseEnrollment> Create(Guid userId, Guid courseId, Guid orderId, decimal paidAmount)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstEmptyGuid(courseId, nameof(courseId)),
+                Guard.AgainstEmptyGuid(orderId, nameof(orderId)),
+                Guard.AgainstNegative(paidAmount, nameof(paidAmount))
+            );
+
+            if (error is not null)
+                return error;
+
             return new CourseEnrollment(userId, courseId, orderId, paidAmount);
         }
 
-        public void MarkCompleted()
+        public Result MarkCompleted()
         {
             if (Status != EnrollmentStatus.Active)
-                throw new DomainException(ErrorCodes.CourseEnrollment.InvalidStatusTransition);
+                return CourseEnrollmentErrors.InvalidStatusTransition;
 
             Status = EnrollmentStatus.Completed;
             CompletedAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
+
+            return Result.Success();
         }
-        public void Cancel()
+
+        public Result Cancel()
         {
             if (Status != EnrollmentStatus.Active)
-                throw new DomainException(ErrorCodes.CourseEnrollment.InvalidStatusTransition);
+                return CourseEnrollmentErrors.InvalidStatusTransition;
 
             Status = EnrollmentStatus.Cancelled;
             MarkAsUpdated();
+
+            return Result.Success();
         }
-        public void Delete() => MarkAsDeleted();
+
+        public Result Delete() => MarkAsDeleted();
     }
 }

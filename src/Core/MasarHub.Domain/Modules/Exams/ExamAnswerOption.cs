@@ -1,4 +1,7 @@
-﻿namespace MasarHub.Domain.Modules.Exams
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
+
+namespace MasarHub.Domain.Modules.Exams
 {
     public sealed class ExamAnswerOption
     {
@@ -13,7 +16,17 @@
             OptionId = optionId;
         }
 
-        public static ExamAnswerOption Create(Guid examAnswerId, Guid optionId)
-            => new(examAnswerId, optionId);
+        public static Result<ExamAnswerOption> Create(Guid examAnswerId, Guid optionId)
+        {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(examAnswerId, nameof(examAnswerId)),
+                Guard.AgainstEmptyGuid(optionId, nameof(optionId))
+            );
+
+            if (error is not null)
+                return error;
+
+            return new ExamAnswerOption(examAnswerId, optionId);
+        }
     }
 }

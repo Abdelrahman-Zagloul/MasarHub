@@ -1,5 +1,6 @@
-using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Exams
 {
@@ -13,20 +14,33 @@ namespace MasarHub.Domain.Modules.Exams
 
         private Option(Guid questionId, string text, bool isCorrect)
         {
-            QuestionId = Guard.AgainstEmptyGuid(questionId, nameof(questionId));
-            Text = Guard.AgainstNullOrWhiteSpace(text, nameof(text));
+            QuestionId = questionId;
+            Text = text;
             IsCorrect = isCorrect;
         }
 
-        public static Option Create(Guid questionId, string text, bool isCorrect = false)
+        public static Result<Option> Create(Guid questionId, string text, bool isCorrect = false)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(questionId, nameof(questionId)),
+                Guard.AgainstNullOrWhiteSpace(text, nameof(text))
+            );
+
+            if (error is not null)
+                return error;
+
             return new Option(questionId, text, isCorrect);
         }
 
-        public void UpdateOptionText(string optiontext)
+        public Result UpdateOptionText(string optiontext)
         {
-            Text = Guard.AgainstNullOrWhiteSpace(optiontext, nameof(optiontext));
+            var error = Guard.AgainstNullOrWhiteSpace(optiontext, nameof(optiontext));
+            if (error is not null)
+                return error;
+
+            Text = optiontext;
             MarkAsUpdated();
+            return Result.Success();
         }
     }
 }

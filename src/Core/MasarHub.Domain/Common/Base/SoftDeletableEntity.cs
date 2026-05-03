@@ -1,30 +1,35 @@
-﻿using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Errors;
+using MasarHub.Domain.Common.Results;
 
-namespace MasarHub.Domain.SharedKernel.Base
+namespace MasarHub.Domain.Common.Base
 {
     public abstract class SoftDeletableEntity : BaseEntity
     {
         public bool IsDeleted { get; private set; }
         public DateTimeOffset? DeletedAt { get; private set; }
 
-        protected void MarkAsDeleted()
+        protected Result MarkAsDeleted()
         {
             if (IsDeleted)
-                throw new DomainException(ErrorCodes.General.AlreadyDeleted);
+                return DomainError.AlreadyDeleted();
 
             IsDeleted = true;
             DeletedAt = DateTimeOffset.UtcNow;
 
             MarkAsUpdated();
+            return Result.Success();
         }
-        protected void Restore()
+
+        protected Result Restore()
         {
             if (!IsDeleted)
-                throw new DomainException(ErrorCodes.General.NotDeleted);
+                return DomainError.NotDeleted();
 
             IsDeleted = false;
             DeletedAt = null;
             MarkAsUpdated();
+
+            return Result.Success();
         }
     }
 }

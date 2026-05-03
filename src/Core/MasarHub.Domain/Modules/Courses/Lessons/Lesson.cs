@@ -1,5 +1,7 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Courses.Lessons
 {
@@ -12,44 +14,67 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
         public Guid ModuleId { get; protected set; }
 
         protected Lesson() { }
+
         protected Lesson(Guid moduleId, string title, int order, string? description)
         {
-            ModuleId = Guard.AgainstEmptyGuid(moduleId, nameof(moduleId));
-            Title = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            DisplayOrder = Guard.AgainstNegativeOrZero(order, nameof(order));
+            ModuleId = moduleId;
+            Title = title;
+            DisplayOrder = order;
             Description = description;
         }
 
-        public void UpdateTitle(string title)
+        public Result UpdateTitle(string title)
         {
-            Title = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
+            var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
+            if (error is not null)
+                return error;
+
+            Title = title;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void UpdateDescription(string? description)
+        public Result UpdateDescription(string? description)
         {
             Description = description;
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void ChangeOrder(int order)
+
+        public Result ChangeOrder(int order)
         {
-            DisplayOrder = Guard.AgainstNegativeOrZero(order, nameof(order));
+            var error = Guard.AgainstNegativeOrZero(order, nameof(order));
+            if (error is not null)
+                return error;
+
+            DisplayOrder = order;
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void EnablePreview()
+
+        public Result EnablePreview()
         {
             IsPreviewable = true;
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void DisablePreview()
+
+        public Result DisablePreview()
         {
             IsPreviewable = false;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void Delete()
+        public Result Delete() => MarkAsDeleted();
+
+        protected static DomainError? ValidateLesson(Guid moduleId, string title, int order)
         {
-            MarkAsDeleted();
+            return GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(moduleId, nameof(moduleId)),
+                Guard.AgainstNullOrWhiteSpace(title, nameof(title)),
+                Guard.AgainstNegativeOrZero(order, nameof(order))
+            );
         }
     }
 }

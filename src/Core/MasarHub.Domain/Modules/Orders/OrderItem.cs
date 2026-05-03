@@ -1,5 +1,5 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Orders
 {
@@ -16,26 +16,41 @@ namespace MasarHub.Domain.Modules.Orders
 
         private OrderItem(Guid courseId, string courseTitle, decimal originalPrice, decimal discountAmount, Guid? couponId)
         {
-            CourseId = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
-            CourseTitle = Guard.AgainstNullOrWhiteSpace(courseTitle, nameof(courseTitle));
-            OriginalPrice = Guard.AgainstNegativeOrZero(originalPrice, nameof(originalPrice));
-            discountAmount = Guard.AgainstNegative(discountAmount, nameof(discountAmount));
-
-            if (couponId == null && discountAmount != 0)
-                throw new DomainException(ErrorCodes.Order.InvalidDiscount);
-
-            if (couponId != null && discountAmount == 0)
-                throw new DomainException(ErrorCodes.Order.InvalidDiscount);
-
-            if (discountAmount > originalPrice)
-                throw new DomainException(ErrorCodes.Order.InvalidDiscount);
-
+            CourseId = courseId;
+            CourseTitle = courseTitle;
+            OriginalPrice = originalPrice;
             DiscountAmount = discountAmount;
             CouponId = couponId;
             FinalPrice = Math.Round(originalPrice - discountAmount, 2);
         }
 
-        public static OrderItem Create(Guid courseId, string courseTitle, decimal originalPrice, decimal discountAmount, Guid? couponId)
-            => new OrderItem(courseId, courseTitle, originalPrice, discountAmount, couponId);
+        public static Result<OrderItem> Create(
+            Guid courseId,
+            string courseTitle,
+            decimal originalPrice,
+            decimal discountAmount,
+            Guid? couponId)
+        {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(courseId, nameof(courseId)),
+                Guard.AgainstNullOrWhiteSpace(courseTitle, nameof(courseTitle)),
+                Guard.AgainstNegativeOrZero(originalPrice, nameof(originalPrice)),
+                Guard.AgainstNegative(discountAmount, nameof(discountAmount))
+            );
+
+            if (error is not null)
+                return error;
+
+            if (couponId == null && discountAmount != 0)
+                return OrderErrors.InvalidDiscount;
+
+            if (couponId != null && discountAmount == 0)
+                return OrderErrors.InvalidDiscount;
+
+            if (discountAmount > originalPrice)
+                return OrderErrors.InvalidDiscount;
+
+            return new OrderItem(courseId, courseTitle, originalPrice, discountAmount, couponId);
+        }
     }
 }

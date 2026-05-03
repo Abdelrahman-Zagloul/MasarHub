@@ -1,6 +1,6 @@
 ﻿using MasarHub.Application.Common.Events;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Events;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Events;
 using MasarHub.Infrastructure.Persistence.Configurations.Identity;
 using MasarHub.Infrastructure.Persistence.Identity;
 using MediatR;

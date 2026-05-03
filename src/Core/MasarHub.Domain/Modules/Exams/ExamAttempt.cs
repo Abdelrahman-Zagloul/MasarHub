@@ -1,6 +1,6 @@
-using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Exams
 {
@@ -14,45 +14,64 @@ namespace MasarHub.Domain.Modules.Exams
         public DateTimeOffset StartedAt { get; private set; }
         public DateTimeOffset? SubmittedAt { get; private set; }
         public decimal Score { get; private set; }
-
         public IReadOnlyCollection<ExamAnswer> Answers => _answers.AsReadOnly();
 
         private ExamAttempt() { }
 
         private ExamAttempt(Guid examId, Guid userId)
         {
-            ExamId = Guard.AgainstEmptyGuid(examId, nameof(examId));
-            UserId = Guard.AgainstEmptyGuid(userId, nameof(userId));
-
+            ExamId = examId;
+            UserId = userId;
             Status = ExamAttemptStatus.InProgress;
             StartedAt = DateTimeOffset.UtcNow;
         }
 
-        public static ExamAttempt Create(Guid examId, Guid userId)
-            => new(examId, userId);
-
-
-        //TODO: I Will Make or Refactor When I Implement Time Limit Feature
-        public void Submit(IEnumerable<Question> questions, IEnumerable<ExamAnswer> answers)
+        public static Result<ExamAttempt> Create(Guid examId, Guid userId)
         {
-            if (answers is null || !answers.Any())
-                throw new DomainException("No answers submitted");
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(examId, nameof(examId)),
+                Guard.AgainstEmptyGuid(userId, nameof(userId))
+            );
+
+            if (error is not null)
+                return error;
+
+            return new ExamAttempt(examId, userId);
+        }
+
+        public Result Submit(IEnumerable<Question> questions, IEnumerable<ExamAnswer> answers)
+        {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstNull(questions, nameof(questions)),
+                Guard.AgainstNull(answers, nameof(answers))
+            );
+            if (error is not null)
+                return error;
+
+            var answerList = answers.ToList();
+            if (!answerList.Any())
+                return ExamErrors.NoAnswersSubmitted;
 
             _answers.Clear();
-            _answers.AddRange(answers);
-
+            _answers.AddRange(answerList);
             Score = CalculateScore(questions);
-
+            Status = ExamAttemptStatus.Submitted;
             SubmittedAt = DateTimeOffset.UtcNow;
+            MarkAsUpdated();
+
+            return Result.Success();
         }
+
+        public Result Delete() => MarkAsDeleted();
 
         private decimal CalculateScore(IEnumerable<Question> questions)
         {
             decimal total = 0;
+            var questionList = questions.ToList();
 
             foreach (var answer in _answers)
             {
-                var question = questions.First(q => q.Id == answer.QuestionId);
+                var question = questionList.First(q => q.Id == answer.QuestionId);
 
                 var correct = question.Options
                     .Where(o => o.IsCorrect)

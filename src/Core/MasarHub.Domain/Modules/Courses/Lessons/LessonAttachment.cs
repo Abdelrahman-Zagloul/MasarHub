@@ -1,12 +1,12 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Courses.Lessons
 {
     public sealed class LessonAttachment : SoftDeletableEntity
     {
         public Guid LessonId { get; private set; }
-
         public string PublicId { get; private set; } = null!;
         public string FileName { get; private set; } = null!;
         public string FileType { get; private set; } = null!;
@@ -14,34 +14,47 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
         private LessonAttachment() { }
 
-        private LessonAttachment(
-            Guid lessonId,
-            string publicId,
-            string fileName,
-            string fileType,
-            long fileSizeInBytes)
+        private LessonAttachment(Guid lessonId, string publicId, string fileName, string fileType, long fileSizeInBytes)
         {
-            LessonId = Guard.AgainstEmptyGuid(lessonId, nameof(lessonId));
-            PublicId = Guard.AgainstNullOrWhiteSpace(publicId, nameof(publicId));
-            FileName = Guard.AgainstNullOrWhiteSpace(fileName, nameof(fileName));
-            FileType = Guard.AgainstNullOrWhiteSpace(fileType, nameof(fileType));
-            FileSizeInBytes = Guard.AgainstNegative(fileSizeInBytes, nameof(fileSizeInBytes));
+            LessonId = lessonId;
+            PublicId = publicId;
+            FileName = fileName;
+            FileType = fileType;
+            FileSizeInBytes = fileSizeInBytes;
         }
 
-        public static LessonAttachment Create(
+        public static Result<LessonAttachment> Create(
             Guid lessonId,
             string publicId,
             string fileName,
             string fileType,
             long fileSizeInBytes)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(lessonId, nameof(lessonId)),
+                Guard.AgainstNullOrWhiteSpace(publicId, nameof(publicId)),
+                Guard.AgainstNullOrWhiteSpace(fileName, nameof(fileName)),
+                Guard.AgainstNullOrWhiteSpace(fileType, nameof(fileType)),
+                Guard.AgainstNegative(fileSizeInBytes, nameof(fileSizeInBytes))
+            );
+
+            if (error is not null)
+                return error;
+
             return new LessonAttachment(lessonId, publicId, fileName, fileType, fileSizeInBytes);
         }
 
-        public void UpdateFileName(string fileName)
+        public Result UpdateFileName(string fileName)
         {
-            FileName = Guard.AgainstNullOrWhiteSpace(fileName, nameof(fileName));
+            var error = Guard.AgainstNullOrWhiteSpace(fileName, nameof(fileName));
+            if (error is not null)
+                return error;
+
+            FileName = fileName;
             MarkAsUpdated();
+            return Result.Success();
         }
+
+        public Result Delete() => MarkAsDeleted();
     }
 }

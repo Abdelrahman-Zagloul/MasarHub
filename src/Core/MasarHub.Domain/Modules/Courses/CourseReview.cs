@@ -1,6 +1,6 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -11,54 +11,61 @@ namespace MasarHub.Domain.Modules.Courses
         public DateTimeOffset? EditedAt { get; private set; }
         public Guid UserId { get; private set; }
         public Guid CourseId { get; private set; }
+
         private CourseReview() { }
 
         private CourseReview(Guid userId, Guid courseId, double rating, string? reviewContent)
         {
-            UserId = Guard.AgainstEmptyGuid(userId, nameof(userId));
-            CourseId = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
+            UserId = userId;
+            CourseId = courseId;
+            Rating = rating;
             ReviewContent = reviewContent;
-            SetRating(rating);
         }
 
-        public static CourseReview Create(
+        public static Result<CourseReview> Create(
             Guid userId,
             Guid courseId,
             double rating,
             string? reviewContent = null)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstEmptyGuid(courseId, nameof(courseId))
+            );
+            if (error is not null)
+                return error;
+
+            if (!IsValidRating(rating))
+                return CourseErrors.InvalidRating;
+
             return new CourseReview(userId, courseId, rating, reviewContent);
         }
 
-        public void UpdateRating(double rating)
+        public Result UpdateRating(double rating)
         {
-            SetRating(rating);
+            if (!IsValidRating(rating))
+                return CourseErrors.InvalidRating;
+
+            Rating = rating;
             MarkAsEdited();
+            return Result.Success();
         }
 
-        public void UpdateContent(string? content)
+        public Result UpdateContent(string? content)
         {
             ReviewContent = content;
             MarkAsEdited();
+            return Result.Success();
         }
 
-        private void SetRating(double rating)
-        {
-            if (rating < 1 || rating > 5)
-                throw new DomainException(ErrorCodes.CourseReview.InvalidRating);
+        public Result Delete() => MarkAsDeleted();
 
-            Rating = rating;
-        }
+        private static bool IsValidRating(double rating) => rating is >= 1 and <= 5;
 
         private void MarkAsEdited()
         {
             EditedAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
-        }
-
-        public void Delete()
-        {
-            MarkAsDeleted();
         }
     }
 }

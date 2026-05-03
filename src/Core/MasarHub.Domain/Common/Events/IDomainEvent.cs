@@ -1,4 +1,4 @@
-﻿namespace MasarHub.Domain.SharedKernel.Events
+﻿namespace MasarHub.Domain.Common.Events
 {
     public interface IDomainEvent
     {

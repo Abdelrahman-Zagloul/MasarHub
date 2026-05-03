@@ -1,4 +1,4 @@
-﻿using MasarHub.Domain.SharedKernel.Events;
+﻿using MasarHub.Domain.Common.Events;
 using MediatR;
 
 namespace MasarHub.Application.Common.Events

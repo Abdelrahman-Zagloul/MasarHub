@@ -1,5 +1,7 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
+﻿using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Certificates.Events;
 
 namespace MasarHub.Domain.Modules.Certificates
 {
@@ -13,26 +15,49 @@ namespace MasarHub.Domain.Modules.Certificates
 
         private CertificateTemplate(string name, string htmlContent, string previewImageUrl)
         {
-            Name = Guard.AgainstNullOrWhiteSpace(name, nameof(name));
-            HtmlContent = Guard.AgainstNullOrWhiteSpace(htmlContent, nameof(htmlContent));
-            PreviewImageUrl = Guard.AgainstNullOrWhiteSpace(previewImageUrl, nameof(previewImageUrl));
+            Name = name;
+            HtmlContent = htmlContent;
+            PreviewImageUrl = previewImageUrl;
+
+            RaiseDomainEvent(new CertificateTemplateCreatedEvent(Id));
         }
 
-        public static CertificateTemplate Create(string name, string htmlContent, string previewImageUrl)
+        public static Result<CertificateTemplate> Create(string name, string htmlContent, string previewImageUrl)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstNullOrWhiteSpace(name, nameof(name)),
+                Guard.AgainstNullOrWhiteSpace(htmlContent, nameof(htmlContent)),
+                Guard.AgainstNullOrWhiteSpace(previewImageUrl, nameof(previewImageUrl))
+            );
+
+            if (error is not null)
+                return Result<CertificateTemplate>.Failure(error);
+
             return new CertificateTemplate(name, htmlContent, previewImageUrl);
         }
 
-        public void UpdateContent(string htmlContent)
+        public Result UpdateContent(string htmlContent)
         {
-            HtmlContent = Guard.AgainstNullOrWhiteSpace(htmlContent, nameof(htmlContent));
+            var error = Guard.AgainstNullOrWhiteSpace(htmlContent, nameof(htmlContent));
+            if (error is not null)
+                return error;
+
+            HtmlContent = htmlContent;
             MarkAsUpdated();
+
+            return Result.Success();
         }
 
-        public void UpdatePreview(string previewImageUrl)
+        public Result UpdatePreview(string previewImageUrl)
         {
-            PreviewImageUrl = Guard.AgainstNullOrWhiteSpace(previewImageUrl, nameof(previewImageUrl));
+            var error = Guard.AgainstNullOrWhiteSpace(previewImageUrl, nameof(previewImageUrl));
+            if (error is not null)
+                return error;
+
+            PreviewImageUrl = previewImageUrl;
             MarkAsUpdated();
+
+            return Result.Success();
         }
     }
 }

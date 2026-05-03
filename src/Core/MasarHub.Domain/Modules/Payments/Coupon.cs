@@ -1,6 +1,6 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Payments
 {
@@ -9,9 +9,7 @@ namespace MasarHub.Domain.Modules.Payments
         public string Code { get; private set; } = null!;
         public decimal Value { get; private set; }
         public DiscountType Type { get; private set; }
-
         public Guid CourseId { get; private set; }
-
         public DateTimeOffset ExpirationDate { get; private set; }
         public int UsageLimit { get; private set; }
         public int UsedCount { get; private set; }
@@ -26,20 +24,15 @@ namespace MasarHub.Domain.Modules.Payments
             int usageLimit,
             Guid courseId)
         {
-            Code = Guard.AgainstNullOrWhiteSpace(code, nameof(code));
-            Value = Guard.AgainstNegativeOrZero(value, nameof(value));
-            Type = Guard.AgainstEnumOutOfRange(type, nameof(type));
-            UsageLimit = Guard.AgainstNegativeOrZero(usageLimit, nameof(usageLimit));
-            CourseId = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
-
-            if (expirationDate <= DateTimeOffset.UtcNow)
-                throw new DomainException(ErrorCodes.Coupon.InvalidExpiration);
+            Code = code;
+            Value = value;
+            Type = type;
+            UsageLimit = usageLimit;
+            CourseId = courseId;
             ExpirationDate = expirationDate;
-
-            ValidateDiscount(value, type);
         }
 
-        public static Coupon Create(
+        public static Result<Coupon> Create(
             string code,
             decimal value,
             DiscountType type,
@@ -47,12 +40,35 @@ namespace MasarHub.Domain.Modules.Payments
             int usageLimit,
             Guid courseId)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstNullOrWhiteSpace(code, nameof(code)),
+                Guard.AgainstNegativeOrZero(value, nameof(value)),
+                Guard.AgainstEnumOutOfRange(type, nameof(type)),
+                Guard.AgainstNegativeOrZero(usageLimit, nameof(usageLimit)),
+                Guard.AgainstEmptyGuid(courseId, nameof(courseId))
+            );
+
+            if (error is not null)
+                return error;
+
+            if (expirationDate <= DateTimeOffset.UtcNow)
+                return CouponErrors.InvalidExpiration;
+
+            if (type == DiscountType.Percentage && value > 100)
+                return CouponErrors.InvalidPercentage;
+
             return new Coupon(code, value, type, expirationDate, usageLimit, courseId);
         }
 
-        public decimal ApplyCoupon(decimal price, Guid courseId)
+        public Result<decimal> ApplyCoupon(decimal price, Guid courseId)
         {
-            EnsureApplicableToCourse(courseId);
+            var error = Guard.AgainstNegative(price, nameof(price));
+            if (error is not null)
+                return error;
+
+            var applicableResult = EnsureApplicableToCourse(courseId);
+            if (applicableResult.IsFailure)
+                return applicableResult.Error;
 
             var discounted = Type == DiscountType.Percentage
                 ? price - (price * Value / 100)
@@ -61,31 +77,32 @@ namespace MasarHub.Domain.Modules.Payments
             return discounted < 0 ? 0 : discounted;
         }
 
-        public void EnsureApplicableToCourse(Guid courseId)
+        public Result EnsureApplicableToCourse(Guid courseId)
         {
+            var error = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
+            if (error is not null)
+                return error;
+
             if (IsExpired())
-                throw new DomainException(ErrorCodes.Coupon.Expired);
+                return CouponErrors.Expired;
 
             if (IsExhausted())
-                throw new DomainException(ErrorCodes.Coupon.Exhausted);
+                return CouponErrors.Exhausted;
 
             if (CourseId != courseId)
-                throw new DomainException(ErrorCodes.Coupon.NotApplicableToCourse);
+                return CouponErrors.NotApplicableToCourse;
+
+            return Result.Success();
         }
 
-        public void MarkUsed()
+        public Result MarkUsed()
         {
             if (IsExhausted())
-                throw new DomainException(ErrorCodes.Coupon.Exhausted);
+                return CouponErrors.Exhausted;
 
             UsedCount++;
             MarkAsUpdated();
-        }
-
-        private void ValidateDiscount(decimal value, DiscountType type)
-        {
-            if (type == DiscountType.Percentage && value > 100)
-                throw new DomainException(ErrorCodes.Coupon.InvalidPercentage);
+            return Result.Success();
         }
 
         private bool IsExpired() => DateTimeOffset.UtcNow > ExpirationDate;

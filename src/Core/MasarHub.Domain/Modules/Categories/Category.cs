@@ -1,7 +1,7 @@
-﻿using MasarHub.Domain.Modules.Categories.Events;
-using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+﻿using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Categories.Events;
 
 namespace MasarHub.Domain.Modules.Categories
 {
@@ -18,42 +18,67 @@ namespace MasarHub.Domain.Modules.Categories
 
         private Category(string name, string slug, int level, int displayOrder, Guid? parentCategoryId)
         {
-            Name = Guard.AgainstNullOrWhiteSpace(name, nameof(name));
-            Slug = Guard.AgainstNullOrWhiteSpace(slug, nameof(slug));
-            Level = Guard.AgainstNegativeOrZero(level, nameof(level));
-            DisplayOrder = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
-
+            Name = name;
+            Slug = slug;
+            Level = level;
+            DisplayOrder = displayOrder;
             ParentCategoryId = parentCategoryId;
 
             RaiseDomainEvent(new CategoryCreatedEvent(Id));
         }
-        public static Category CreateRoot(string name, string slug, int displayOrder)
+        public static Result<Category> CreateRoot(string name, string slug, int displayOrder)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstNullOrWhiteSpace(name, nameof(name)),
+                Guard.AgainstNullOrWhiteSpace(slug, nameof(slug)),
+                Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder))
+            );
+            if (error is not null)
+                return error;
+
             return new Category(name, slug, 1, displayOrder, null);
         }
 
-        public static Category CreateSubCategory(string name, string slug, int displayOrder, Category parent)
+        public static Result<Category> CreateSubCategory(string name, string slug, int displayOrder, Category parent)
         {
-            parent = Guard.AgainstNull(parent, nameof(parent));
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstNull(parent, nameof(parent)),
+                Guard.AgainstNullOrWhiteSpace(name, nameof(name)),
+                Guard.AgainstNullOrWhiteSpace(slug, nameof(slug)),
+                Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder))
+            );
+            if (error is not null)
+                return error;
 
             if (parent.Level >= 3)
-                throw new DomainException(ErrorCodes.Category.MaxDepth);
+                return CategoryErrors.MaxDepth;
+
 
             return new Category(name, slug, parent.Level + 1, displayOrder, parent.Id);
         }
 
-        public void Rename(string name)
+        public Result Rename(string name)
         {
-            Name = Guard.AgainstNullOrWhiteSpace(name, nameof(name));
+            var error = Guard.AgainstNullOrWhiteSpace(name, nameof(name));
+            if (error is not null)
+                return error;
 
+            Name = name;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void ChangeDisplayOrder(int displayOrder)
+        public Result ChangeDisplayOrder(int displayOrder)
         {
-            DisplayOrder = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
+            var error = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
+            if (error is not null)
+                return error;
 
+            DisplayOrder = displayOrder;
             MarkAsUpdated();
+            return Result.Success();
         }
+
     }
 }
+

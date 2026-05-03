@@ -1,5 +1,7 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
+﻿using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Certificates.Events;
 
 namespace MasarHub.Domain.Modules.Certificates
 {
@@ -12,12 +14,24 @@ namespace MasarHub.Domain.Modules.Certificates
 
         private CertificateDownload(Guid certificateId, Guid templateId)
         {
-            CertificateId = Guard.AgainstEmptyGuid(certificateId, nameof(certificateId));
-            TemplateId = Guard.AgainstEmptyGuid(templateId, nameof(templateId));
+            CertificateId = certificateId;
+            TemplateId = templateId;
             DownloadedAt = DateTimeOffset.UtcNow;
+
+            RaiseDomainEvent(new CertificateDownloadedEvent(certificateId));
         }
 
-        public static CertificateDownload Create(Guid certificateId, Guid templateId)
-            => new CertificateDownload(certificateId, templateId);
+        public static Result<CertificateDownload> Create(Guid certificateId, Guid templateId)
+        {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(certificateId, nameof(certificateId)),
+                Guard.AgainstEmptyGuid(templateId, nameof(templateId))
+            );
+
+            if (error is not null)
+                return error;
+
+            return new CertificateDownload(certificateId, templateId);
+        }
     }
 }

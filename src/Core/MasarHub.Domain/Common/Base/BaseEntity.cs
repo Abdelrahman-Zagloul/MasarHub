@@ -1,6 +1,6 @@
-﻿using MasarHub.Domain.SharedKernel.Events;
+﻿using MasarHub.Domain.Common.Events;
 
-namespace MasarHub.Domain.SharedKernel.Base
+namespace MasarHub.Domain.Common.Base
 {
     public abstract class BaseEntity : IEntity
     {

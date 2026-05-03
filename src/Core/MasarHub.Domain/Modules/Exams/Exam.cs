@@ -1,6 +1,6 @@
-using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Exams
 {
@@ -16,7 +16,6 @@ namespace MasarHub.Domain.Modules.Exams
         public int? DurationInMinutes { get; private set; }
         public int MaxAttempts { get; private set; }
         public bool IsPublished { get; private set; }
-
         public IReadOnlyCollection<Question> Questions => _questions.AsReadOnly();
 
         private Exam() { }
@@ -30,19 +29,16 @@ namespace MasarHub.Domain.Modules.Exams
             string? description,
             int? durationMinutes)
         {
-            CourseId = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
-            Title = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            MaxAttempts = Guard.AgainstNegativeOrZero(maxAttempts, nameof(maxAttempts));
-
-            ModuleId = moduleId.HasValue
-                ? Guard.AgainstEmptyGuid(moduleId.Value, nameof(moduleId))
-                : null;
+            CourseId = courseId;
+            Title = title;
+            PassingScorePercentage = passingScorePercentage;
+            MaxAttempts = maxAttempts;
+            ModuleId = moduleId;
             Description = description;
-            SetPassingScore(passingScorePercentage);
-            SetDuration(durationMinutes);
+            DurationInMinutes = durationMinutes;
         }
 
-        public static Exam Create(
+        public static Result<Exam> Create(
             Guid courseId,
             string title,
             int passingScorePercentage,
@@ -51,87 +47,153 @@ namespace MasarHub.Domain.Modules.Exams
             string? description = null,
             int? durationMinutes = null)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(courseId, nameof(courseId)),
+                Guard.AgainstNullOrWhiteSpace(title, nameof(title)),
+                Guard.AgainstNegativeOrZero(maxAttempts, nameof(maxAttempts))
+            );
+            if (error is not null)
+                return error;
+
+            if (moduleId.HasValue)
+            {
+                var moduleError = Guard.AgainstEmptyGuid(moduleId.Value, nameof(moduleId));
+                if (moduleError is not null)
+                    return moduleError;
+            }
+
+            if (durationMinutes.HasValue)
+            {
+                var durationError = Guard.AgainstNegativeOrZero(durationMinutes.Value, nameof(durationMinutes));
+                if (durationError is not null)
+                    return durationError;
+            }
+
+            if (!IsValidPassingScore(passingScorePercentage))
+                return ExamErrors.InvalidPassingScore;
+
             return new Exam(courseId, title, passingScorePercentage, maxAttempts, moduleId, description, durationMinutes);
         }
 
-        public void UpdateTitle(string title)
+        public Result UpdateTitle(string title)
         {
-            EnsureDraft();
-            Title = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
+
+            var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
+            if (error is not null)
+                return error;
+
+            Title = title;
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void UpdateDescription(string? description)
+
+        public Result UpdateDescription(string? description)
         {
-            EnsureDraft();
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
+
             Description = description;
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void SetPassingScore(int passingScorePercentage)
-        {
-            EnsureDraft();
 
-            if (passingScorePercentage < 0 || passingScorePercentage > 100)
-                throw new DomainException(ErrorCodes.Exam.InvalidPassingScore);
+        public Result SetPassingScore(int passingScorePercentage)
+        {
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
+
+            if (!IsValidPassingScore(passingScorePercentage))
+                return ExamErrors.InvalidPassingScore;
 
             PassingScorePercentage = passingScorePercentage;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void SetDuration(int? durationMinutes)
+        public Result SetDuration(int? durationMinutes)
         {
-            EnsureDraft();
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
 
             if (durationMinutes.HasValue)
-                DurationInMinutes = Guard.AgainstNegativeOrZero(durationMinutes.Value, nameof(durationMinutes));
-            else
-                DurationInMinutes = null;
+            {
+                var error = Guard.AgainstNegativeOrZero(durationMinutes.Value, nameof(durationMinutes));
+                if (error is not null)
+                    return error;
+            }
 
+            DurationInMinutes = durationMinutes;
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void AddQuestion(Question question)
-        {
-            EnsureDraft();
 
-            question = Guard.AgainstNull(question, nameof(question));
+        public Result AddQuestion(Question question)
+        {
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
+
+            var error = Guard.AgainstNull(question, nameof(question));
+            if (error is not null)
+                return error;
 
             if (question.ExamId != Id)
-                throw new DomainException(ErrorCodes.Exam.InvalidQuestionExamRelation);
+                return ExamErrors.InvalidQuestionExamRelation;
 
             _questions.Add(question);
-
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void Publish()
+
+        public Result Publish()
         {
-            EnsureDraft();
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
 
             if (!_questions.Any())
-                throw new DomainException(ErrorCodes.Exam.MissingQuestions);
+                return ExamErrors.MissingQuestions;
 
             IsPublished = true;
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void Unpublish(bool hasSubmissions)
+
+        public Result Unpublish(bool hasSubmissions)
         {
             if (!IsPublished)
-                return;
+                return Result.Success();
 
             if (hasSubmissions)
-                throw new DomainException(ErrorCodes.Exam.CannotUnpublishAfterAttempts);
+                return ExamErrors.CannotUnpublishAfterAttempts;
 
             IsPublished = false;
             MarkAsUpdated();
+            return Result.Success();
         }
+
         public decimal TotalMarks() => _questions.Sum(q => q.QuestionMark);
 
         public decimal GetPassingScore() => TotalMarks() * PassingScorePercentage / 100m;
 
         public bool CanAttempt(int currentAttempts) => currentAttempts < MaxAttempts;
-        private void EnsureDraft()
+
+        public Result Delete() => MarkAsDeleted();
+
+        private Result EnsureDraft()
         {
-            if (IsPublished)
-                throw new DomainException(ErrorCodes.Exam.CannotModifyPublishedExam);
+            return IsPublished
+                ? ExamErrors.CannotModifyPublishedExam
+                : Result.Success();
         }
-        public void Delete() => MarkAsDeleted();
+
+        private static bool IsValidPassingScore(int passingScorePercentage)
+            => passingScorePercentage is >= 0 and <= 100;
     }
 }

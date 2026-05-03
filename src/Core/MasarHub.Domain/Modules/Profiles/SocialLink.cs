@@ -1,5 +1,6 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.ValueObjects;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Common.ValueObjects;
 
 namespace MasarHub.Domain.Modules.Profiles
 {
@@ -9,14 +10,23 @@ namespace MasarHub.Domain.Modules.Profiles
         public string Url { get; init; } = null!;
 
         private SocialLink() { }
+
         private SocialLink(string platform, string url)
         {
-            Platform = Guard.AgainstNullOrWhiteSpace(platform, nameof(platform));
-            Url = Guard.AgainstInvalidUrl(url, nameof(url));
+            Platform = platform;
+            Url = url;
         }
 
-        public static SocialLink Create(string platform, string url)
+        public static Result<SocialLink> Create(string platform, string url)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstNullOrWhiteSpace(platform, nameof(platform)),
+                Guard.AgainstInvalidUrl(url, nameof(url))
+            );
+
+            if (error is not null)
+                return error;
+
             return new SocialLink(platform, url);
         }
     }

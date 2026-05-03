@@ -1,6 +1,7 @@
-using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Certificates.Events;
 namespace MasarHub.Domain.Modules.Certificates
 {
     public sealed class Certificate : BaseEntity
@@ -23,19 +24,31 @@ namespace MasarHub.Domain.Modules.Certificates
             string certificateNumber,
             string verificationCode)
         {
-            UserId = Guard.AgainstEmptyGuid(userId, nameof(userId));
-            CourseId = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
-            EnrollmentId = Guard.AgainstEmptyGuid(enrollmentId, nameof(enrollmentId));
-            TemplateId = Guard.AgainstEmptyGuid(templateId, nameof(templateId));
-
-            CertificateNumber = Guard.AgainstNullOrWhiteSpace(certificateNumber, nameof(certificateNumber));
-            VerificationCode = Guard.AgainstNullOrWhiteSpace(verificationCode, nameof(verificationCode));
-
+            UserId = userId;
+            CourseId = courseId;
+            EnrollmentId = enrollmentId;
+            TemplateId = templateId;
+            CertificateNumber = certificateNumber;
+            VerificationCode = verificationCode;
             IssuedAt = DateTimeOffset.UtcNow;
+
+            RaiseDomainEvent(new CertificateIssuedEvent(Id, userId, courseId));
         }
 
-        public static Certificate Issue(Guid userId, Guid courseId, Guid enrollmentId, Guid templateId, string certificateNumber, string verificationCode)
+        public static Result<Certificate> Issue(Guid userId, Guid courseId, Guid enrollmentId, Guid templateId, string certificateNumber, string verificationCode)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstEmptyGuid(courseId, nameof(courseId)),
+                Guard.AgainstEmptyGuid(enrollmentId, nameof(enrollmentId)),
+                Guard.AgainstEmptyGuid(templateId, nameof(templateId)),
+                Guard.AgainstNullOrWhiteSpace(certificateNumber, nameof(certificateNumber)),
+                Guard.AgainstNullOrWhiteSpace(verificationCode, nameof(verificationCode))
+            );
+
+            if (error is not null)
+                return error;
+
             return new Certificate(userId, courseId, enrollmentId, templateId, certificateNumber, verificationCode);
         }
     }

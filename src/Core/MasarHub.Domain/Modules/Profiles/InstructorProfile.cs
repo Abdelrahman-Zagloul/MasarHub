@@ -1,14 +1,14 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Profiles
 {
     public sealed class InstructorProfile : BaseEntity
     {
         private readonly List<SocialLink> _socialLinks = [];
-        public Guid UserId { get; private set; }
 
+        public Guid UserId { get; private set; }
         public string Bio { get; private set; } = null!;
         public string? Headline { get; private set; }
         public IReadOnlyCollection<SocialLink> SocialLinks => _socialLinks.AsReadOnly();
@@ -17,44 +17,67 @@ namespace MasarHub.Domain.Modules.Profiles
 
         private InstructorProfile(Guid userId, string bio)
         {
-            UserId = Guard.AgainstEmptyGuid(userId, nameof(userId));
-            Bio = Guard.AgainstNullOrWhiteSpace(bio, nameof(bio));
+            UserId = userId;
+            Bio = bio;
         }
 
-        public static InstructorProfile Create(Guid userId, string bio)
+        public static Result<InstructorProfile> Create(Guid userId, string bio)
         {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstNullOrWhiteSpace(bio, nameof(bio))
+            );
+
+            if (error is not null)
+                return error;
+
             return new InstructorProfile(userId, bio);
         }
 
-        public void UpdateBio(string bio)
+        public Result UpdateBio(string bio)
         {
-            Bio = Guard.AgainstNullOrWhiteSpace(bio, nameof(bio));
+            var error = Guard.AgainstNullOrWhiteSpace(bio, nameof(bio));
+            if (error is not null)
+                return error;
+
+            Bio = bio;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void UpdateHeadline(string? headline)
+        public Result UpdateHeadline(string? headline)
         {
             Headline = headline;
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void AddSocialLink(SocialLink socialLink)
+
+        public Result AddSocialLink(SocialLink socialLink)
         {
+            var error = Guard.AgainstNull(socialLink, nameof(socialLink));
+            if (error is not null)
+                return error;
+
             if (_socialLinks.Count >= 10)
-                throw new DomainException(ErrorCodes.General.TooManyItems);
+                return ProfileErrors.TooManySocialLinks;
 
             if (_socialLinks.Any(x => x.Url == socialLink.Url))
-                throw new DomainException(ErrorCodes.General.Duplicate);
+                return ProfileErrors.DuplicateSocialLink;
 
             _socialLinks.Add(socialLink);
             MarkAsUpdated();
+            return Result.Success();
         }
-        public void RemoveSocialLink(string url)
+
+        public Result RemoveSocialLink(string url)
         {
             var link = _socialLinks.FirstOrDefault(x => x.Url == url);
-            if (link is null) return;
+            if (link is null)
+                return Result.Success();
 
             _socialLinks.Remove(link);
             MarkAsUpdated();
+            return Result.Success();
         }
     }
 }

@@ -1,109 +1,139 @@
-using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Exams
 {
     public sealed class Question : BaseEntity
     {
         private readonly List<Option> _options = new();
-        public sealed record OptionInput(string Text, bool IsCorrect); // for input validation and creation
+
+        public sealed record OptionInput(string Text, bool IsCorrect);
+
         public Guid ExamId { get; private set; }
         public string QuestionText { get; private set; } = null!;
         public decimal QuestionMark { get; private set; }
         public QuestionType QuestionType { get; private set; }
-
         public IReadOnlyCollection<Option> Options => _options.AsReadOnly();
 
         private Question() { }
 
         private Question(Guid examId, string questionText, decimal questionMark, QuestionType questionType)
         {
-            ExamId = Guard.AgainstEmptyGuid(examId, nameof(examId));
-            QuestionText = Guard.AgainstNullOrWhiteSpace(questionText, nameof(questionText));
-            QuestionMark = Guard.AgainstNegativeOrZero(questionMark, nameof(questionMark));
-            QuestionType = Guard.AgainstEnumOutOfRange(questionType, nameof(questionType));
+            ExamId = examId;
+            QuestionText = questionText;
+            QuestionMark = questionMark;
+            QuestionType = questionType;
         }
 
-        public static Question Create(
+        public static Result<Question> Create(
             Guid examId,
             string questionText,
             decimal questionMark,
             QuestionType questionType,
             IEnumerable<OptionInput> options)
         {
-            var question = new Question(examId, questionText, questionMark, questionType);
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(examId, nameof(examId)),
+                Guard.AgainstNullOrWhiteSpace(questionText, nameof(questionText)),
+                Guard.AgainstNegativeOrZero(questionMark, nameof(questionMark)),
+                Guard.AgainstEnumOutOfRange(questionType, nameof(questionType)),
+                Guard.AgainstNull(options, nameof(options))
+            );
 
-            question.SetOptions(options);
-            return question;
+            if (error is not null)
+                return error;
+
+            var question = new Question(examId, questionText, questionMark, questionType);
+            var setOptionsResult = question.SetOptions(options);
+
+            return setOptionsResult.IsFailure
+                ? setOptionsResult.Error
+                : question;
         }
 
-        private void SetOptions(IEnumerable<OptionInput> options)
+        private Result SetOptions(IEnumerable<OptionInput> options)
         {
-            if (options is null || !options.Any())
-                throw new DomainException(ErrorCodes.Exam.QuestionMustHaveOptions);
+            var optionInputs = options.ToList();
+            if (!optionInputs.Any())
+                return ExamErrors.QuestionMustHaveOptions;
 
             _options.Clear();
-            foreach (var opttion in options)
+            foreach (var optionInput in optionInputs)
             {
-                var option = Option.Create(Id, opttion.Text, opttion.IsCorrect);
-                ValidateOptionRules(option);
-                _options.Add(option);
+                var optionResult = Option.Create(Id, optionInput.Text, optionInput.IsCorrect);
+                if (optionResult.IsFailure)
+                    return optionResult.Error;
+
+                var ruleResult = ValidateOptionRules(optionResult.Value!);
+                if (ruleResult.IsFailure)
+                    return ruleResult;
+
+                _options.Add(optionResult.Value!);
             }
 
-            EnsureValid();
+            return EnsureValid();
         }
 
-        private void ValidateOptionRules(Option option)
+        private Result ValidateOptionRules(Option option)
         {
             switch (QuestionType)
             {
                 case QuestionType.TrueFalse:
                     if (_options.Count >= 2)
-                        throw new DomainException(ErrorCodes.Exam.TrueFalseMaxOptions);
+                        return ExamErrors.TrueFalseMaxOptions;
 
                     if (option.IsCorrect && HasCorrectOption())
-                        throw new DomainException(ErrorCodes.Exam.MultipleCorrectOptionsNotAllowed);
+                        return ExamErrors.MultipleCorrectOptionsNotAllowed;
+
                     break;
 
                 case QuestionType.SingleChoice:
                     if (option.IsCorrect && HasCorrectOption())
-                        throw new DomainException(ErrorCodes.Exam.MultipleCorrectOptionsNotAllowed);
+                        return ExamErrors.MultipleCorrectOptionsNotAllowed;
+
                     break;
 
                 case QuestionType.MultipleChoice:
                     break;
 
                 default:
-                    throw new DomainException(ErrorCodes.Exam.InvalidQuestionType);
+                    return ExamErrors.InvalidQuestionType;
             }
+
+            return Result.Success();
         }
 
-        private void EnsureValid()
+        private Result EnsureValid()
         {
             if (!_options.Any())
-                throw new DomainException(ErrorCodes.Exam.QuestionMustHaveOptions);
+                return ExamErrors.QuestionMustHaveOptions;
 
             switch (QuestionType)
             {
                 case QuestionType.TrueFalse:
                     if (_options.Count != 2)
-                        throw new DomainException(ErrorCodes.Exam.TrueFalseMustHaveTwoOptions);
+                        return ExamErrors.TrueFalseMustHaveTwoOptions;
 
                     if (_options.Count(o => o.IsCorrect) != 1)
-                        throw new DomainException(ErrorCodes.Exam.TrueFalseMustHaveOneCorrect);
+                        return ExamErrors.TrueFalseMustHaveOneCorrect;
+
                     break;
 
                 case QuestionType.SingleChoice:
                     if (_options.Count(o => o.IsCorrect) != 1)
-                        throw new DomainException(ErrorCodes.Exam.SingleChoiceMustHaveOneCorrect);
+                        return ExamErrors.SingleChoiceMustHaveOneCorrect;
+
                     break;
 
                 case QuestionType.MultipleChoice:
                     if (_options.Count(o => o.IsCorrect) < 2)
-                        throw new DomainException(ErrorCodes.Exam.MultipleChoiceMustHaveAtLeastTwoCorrect);
+                        return ExamErrors.MultipleChoiceMustHaveAtLeastTwoCorrect;
+
                     break;
             }
+
+            return Result.Success();
         }
 
         private bool HasCorrectOption() => _options.Any(o => o.IsCorrect);

@@ -1,6 +1,6 @@
-﻿using MasarHub.Domain.SharedKernel;
-using MasarHub.Domain.SharedKernel.Base;
-using MasarHub.Domain.SharedKernel.Exceptions;
+using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Guards;
+using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -8,16 +8,12 @@ namespace MasarHub.Domain.Modules.Courses
     {
         public Guid CourseId { get; private set; }
         public Guid InstructorId { get; private set; }
-
         public string Title { get; private set; } = null!;
         public string Content { get; private set; } = null!;
-
         public bool IsPublished { get; private set; }
         public DateTimeOffset? PublishedAt { get; private set; }
-
         public DateTimeOffset? ScheduledAt { get; private set; }
         public DateTimeOffset? ExpiresAt { get; private set; }
-
         public AnnouncementImportance Importance { get; private set; }
         public bool IsPinned { get; private set; }
 
@@ -30,94 +26,130 @@ namespace MasarHub.Domain.Modules.Courses
             string content,
             AnnouncementImportance importance)
         {
-            CourseId = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
-            InstructorId = Guard.AgainstEmptyGuid(instructorId, nameof(instructorId));
-            Title = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            Content = Guard.AgainstNullOrWhiteSpace(content, nameof(content));
-            Importance = Guard.AgainstEnumOutOfRange(importance, nameof(importance));
-
+            CourseId = courseId;
+            InstructorId = instructorId;
+            Title = title;
+            Content = content;
+            Importance = importance;
             IsPinned = false;
             IsPublished = false;
         }
 
-        public static CourseAnnouncement Create(
+        public static Result<CourseAnnouncement> Create(
             Guid courseId,
             Guid instructorId,
             string title,
             string content,
             AnnouncementImportance importance = AnnouncementImportance.Normal)
-            => new(courseId, instructorId, title, content, importance);
+        {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(courseId, nameof(courseId)),
+                Guard.AgainstEmptyGuid(instructorId, nameof(instructorId)),
+                Guard.AgainstNullOrWhiteSpace(title, nameof(title)),
+                Guard.AgainstNullOrWhiteSpace(content, nameof(content)),
+                Guard.AgainstEnumOutOfRange(importance, nameof(importance))
+            );
 
-        private void EnsureEditable()
+            if (error is not null)
+                return error;
+
+            return new CourseAnnouncement(courseId, instructorId, title, content, importance);
+        }
+
+        public Result UpdateTitle(string title)
+        {
+            var editable = EnsureEditable();
+            if (editable.IsFailure)
+                return editable;
+
+            var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
+            if (error is not null)
+                return error;
+
+            Title = title;
+            MarkAsUpdated();
+            return Result.Success();
+        }
+
+        public Result UpdateContent(string content)
+        {
+            var editable = EnsureEditable();
+            if (editable.IsFailure)
+                return editable;
+
+            var error = Guard.AgainstNullOrWhiteSpace(content, nameof(content));
+            if (error is not null)
+                return error;
+
+            Content = content;
+            MarkAsUpdated();
+            return Result.Success();
+        }
+
+        public Result Publish()
         {
             if (IsPublished)
-                throw new DomainException(ErrorCodes.CourseAnnouncement.CannotEditAfterPublish);
-        }
-
-        public void UpdateTitle(string title)
-        {
-            EnsureEditable();
-            Title = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            MarkAsUpdated();
-        }
-
-        public void UpdateContent(string content)
-        {
-            EnsureEditable();
-            Content = Guard.AgainstNullOrWhiteSpace(content, nameof(content));
-            MarkAsUpdated();
-        }
-
-        public void Publish()
-        {
-            if (IsPublished)
-                throw new DomainException(ErrorCodes.CourseAnnouncement.AlreadyPublished);
+                return CourseAnnouncementErrors.AlreadyPublished;
 
             if (ExpiresAt.HasValue && ExpiresAt <= DateTimeOffset.UtcNow)
-                throw new DomainException(ErrorCodes.CourseAnnouncement.InvalidExpirationTime);
+                return CourseAnnouncementErrors.InvalidExpirationTime;
 
             IsPublished = true;
             PublishedAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void Schedule(DateTimeOffset scheduledAt)
+        public Result Schedule(DateTimeOffset scheduledAt)
         {
             if (IsPublished)
-                throw new DomainException(ErrorCodes.CourseAnnouncement.AlreadyPublished);
+                return CourseAnnouncementErrors.AlreadyPublished;
 
             if (scheduledAt <= DateTimeOffset.UtcNow)
-                throw new DomainException(ErrorCodes.CourseAnnouncement.InvalidScheduleTime);
+                return CourseAnnouncementErrors.InvalidScheduleTime;
 
             ScheduledAt = scheduledAt;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void SetExpiration(DateTimeOffset expiresAt)
+        public Result SetExpiration(DateTimeOffset expiresAt)
         {
             if (expiresAt <= DateTimeOffset.UtcNow)
-                throw new DomainException(ErrorCodes.CourseAnnouncement.InvalidExpirationTime);
+                return CourseAnnouncementErrors.InvalidExpirationTime;
 
             ExpiresAt = expiresAt;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void SetImportance(AnnouncementImportance importance)
+        public Result SetImportance(AnnouncementImportance importance)
         {
-            Importance = Guard.AgainstEnumOutOfRange(importance, nameof(importance));
+            var error = Guard.AgainstEnumOutOfRange(importance, nameof(importance));
+            if (error is not null)
+                return error;
+
+            Importance = importance;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void Pin()
+        public Result Pin()
         {
             IsPinned = true;
             MarkAsUpdated();
+            return Result.Success();
         }
 
-        public void Unpin()
+        public Result Unpin()
         {
             IsPinned = false;
             MarkAsUpdated();
+            return Result.Success();
         }
+
+        public Result Delete() => MarkAsDeleted();
+
+        private Result EnsureEditable() => IsPublished ? CourseAnnouncementErrors.CannotEditAfterPublish : Result.Success();
     }
 }

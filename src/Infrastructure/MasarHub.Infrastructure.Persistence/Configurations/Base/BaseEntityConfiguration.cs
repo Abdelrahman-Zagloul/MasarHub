@@ -1,4 +1,4 @@
-﻿using MasarHub.Domain.SharedKernel.Base;
+﻿using MasarHub.Domain.Common.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
