@@ -8,8 +8,11 @@ namespace MasarHub.Infrastructure.Extensions
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDatabase(configuration);
-            services.AddIdentityServices();
+            services
+            .AddDatabase(configuration)
+            .AddIdentityServices()
+            .AddRedis(configuration);
+
 
             return services;
         }
