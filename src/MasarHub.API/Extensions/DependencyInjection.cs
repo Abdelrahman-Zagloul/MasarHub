@@ -7,7 +7,7 @@ namespace MasarHub.API.Extensions
         public static IServiceCollection AddAPI(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddTransient<CultureMiddleware>();
-
+            services.AddJwtAuthentication(configuration);
 
             return services;
 
