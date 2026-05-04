@@ -16,9 +16,6 @@
 
   <ItemGroup>
     <Folder Include="Attributes\" />
-    <Folder Include="Common\Factories\" />
-    <Folder Include="Common\Responses\" />
-    <Folder Include="Controllers\" />
     <Folder Include="Filters\" />
     <Folder Include="HealthChecks\" />
     <Folder Include="wwwroot\" />

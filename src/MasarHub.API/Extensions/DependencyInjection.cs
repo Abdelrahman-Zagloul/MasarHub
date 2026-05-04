@@ -9,6 +9,7 @@ namespace MasarHub.API.Extensions
             services.AddTransient<CultureMiddleware>();
             services.AddJwtAuthentication(configuration);
 
+            services.AddProblemDetails();
             return services;
 
         }

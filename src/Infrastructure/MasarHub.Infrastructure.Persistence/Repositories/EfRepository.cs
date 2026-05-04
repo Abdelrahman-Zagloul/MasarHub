@@ -1,5 +1,6 @@
 ﻿using MasarHub.Application.Abstractions.Persistence;
 using MasarHub.Domain.Common.Base;
+using MasarHub.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -7,10 +8,10 @@ namespace MasarHub.Infrastructure.Persistence.Repositories
 {
     public class EfRepository<TEntity> : IRepository<TEntity> where TEntity : BaseEntity
     {
-        protected readonly DbContext _context;
+        protected readonly MasarHubDbContext _context;
         protected readonly DbSet<TEntity> _dbSet;
 
-        public EfRepository(DbContext context)
+        public EfRepository(MasarHubDbContext context)
         {
             _context = context;
             _dbSet = context.Set<TEntity>();
