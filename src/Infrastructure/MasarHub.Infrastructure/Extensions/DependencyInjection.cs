@@ -16,7 +16,7 @@ namespace MasarHub.Infrastructure.Extensions
             .AddInfrastructureSettings(configuration)
             .ConfigureScrutor();
 
-
+            services.AddHttpContextAccessor();
             return services;
         }
     }

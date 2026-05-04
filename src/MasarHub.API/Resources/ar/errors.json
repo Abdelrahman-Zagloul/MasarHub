@@ -1,0 +1,7 @@
+{
+  "token.invalid": "التوكن غير صالح أو منتهي",
+  "token.revoked": "تم إلغاء التوكن",
+  "token.expired": "التوكن منتهي الصلاحية",
+  "auth.unauthorized": "غير مصرح لك",
+  "auth.forbidden": "ليس لديك صلاحية"
+}

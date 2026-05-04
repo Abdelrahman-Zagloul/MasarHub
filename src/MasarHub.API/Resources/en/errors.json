@@ -1,0 +1,7 @@
+{
+  "token.invalid": "The token is invalid or has expired",
+  "token.revoked": "The token has been revoked",
+  "token.expired": "The token has expired",
+  "auth.unauthorized": "You are not authorized",
+  "auth.forbidden": "You do not have permission"
+}

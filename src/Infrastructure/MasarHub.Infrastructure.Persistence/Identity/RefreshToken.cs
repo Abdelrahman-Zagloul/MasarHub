@@ -1,7 +1,4 @@
 using MasarHub.Domain.Common.Base;
-using MasarHub.Domain.Common.Errors;
-using MasarHub.Domain.Common.Guards;
-using MasarHub.Domain.Common.Results;
 
 namespace MasarHub.Infrastructure.Persistence.Identity
 {
@@ -27,33 +24,20 @@ namespace MasarHub.Infrastructure.Persistence.Identity
             CreatedByIp = createdByIp;
         }
 
-        public static Result<RefreshToken> Create(Guid userId, string tokenHash, DateTimeOffset expiresAt, string? createdByIp)
+        public static RefreshToken Create(Guid userId, string tokenHash, DateTimeOffset expiresAt, string? createdByIp)
         {
-            var error = GuardExtensions.FirstError(
-                Guard.AgainstEmptyGuid(userId, nameof(userId)),
-                Guard.AgainstNullOrWhiteSpace(tokenHash, nameof(tokenHash))
-            );
-
-            if (error is not null)
-                return error;
-
-            if (expiresAt <= DateTimeOffset.UtcNow)
-                return DomainError.Invalid(nameof(expiresAt));
-
             return new RefreshToken(userId, tokenHash, expiresAt, createdByIp);
         }
 
-        public Result Revoke(string? revokedByIp, Guid? replacedByRefreshTokenId = null)
+        public void Revoke(string? revokedByIp, Guid? replacedByRefreshTokenId = null)
         {
             if (RevokedAt != null)
-                return Result.Success();
+                return;
 
             RevokedAt = DateTimeOffset.UtcNow;
             RevokedByIp = revokedByIp;
             ReplacedByRefreshTokenId = replacedByRefreshTokenId;
             MarkAsUpdated();
-
-            return Result.Success();
         }
     }
 }

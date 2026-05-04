@@ -5,39 +5,43 @@ namespace MasarHub.Application.Common.Results
     public class Result<TValue> : Result
     {
         private readonly TValue _value;
-        public TValue Value => IsSuccess ?
-            _value : throw new InvalidOperationException("The value of a failure result can not be accessed.");
 
+        public TValue Value => IsSuccess
+            ? _value
+            : throw new InvalidOperationException("Cannot access value of a failed result.");
 
-        private Result(TValue value) : base()
+        private Result(TValue value)
         {
             _value = value;
         }
-        private Result(TValue value, string message) : base(message)
-        {
-            _value = value;
-        }
+
         private Result(Error error) : base(error)
         {
             _value = default!;
         }
-        private Result(List<Error> errors) : base(errors)
+
+        private Result(IEnumerable<Error> errors) : base(errors)
         {
             _value = default!;
         }
 
+        public static Result<TValue> Success(TValue value)
+            => new(value);
 
-        public static Result<TValue> Ok(TValue value) => new Result<TValue>(value);
-        public static Result<TValue> Ok(TValue value, string message) => new Result<TValue>(value, message);
-        public new static Result<TValue> Fail(Error error) => new Result<TValue>(error);
-        public new static Result<TValue> Fail(List<Error> errors) => new Result<TValue>(errors);
+        public new static Result<TValue> Failure(Error error)
+            => new(error);
 
+        public new static Result<TValue> Failure(IEnumerable<Error> errors)
+            => new(errors);
 
         // Implicit conversions
-        public static implicit operator Result<TValue>(TValue value) => Ok(value);
-        public static implicit operator Result<TValue>(Error error) => Fail(error);
-        public static implicit operator Result<TValue>(List<Error> errors) => Fail(errors);
+        public static implicit operator Result<TValue>(TValue value)
+            => Success(value);
+
+        public static implicit operator Result<TValue>(Error error)
+            => Failure(error);
+
+        public static implicit operator Result<TValue>(List<Error> errors)
+            => Failure(errors);
     }
 }
-
-
