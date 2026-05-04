@@ -11,7 +11,8 @@ namespace MasarHub.Infrastructure.Extensions
             services
                 .AddAndValidateSettings<JWTSettings>(configuration, nameof(JWTSettings))
                 .AddAndValidateSettings<LocalizationSettings>(configuration, nameof(LocalizationSettings))
-                .AddAndValidateSettings<DefaultUsersSettings>(configuration, nameof(DefaultUsersSettings));
+                .AddAndValidateSettings<DefaultUsersSettings>(configuration, nameof(DefaultUsersSettings))
+                .AddAndValidateSettings<MailSettings>(configuration, nameof(MailSettings));
 
 
 
