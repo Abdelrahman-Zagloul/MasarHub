@@ -1,6 +1,6 @@
 ﻿using MasarHub.Application.Abstractions.Identity;
 using MasarHub.Application.Features.Authentication.Shared;
-using MasarHub.Infrastructure.Settings;
+using MasarHub.Application.Settings;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

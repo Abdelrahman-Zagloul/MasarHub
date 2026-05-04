@@ -11,8 +11,8 @@ namespace MasarHub.Infrastructure.Extensions
             services
             .AddDatabase(configuration)
             .AddIdentityServices()
-            .AddRedis(configuration);
-
+            .AddRedis(configuration)
+            .AddInfrastructureSettings(configuration);
 
             return services;
         }

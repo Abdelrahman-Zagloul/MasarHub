@@ -6,7 +6,7 @@ namespace MasarHub.API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +21,7 @@ namespace MasarHub.API
 
             var app = builder.Build();
 
-            app.UseApiPipeline();
+            await app.UseApiPipeline();
             app.Run();
         }
     }

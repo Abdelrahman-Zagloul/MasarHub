@@ -1,4 +1,4 @@
-﻿namespace MasarHub.Infrastructure.Settings
+﻿namespace MasarHub.Application.Settings
 {
     public sealed class JWTSettings
     {

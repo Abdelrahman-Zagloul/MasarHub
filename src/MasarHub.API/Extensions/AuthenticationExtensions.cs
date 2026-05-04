@@ -1,4 +1,4 @@
-﻿using MasarHub.Infrastructure.Settings;
+﻿using MasarHub.Application.Settings;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
