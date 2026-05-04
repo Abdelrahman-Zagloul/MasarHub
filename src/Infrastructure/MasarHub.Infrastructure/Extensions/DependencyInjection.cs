@@ -1,4 +1,5 @@
-﻿using MasarHub.Infrastructure.Persistence.Extensions;
+﻿using MasarHub.Application.Extensions;
+using MasarHub.Infrastructure.Persistence.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -12,7 +13,9 @@ namespace MasarHub.Infrastructure.Extensions
             .AddDatabase(configuration)
             .AddIdentityServices()
             .AddRedis(configuration)
-            .AddInfrastructureSettings(configuration);
+            .AddInfrastructureSettings(configuration)
+            .ConfigureScrutor();
+
 
             return services;
         }

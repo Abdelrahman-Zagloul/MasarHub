@@ -7,9 +7,9 @@ namespace MasarHub.Infrastructure.Persistence.SeedData
 {
     public class RoleSeeder : IDbSeeder
     {
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly ILogger<RoleSeeder> _logger;
-        public RoleSeeder(RoleManager<IdentityRole> roleManager, ILogger<RoleSeeder> logger)
+        public RoleSeeder(RoleManager<IdentityRole<Guid>> roleManager, ILogger<RoleSeeder> logger)
         {
             _roleManager = roleManager;
             _logger = logger;
@@ -32,7 +32,7 @@ namespace MasarHub.Infrastructure.Persistence.SeedData
                     continue;
                 }
 
-                var result = await _roleManager.CreateAsync(new IdentityRole(role));
+                var result = await _roleManager.CreateAsync(new IdentityRole<Guid>(role));
 
                 if (!result.Succeeded)
                 {

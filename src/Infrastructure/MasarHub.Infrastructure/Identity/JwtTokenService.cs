@@ -9,7 +9,7 @@ using System.Text;
 
 namespace MasarHub.Infrastructure.Identity
 {
-    internal class JwtTokenService : ITokenService
+    public class JwtTokenService : ITokenService
     {
         private readonly JWTSettings _settings;
 
