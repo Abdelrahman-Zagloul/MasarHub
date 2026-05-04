@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MasarHub.Infrastructure.Persistence.Contexts
 {
-    internal class MasarHubDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class MasarHubDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
     {
         private readonly IPublisher _publisher;
         public MasarHubDbContext(DbContextOptions<MasarHubDbContext> options, IPublisher publisher)
