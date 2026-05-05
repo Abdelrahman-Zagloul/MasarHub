@@ -14,7 +14,8 @@ namespace MasarHub.Infrastructure.Extensions
             .AddIdentityServices()
             .AddRedis(configuration)
             .AddInfrastructureSettings(configuration)
-            .ConfigureScrutor();
+            .AddScrutor()
+            .AddHangfire(configuration);
 
             services.AddHttpContextAccessor();
             return services;

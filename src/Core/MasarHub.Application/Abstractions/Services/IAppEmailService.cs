@@ -1,0 +1,8 @@
+﻿using MasarHub.Application.Common.DI;
+
+namespace MasarHub.Application.Abstractions.Services
+{
+    public interface IAppEmailService : IScopedService
+    {
+    }
+}

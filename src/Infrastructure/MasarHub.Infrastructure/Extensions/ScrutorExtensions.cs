@@ -7,7 +7,7 @@ namespace MasarHub.Application.Extensions
 {
     public static class ScrutorExtensions
     {
-        public static IServiceCollection ConfigureScrutor(this IServiceCollection services)
+        public static IServiceCollection AddScrutor(this IServiceCollection services)
         {
             services.Scan(scan => scan
                 .FromAssemblies([
