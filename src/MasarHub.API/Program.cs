@@ -1,6 +1,7 @@
 using MasarHub.API.Extensions;
 using MasarHub.Application.Extensions;
 using MasarHub.Infrastructure.Extensions;
+using Serilog;
 
 namespace MasarHub.API
 {
@@ -8,21 +9,35 @@ namespace MasarHub.API
     {
         public static async Task Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            try
+            {
+                var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddControllers();
-            builder.Services.AddOpenApi();
+                builder.AddSerilog();
+                builder.Services.AddControllers();
+                builder.Services.AddOpenApi();
 
-            builder.Services
-                .AddAPI(builder.Configuration)
-                .AddApplication()
-                .AddInfrastructure(builder.Configuration);
+                builder.Services
+                    .AddAPI(builder.Configuration)
+                    .AddApplication()
+                    .AddInfrastructure(builder.Configuration);
 
 
-            var app = builder.Build();
+                var app = builder.Build();
 
-            await app.UseApiPipeline();
-            app.Run();
+                app.UseSerilogRequestLogging();
+
+                await app.UseApiPipeline();
+                app.Run();
+            }
+            catch (Exception ex)
+            {
+                Log.Fatal(ex, "Application failed to start");
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
         }
     }
 }
