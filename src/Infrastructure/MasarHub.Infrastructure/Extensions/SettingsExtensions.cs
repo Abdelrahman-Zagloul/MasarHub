@@ -12,7 +12,8 @@ namespace MasarHub.Infrastructure.Extensions
                 .AddAndValidateSettings<JWTSettings>(configuration, nameof(JWTSettings))
                 .AddAndValidateSettings<LocalizationSettings>(configuration, nameof(LocalizationSettings))
                 .AddAndValidateSettings<DefaultUsersSettings>(configuration, nameof(DefaultUsersSettings))
-                .AddAndValidateSettings<MailSettings>(configuration, nameof(MailSettings));
+                .AddAndValidateSettings<MailSettings>(configuration, nameof(MailSettings))
+                .AddAndValidateSettings<TwilioSettings>(configuration, nameof(TwilioSettings));
 
 
 
