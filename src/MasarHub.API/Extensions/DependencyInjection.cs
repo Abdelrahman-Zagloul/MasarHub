@@ -6,10 +6,12 @@ namespace MasarHub.API.Extensions
     {
         public static IServiceCollection AddAPI(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddTransient<CultureMiddleware>();
-            services.AddJwtAuthentication(configuration);
+            services
+                .AddTransient<CultureMiddleware>()
+                .AddJwtAuthentication(configuration)
+                .AddProblemDetails()
+                .AddVersioning();
 
-            services.AddProblemDetails();
             return services;
 
         }
