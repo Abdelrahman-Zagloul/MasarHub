@@ -2,7 +2,7 @@
 
 namespace MasarHub.Application.Common.Results
 {
-    public class Result
+    public class Result : IResult
     {
         private readonly List<Error> _errors = new();
         public IReadOnlyList<Error> Errors => _errors.AsReadOnly();

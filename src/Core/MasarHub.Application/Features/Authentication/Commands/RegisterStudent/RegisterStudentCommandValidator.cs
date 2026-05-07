@@ -8,29 +8,29 @@ namespace MasarHub.Application.Features.Authentication.Commands.RegisterStudent
         public RegisterStudentCommandValidator()
         {
             RuleFor(x => x.FullName)
-                .Required("full_name")
-                .MaxLengthValidation(100, "full_name");
+                .Required("FullName")
+                .MaxLengthValidation(100, "FullName");
 
             RuleFor(x => x.Email)
-                .Required("email")
-                .ValidEmail("email");
+                .Required("Email")
+                .ValidEmail("Email");
 
             RuleFor(x => x.Password)
                 .Required("password")
-                .MinLengthValidation(8, "password")
+                .MinLengthValidation(8, "Password")
                 .Matches("[0-9]")
                     .WithErrorCode("validation.password_requires_number")
-                    .WithName("password")
+                    .OverridePropertyName("Password")
                 .Matches("[a-z]")
                     .WithErrorCode("validation.password_requires_lowercase")
-                    .WithName("password");
+                    .OverridePropertyName("Password");
 
             RuleFor(x => x.Gender)
-                .ValidEnum("gender");
+                .ValidEnum("Gender");
 
             RuleFor(x => x.PhoneNumber)
-                .Required("phone_number")
-                .LengthValidation(11, "phone_number");
+                .Required("PhoneNumber")
+                .LengthValidation(11, "PhoneNumber");
         }
     }
 }

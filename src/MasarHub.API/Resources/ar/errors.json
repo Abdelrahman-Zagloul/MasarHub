@@ -6,22 +6,28 @@
   "NotFound": "غير موجود",
   "Conflict": "يوجد تعارض",
   "Failure": "حدث خطأ داخلي",
+
   "one_or_more_validation": "حدثت أخطاء في التحقق من البيانات",
 
-  "full_name": "الاسم الكامل",
-  "email": "البريد الإلكتروني",
-  "password": "كلمة المرور",
-  "phone_number": "رقم الهاتف",
+  "FullName": "الاسم الكامل",
+  "Email": "البريد الإلكتروني",
+  "Password": "كلمة المرور",
+  "PhoneNumber": "رقم الهاتف",
+  "Gender": "النوع",
 
   "validation.required": "{PropertyName} مطلوب",
   "validation.max_length": "{PropertyName} يجب ألا يتجاوز {MaxLength} حرف",
   "validation.min_length": "{PropertyName} يجب ألا يقل عن {MinLength} أحرف",
+  "validation.length": "{PropertyName} يجب أن يتكون من {MaxLength} رقم",
+  "validation.invalid_enum": "{PropertyName} غير صالح",
+  
+  
   "validation.invalid_email": "صيغة البريد الإلكتروني غير صحيحة",
+  "validation.invalid_phone_number": "رقم الهاتف غير صحيح",
   "validation.password_requires_number": "كلمة المرور يجب أن تحتوي على رقم",
   "validation.password_requires_lowercase": "كلمة المرور يجب أن تحتوي على حرف صغير",
   "validation.password_requires_uppercase": "كلمة المرور يجب أن تحتوي على حرف كبير",
   "validation.password_requires_special": "كلمة المرور يجب أن تحتوي على رمز خاص",
-  "validation.invalid_phone_number": "رقم الهاتف غير صحيح",
 
   "auth.registration.success": "تم إنشاء الحساب بنجاح",
   "auth.email.already_exists": "البريد الإلكتروني مستخدم بالفعل",

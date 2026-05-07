@@ -46,7 +46,18 @@ public sealed class JsonLocalizationService : ILocalizationService
 
         var final = value ?? key;
 
-        return metadata is null ? final : ReplaceTokens(final, metadata);
+
+        // replace tokens with localization support
+        if (metadata is not null)
+        {
+            if (metadata.TryGetValue("PropertyName", out var propertyName))
+            {
+                var localizedPropertyName = await FindWithFallbackAsync(culture, propertyName?.ToString()!, ct);
+                metadata["PropertyName"] = localizedPropertyName ?? propertyName;
+            }
+            final = ReplaceTokens(final, metadata);
+        }
+        return final;
     }
     private async Task<string?> FindWithFallbackAsync(string culture, string key, CancellationToken ct)
     {

@@ -6,22 +6,28 @@
   "NotFound": "Not Found",
   "Conflict": "Conflict",
   "Failure": "Internal Server Error",
+
   "one_or_more_validation": "One or more validation errors occurred.",
 
-  "full_name": "Full Name",
-  "email": "Email",
-  "password": "Password",
-  "phone_number": "Phone Number",
+  "FullName": "Full Name",
+  "Email": "Email",
+  "Password": "Password",
+  "PhoneNumber": "Phone Number",
+  "Gender": "Gender",
 
   "validation.required": "{PropertyName} is required",
   "validation.max_length": "{PropertyName} must not exceed {MaxLength} characters",
   "validation.min_length": "{PropertyName} must be at least {MinLength} characters",
+  "validation.length": "{PropertyName} must contain {MaxLength} digits",
+  "validation.invalid_enum": "{PropertyName} is invalid",
+
   "validation.invalid_email": "Invalid email format",
+  "validation.invalid_phone_number": "Invalid phone number",
+
   "validation.password_requires_number": "Password must contain at least one number",
   "validation.password_requires_lowercase": "Password must contain at least one lowercase letter",
   "validation.password_requires_uppercase": "Password must contain at least one uppercase letter",
   "validation.password_requires_special": "Password must contain at least one special character",
-  "validation.invalid_phone_number": "Invalid phone number",
 
   "auth.registration.success": "Account registered successfully",
   "auth.email.already_exists": "Email is already in use",

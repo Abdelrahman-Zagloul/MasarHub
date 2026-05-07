@@ -9,6 +9,7 @@ public static class ValidationExtensions
         string propertyName)
     {
         return ruleBuilder
+            .NotNull()
             .NotEmpty()
             .WithErrorCode("validation.required")
             .WithName(propertyName);
