@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace MasarHub.Infrastructure.ExternalServices
 {
-    internal class HangfireBackgroundJobService : IBackgroundJobService
+    public class HangfireBackgroundJobService : IBackgroundJobService
     {
         public string Enqueue(Expression<Action> methodCall) => BackgroundJob.Enqueue(methodCall);
         public string Schedule(Expression<Action> methodCall, TimeSpan delay) => BackgroundJob.Schedule(methodCall, delay);

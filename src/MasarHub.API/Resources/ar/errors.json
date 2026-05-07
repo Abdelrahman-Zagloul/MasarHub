@@ -1,7 +1,20 @@
 {
-  "token.invalid": "التوكن غير صالح أو منتهي",
-  "token.revoked": "تم إلغاء التوكن",
-  "token.expired": "التوكن منتهي الصلاحية",
-  "auth.unauthorized": "غير مصرح لك",
-  "auth.forbidden": "ليس لديك صلاحية"
+  "full_name": "الاسم الكامل",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "phone_number": "رقم الهاتف",
+
+  "validation.required": "{PropertyName} مطلوب",
+  "validation.max_length": "{PropertyName} يجب ألا يتجاوز {MaxLength} حرف",
+  "validation.min_length": "{PropertyName} يجب ألا يقل عن {MinLength} أحرف",
+  "validation.invalid_email": "صيغة البريد الإلكتروني غير صحيحة",
+  "validation.password_requires_number": "كلمة المرور يجب أن تحتوي على رقم",
+  "validation.password_requires_lowercase": "كلمة المرور يجب أن تحتوي على حرف صغير",
+  "validation.password_requires_uppercase": "كلمة المرور يجب أن تحتوي على حرف كبير",
+  "validation.password_requires_special": "كلمة المرور يجب أن تحتوي على رمز خاص",
+  "validation.invalid_phone_number": "رقم الهاتف غير صحيح",
+
+  "auth.registration.success": "تم إنشاء الحساب بنجاح",
+  "auth.email.already_exists": "البريد الإلكتروني مستخدم بالفعل",
+  "auth.unknown": "حدث خطأ غير متوقع"
 }

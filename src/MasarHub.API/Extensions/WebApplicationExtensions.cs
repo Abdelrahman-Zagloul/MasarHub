@@ -1,5 +1,6 @@
 ﻿using MasarHub.API.Middlewares;
 using MasarHub.Application.Abstractions.Persistence;
+using Scalar.AspNetCore;
 
 namespace MasarHub.API.Extensions
 {
@@ -10,6 +11,7 @@ namespace MasarHub.API.Extensions
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.MapScalarApiReference();
             }
 
             app.UseHttpsRedirection();

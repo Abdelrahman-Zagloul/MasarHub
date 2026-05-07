@@ -6,12 +6,15 @@ namespace MasarHub.Application.Common.Results
     {
         private readonly List<Error> _errors = new();
         public IReadOnlyList<Error> Errors => _errors.AsReadOnly();
-
+        public string? SuccessCode { get; protected set; }
         public bool IsFailure => _errors.Any();
         public bool IsSuccess => !_errors.Any();
 
         protected Result() { }
-
+        protected Result(string successCode)
+        {
+            SuccessCode = successCode;
+        }
         protected Result(Error error)
         {
             _errors.Add(error);
@@ -23,6 +26,7 @@ namespace MasarHub.Application.Common.Results
         }
 
         public static Result Success() => new();
+        public static Result Success(string successCode) => new Result(successCode);
         public static Result Failure(Error error) => new(error);
         public static Result Failure(IEnumerable<Error> errors) => new(errors);
 

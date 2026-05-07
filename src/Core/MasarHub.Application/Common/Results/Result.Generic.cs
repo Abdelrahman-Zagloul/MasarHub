@@ -15,6 +15,11 @@ namespace MasarHub.Application.Common.Results
             _value = value;
         }
 
+        private Result(string successCode, TValue value) : base(successCode)
+        {
+            _value = value;
+        }
+
         private Result(Error error) : base(error)
         {
             _value = default!;
@@ -27,6 +32,9 @@ namespace MasarHub.Application.Common.Results
 
         public static Result<TValue> Success(TValue value)
             => new(value);
+
+        public static Result<TValue> Success(string successCode, TValue value)
+            => new(successCode, value);
 
         public new static Result<TValue> Failure(Error error)
             => new(error);

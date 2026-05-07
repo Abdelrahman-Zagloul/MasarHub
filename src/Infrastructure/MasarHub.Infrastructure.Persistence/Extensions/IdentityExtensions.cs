@@ -17,9 +17,9 @@ namespace MasarHub.Infrastructure.Persistence.Extensions
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
             })
-           .AddRoles<IdentityRole<Guid>>()
-           .AddEntityFrameworkStores<MasarHubDbContext>();
-            //.AddDefaultTokenProviders();
+            .AddRoles<IdentityRole<Guid>>()
+            .AddEntityFrameworkStores<MasarHubDbContext>()
+            .AddDefaultTokenProviders();
 
             return services;
         }

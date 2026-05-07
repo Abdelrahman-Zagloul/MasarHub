@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MasarHub.Domain.Modules.Profiles;
+using Microsoft.AspNetCore.Identity;
 
 namespace MasarHub.Infrastructure.Persistence.Identity
 {
@@ -6,6 +7,8 @@ namespace MasarHub.Infrastructure.Persistence.Identity
     {
         public string FullName { get; set; } = default!;
         public string? ProfileImagePublicId { get; set; }
+        public AccountStatus AccountStatus { get; set; }
+        public Gender Gender { get; set; }
 
         public void UpdateFullName(string fullName)
         {

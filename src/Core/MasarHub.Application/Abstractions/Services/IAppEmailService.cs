@@ -4,5 +4,6 @@ namespace MasarHub.Application.Abstractions.Services
 {
     public interface IAppEmailService : IScopedService
     {
+        Task SendConfirmEmailAsync(string fullName, string email, string encodedToken);
     }
 }

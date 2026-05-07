@@ -13,7 +13,8 @@ namespace MasarHub.Infrastructure.Extensions
                 .AddAndValidateSettings<LocalizationSettings>(configuration, nameof(LocalizationSettings))
                 .AddAndValidateSettings<DefaultUsersSettings>(configuration, nameof(DefaultUsersSettings))
                 .AddAndValidateSettings<MailSettings>(configuration, nameof(MailSettings))
-                .AddAndValidateSettings<TwilioSettings>(configuration, nameof(TwilioSettings));
+                .AddAndValidateSettings<TwilioSettings>(configuration, nameof(TwilioSettings))
+                .AddAndValidateSettings<FrontendURLsSettings>(configuration, nameof(FrontendURLsSettings));
 
 
 

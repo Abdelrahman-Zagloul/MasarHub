@@ -2,6 +2,7 @@ using MasarHub.API.Extensions;
 using MasarHub.Application.Extensions;
 using MasarHub.Infrastructure.Extensions;
 using Serilog;
+using System.Text.Json.Serialization;
 
 namespace MasarHub.API
 {
@@ -14,7 +15,12 @@ namespace MasarHub.API
                 var builder = WebApplication.CreateBuilder(args);
 
                 builder.AddSerilog();
-                builder.Services.AddControllers();
+                builder.Services.AddControllers()
+                    .AddJsonOptions(cfg =>
+                    {
+                        cfg.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                    });
+
                 builder.Services.AddOpenApi();
 
                 builder.Services
