@@ -14,7 +14,6 @@ namespace MasarHub.Application.Abstractions.Identity
             string phoneNumber,
             Gender gender,
             UserRole role,
-            AccountStatus accountStatus,
             CancellationToken ct = default);
 
         Task<Result<string>> GenerateEmailTokenAsync(Guid userId, CancellationToken ct = default);

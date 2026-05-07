@@ -20,10 +20,10 @@ namespace MasarHub.Application.Features.Authentication.Commands.RegisterStudent
                 .MinLengthValidation(8, "Password")
                 .Matches("[0-9]")
                     .WithErrorCode("validation.password_requires_number")
-                    .OverridePropertyName("Password")
+                    .WithName("Password")
                 .Matches("[a-z]")
                     .WithErrorCode("validation.password_requires_lowercase")
-                    .OverridePropertyName("Password");
+                    .WithName("Password");
 
             RuleFor(x => x.Gender)
                 .ValidEnum("Gender");

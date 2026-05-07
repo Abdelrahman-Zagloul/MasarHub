@@ -9,45 +9,72 @@ namespace MasarHub.Domain.Modules.Profiles
         private readonly List<SocialLink> _socialLinks = [];
 
         public Guid UserId { get; private set; }
-        public string Bio { get; private set; } = null!;
-        public string? Headline { get; private set; }
+        public string Headline { get; private set; } = null!;
+        public string? Bio { get; private set; }
+        public string? Company { get; private set; }
+        public VerificationStatus VerificationStatus { get; private set; }
         public IReadOnlyCollection<SocialLink> SocialLinks => _socialLinks.AsReadOnly();
-
         private InstructorProfile() { }
-
-        private InstructorProfile(Guid userId, string bio)
+        private InstructorProfile(Guid userId, string headline, string? bio, string? company)
         {
             UserId = userId;
+            Headline = headline;
             Bio = bio;
+            Company = company;
+            VerificationStatus = VerificationStatus.Pending;
         }
 
-        public static Result<InstructorProfile> Create(Guid userId, string bio)
+        public static Result<InstructorProfile> Create(Guid userId, string headline, string? bio, string? company)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(userId, nameof(userId)),
-                Guard.AgainstNullOrWhiteSpace(bio, nameof(bio))
+                Guard.AgainstNullOrWhiteSpace(headline, nameof(headline))
             );
 
             if (error is not null)
                 return error;
 
-            return new InstructorProfile(userId, bio);
+            return new InstructorProfile(userId, headline, bio, company);
         }
 
-        public Result UpdateBio(string bio)
+        public Result UpdateHeadline(string headline)
         {
-            var error = Guard.AgainstNullOrWhiteSpace(bio, nameof(bio));
+            var error = Guard.AgainstNullOrWhiteSpace(headline, nameof(headline));
             if (error is not null)
                 return error;
 
+            Headline = headline;
+            MarkAsUpdated();
+            return Result.Success();
+        }
+        public Result UpdateBio(string? bio)
+        {
             Bio = bio;
             MarkAsUpdated();
             return Result.Success();
         }
-
-        public Result UpdateHeadline(string? headline)
+        public Result UpdateCompany(string? company)
         {
-            Headline = headline;
+            Company = company;
+            MarkAsUpdated();
+            return Result.Success();
+        }
+        public Result Approve()
+        {
+            if (VerificationStatus == VerificationStatus.Approved)
+                return ProfileErrors.AlreadyApproved;
+
+            VerificationStatus = VerificationStatus.Approved;
+            MarkAsUpdated();
+
+            return Result.Success();
+        }
+        public Result Reject()
+        {
+            if (VerificationStatus == VerificationStatus.Rejected)
+                return ProfileErrors.AlreadyRejected;
+
+            VerificationStatus = VerificationStatus.Rejected;
             MarkAsUpdated();
             return Result.Success();
         }
@@ -68,7 +95,6 @@ namespace MasarHub.Domain.Modules.Profiles
             MarkAsUpdated();
             return Result.Success();
         }
-
         public Result RemoveSocialLink(string url)
         {
             var link = _socialLinks.FirstOrDefault(x => x.Url == url);

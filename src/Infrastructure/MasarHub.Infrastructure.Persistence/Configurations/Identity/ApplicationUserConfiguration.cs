@@ -21,12 +21,6 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Identity
                .HasMaxLength(100)
                .IsRequired(false);
 
-            builder.Property(x => x.AccountStatus)
-                .HasConversion<string>()
-                .HasColumnType("nvarchar")
-                .HasMaxLength(100)
-                .IsRequired();
-
             builder.Property(x => x.Gender)
                 .HasConversion<string>()
                 .HasColumnType("nvarchar")

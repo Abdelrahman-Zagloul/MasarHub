@@ -19,11 +19,26 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Profiles
                    .IsRequired();
 
             builder.Property(i => i.Bio)
+                   .HasColumnType("nvarchar")
                    .HasMaxLength(2000)
-                   .IsRequired();
+                   .IsRequired(false);
+
+            builder.Property(i => i.Company)
+                   .HasColumnType("nvarchar")
+                   .HasMaxLength(100)
+                   .IsRequired(false);
 
             builder.Property(i => i.Headline)
+                   .HasColumnType("nvarchar")
+                   .HasMaxLength(100)
                    .HasMaxLength(200);
+
+            builder.Property(x => x.VerificationStatus)
+                .HasConversion<string>()
+                .HasColumnType("nvarchar")
+                .HasMaxLength(20)
+                .IsRequired();
+
 
             builder.HasOne<ApplicationUser>()
                    .WithOne()

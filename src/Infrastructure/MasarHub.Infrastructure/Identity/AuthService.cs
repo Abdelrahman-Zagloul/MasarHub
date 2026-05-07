@@ -24,7 +24,6 @@ namespace MasarHub.Infrastructure.Identity
             string phoneNumber,
             Gender gender,
             UserRole role,
-            AccountStatus accountStatus,
             CancellationToken ct)
         {
             var emailExists = await _userManager.Users.AnyAsync(u => u.Email == email, ct);
@@ -38,7 +37,6 @@ namespace MasarHub.Infrastructure.Identity
                 UserName = Guid.CreateVersion7().ToString(),
                 PhoneNumber = phoneNumber,
                 Gender = gender,
-                AccountStatus = accountStatus,
             };
 
             var createResult = await _userManager.CreateAsync(user, password);
