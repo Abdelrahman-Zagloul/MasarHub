@@ -29,7 +29,7 @@ namespace MasarHub.Infrastructure.Identity
         {
             var emailExists = await _userManager.Users.AnyAsync(u => u.Email == email, ct);
             if (emailExists)
-                return Error.BadRequest("email.already_exists");
+                return Error.Conflict("auth.email.already_exists");
 
             var user = new ApplicationUser
             {
@@ -43,11 +43,11 @@ namespace MasarHub.Infrastructure.Identity
 
             var createResult = await _userManager.CreateAsync(user, password);
             if (!createResult.Succeeded)
-                return createResult.Errors.Select(x => Error.BadRequest(x.Code)).ToList();
+                return IdentityErrorsMapper.Map(createResult.Errors);
 
             var addToRoleResult = await _userManager.AddToRoleAsync(user, role.ToString());
             if (!addToRoleResult.Succeeded)
-                return addToRoleResult.Errors.Select(x => Error.BadRequest(x.Code)).ToList();
+                return Error.Failure("auth.role_assignment_failed");
 
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);

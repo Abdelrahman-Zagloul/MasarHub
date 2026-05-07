@@ -1,4 +1,13 @@
 {
+  "Validation": "خطأ في التحقق",
+  "BadRequest": "طلب غير صالح",
+  "Unauthorized": "غير مصرح",
+  "Forbidden": "ممنوع",
+  "NotFound": "غير موجود",
+  "Conflict": "يوجد تعارض",
+  "Failure": "حدث خطأ داخلي",
+  "one_or_more_validation": "حدثت أخطاء في التحقق من البيانات",
+
   "full_name": "الاسم الكامل",
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",
@@ -16,5 +25,6 @@
 
   "auth.registration.success": "تم إنشاء الحساب بنجاح",
   "auth.email.already_exists": "البريد الإلكتروني مستخدم بالفعل",
+  "auth.role_assignment_failed": "فشل في تعيين دور المستخدم",
   "auth.unknown": "حدث خطأ غير متوقع"
 }

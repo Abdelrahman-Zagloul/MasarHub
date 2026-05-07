@@ -25,7 +25,11 @@ namespace MasarHub.API.Controllers.V1
             if (result.IsFailure)
                 return await HandleError(result);
 
-            return Ok(result);
+            return Ok(new
+            {
+                Code = result.SuccessCode,
+                Message = await _localizationService.GetAsync(result.SuccessCode)
+            });
         }
 
     }

@@ -4,6 +4,6 @@ namespace MasarHub.Application.Abstractions.Localization
 {
     public interface ILocalizationService : IScopedService
     {
-        Task<string> GetAsync(string key, object? args = null, CancellationToken ct = default);
+        Task<string> GetAsync(string key, Dictionary<string, object?>? metadata = null, CancellationToken ct = default);
     }
 }

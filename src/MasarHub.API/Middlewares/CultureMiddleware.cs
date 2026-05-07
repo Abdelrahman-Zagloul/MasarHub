@@ -30,7 +30,7 @@ public class CultureMiddleware : IMiddleware
         if (string.IsNullOrWhiteSpace(header))
             return _settings.DefaultCulture;
 
-        var culture = header.Split(',').Select(x => x.Split(';').FirstOrDefault()).FirstOrDefault();
+        var culture = header.Split(',').FirstOrDefault();
         return string.IsNullOrWhiteSpace(culture) ? _settings.DefaultCulture : culture;
     }
     private CultureInfo SafeGetCulture(string culture)

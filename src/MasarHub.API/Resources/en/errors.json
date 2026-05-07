@@ -1,4 +1,13 @@
 {
+  "Validation": "Validation Error",
+  "BadRequest": "Bad Request",
+  "Unauthorized": "Unauthorized",
+  "Forbidden": "Forbidden",
+  "NotFound": "Not Found",
+  "Conflict": "Conflict",
+  "Failure": "Internal Server Error",
+  "one_or_more_validation": "One or more validation errors occurred.",
+
   "full_name": "Full Name",
   "email": "Email",
   "password": "Password",
@@ -16,5 +25,6 @@
 
   "auth.registration.success": "Account registered successfully",
   "auth.email.already_exists": "Email is already in use",
+  "auth.role_assignment_failed": "Failed to assign user role",
   "auth.unknown": "An unexpected error occurred"
 }

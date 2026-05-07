@@ -35,7 +35,7 @@ public sealed class JsonLocalizationService : ILocalizationService
         _logger = logger;
     }
 
-    public async Task<string> GetAsync(string key, object? args = null, CancellationToken ct = default)
+    public async Task<string> GetAsync(string key, Dictionary<string, object?>? metadata, CancellationToken ct = default)
     {
         if (string.IsNullOrWhiteSpace(key))
             return string.Empty;
@@ -46,7 +46,7 @@ public sealed class JsonLocalizationService : ILocalizationService
 
         var final = value ?? key;
 
-        return args is null ? final : ReplaceTokens(final, args);
+        return metadata is null ? final : ReplaceTokens(final, metadata);
     }
     private async Task<string?> FindWithFallbackAsync(string culture, string key, CancellationToken ct)
     {
@@ -160,16 +160,12 @@ public sealed class JsonLocalizationService : ILocalizationService
 
         return dict;
     }
-    private static string ReplaceTokens(string text, object args)
+    private static string ReplaceTokens(string text, Dictionary<string, object?> metadata)
     {
-        var properties = args.GetType().GetProperties();
-
-        foreach (var p in properties)
+        foreach (var item in metadata)
         {
-            var token = $"{{{p.Name}}}";
-            var value = p.GetValue(args)?.ToString() ?? string.Empty;
-
-            text = text.Replace(token, value, StringComparison.OrdinalIgnoreCase);
+            var token = $"{{{item.Key}}}";
+            text = text.Replace(token, item.Value?.ToString(), StringComparison.OrdinalIgnoreCase);
         }
 
         return text;

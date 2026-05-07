@@ -2,6 +2,7 @@
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Settings;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
@@ -12,10 +13,11 @@ namespace MasarHub.Infrastructure.ExternalServices
     public sealed class TwilloService : ISmsService
     {
         private readonly TwilioSettings _twilio;
-
-        public TwilloService(IOptions<TwilioSettings> twilio)
+        private readonly ILogger<TwilloService> _logger;
+        public TwilloService(IOptions<TwilioSettings> twilio, ILogger<TwilloService> logger)
         {
             _twilio = twilio.Value;
+            _logger = logger;
         }
 
         public async Task<Result> SendSmsAsync(string phoneNumber, string body)
@@ -32,13 +34,17 @@ namespace MasarHub.Infrastructure.ExternalServices
                 );
 
                 if (result.ErrorCode != null)
-                    return Result.Failure(Error.BadRequest("sms.send.failed", result.ErrorMessage));
+                {
+                    _logger.LogWarning("Failed to send SMS message: {ErrorMessage}", result.ErrorMessage);
+                    return Result.Failure(Error.BadRequest("sms.send.failed"));
+                }
 
                 return Result.Success();
             }
             catch (Exception ex)
             {
-                return Result.Failure(Error.BadRequest("sms.send.failed", ex.Message));
+                _logger.LogError(ex, "Failed to send SMS");
+                return Result.Failure(Error.BadRequest("sms.send.failed"));
             }
         }
 
