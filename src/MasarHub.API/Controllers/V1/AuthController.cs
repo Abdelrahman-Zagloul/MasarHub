@@ -18,7 +18,7 @@ namespace MasarHub.API.Controllers.V1
             _mediator = mediator;
         }
 
-        [HttpPost("register")]
+        [HttpPost("student/register")]
         public async Task<IActionResult> RegisterStudent(RegisterStudentCommand command)
         {
             var result = await _mediator.Send(command);
@@ -27,8 +27,7 @@ namespace MasarHub.API.Controllers.V1
 
             return Ok(new
             {
-                Code = result.SuccessCode,
-                Message = await _localizationService.GetAsync(result.SuccessCode)
+                Message = await _localizationService.GetAsync(result.SuccessCode!)
             });
         }
 

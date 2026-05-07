@@ -4,19 +4,17 @@ namespace MasarHub.Domain.Common.Results
 {
     public class Result<T> : Result
     {
-        public T? Value { get; }
+        public T Value { get; }
 
-        private Result() : base(true, DomainError.None)
-        {
-        }
         private Result(T value) : base(true, DomainError.None)
         {
             Value = value;
         }
-
         private Result(DomainError error) : base(false, error)
         {
+            Value = default!;
         }
+
 
         public static Result<T> Success(T value) => new(value);
         public static new Result<T> Failure(DomainError error) => new(error);

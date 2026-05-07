@@ -16,14 +16,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.RegisterStudent
                 .ValidEmail("Email");
 
             RuleFor(x => x.Password)
-                .Required("password")
-                .MinLengthValidation(8, "Password")
-                .Matches("[0-9]")
-                    .WithErrorCode("validation.password_requires_number")
-                    .WithName("Password")
-                .Matches("[a-z]")
-                    .WithErrorCode("validation.password_requires_lowercase")
-                    .WithName("Password");
+                .ValidPassword("Password");
 
             RuleFor(x => x.Gender)
                 .ValidEnum("Gender");

@@ -17,7 +17,7 @@ namespace MasarHub.Infrastructure.Identity
         {
             _userManager = userManager;
         }
-        public async Task<Result<string>> RegisterUserAsync(
+        public async Task<Result<RegisterUserResult>> RegisterUserAsync(
             string fullName,
             string email,
             string password,
@@ -49,7 +49,7 @@ namespace MasarHub.Infrastructure.Identity
 
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            return token;
+            return new RegisterUserResult(token, user.Id);
         }
         public async Task<Result<string>> GenerateEmailTokenAsync(Guid userId, CancellationToken ct = default)
         {
@@ -59,6 +59,15 @@ namespace MasarHub.Infrastructure.Identity
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             return token;
+        }
+
+        public async Task<Result> DeleteUserAsync(Guid userId, CancellationToken ct = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Error.NotFound("user.not_found");
+            await _userManager.DeleteAsync(user);
+            return Result.Success();
         }
     }
 }

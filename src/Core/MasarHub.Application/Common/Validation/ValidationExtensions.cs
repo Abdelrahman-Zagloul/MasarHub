@@ -9,7 +9,6 @@ public static class ValidationExtensions
         string propertyName)
     {
         return ruleBuilder
-            .NotNull()
             .NotEmpty()
             .WithErrorCode("validation.required")
             .WithName(propertyName);
@@ -65,6 +64,36 @@ public static class ValidationExtensions
         return ruleBuilder
             .IsInEnum()
             .WithErrorCode("validation.invalid_enum")
+            .WithName(propertyName);
+    }
+
+    public static IRuleBuilderOptions<T, string> ValidPassword<T>(
+        this IRuleBuilder<T, string> ruleBuilder,
+        string propertyName)
+    {
+        return ruleBuilder
+            .Required(propertyName)
+            .MinLengthValidation(8, propertyName)
+            .Matches("[0-9]")
+                .WithErrorCode("validation.password_requires_number")
+                .WithName(propertyName)
+            .Matches("[a-z]")
+                .WithErrorCode("validation.password_requires_lowercase")
+                .WithName(propertyName)
+            .Matches("[A-Z]")
+                .WithErrorCode("validation.password_requires_uppercase")
+                .WithName(propertyName); ;
+    }
+
+    public static IRuleBuilderOptions<T, string> ValidUrl<T>(
+        this IRuleBuilder<T, string> ruleBuilder,
+        string propertyName)
+    {
+        return ruleBuilder
+            .Required(propertyName)
+            .Must(url => Uri.TryCreate(url, UriKind.Absolute, out var result)
+                && (result.Scheme == Uri.UriSchemeHttp || result.Scheme == Uri.UriSchemeHttps))
+            .WithErrorCode("validation.invalid_url")
             .WithName(propertyName);
     }
 }

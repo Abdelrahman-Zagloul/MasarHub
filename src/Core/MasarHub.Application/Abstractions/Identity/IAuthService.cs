@@ -7,7 +7,7 @@ namespace MasarHub.Application.Abstractions.Identity
 {
     public interface IAuthService : IScopedService
     {
-        Task<Result<string>> RegisterUserAsync(
+        Task<Result<RegisterUserResult>> RegisterUserAsync(
             string fullName,
             string email,
             string password,
@@ -17,5 +17,6 @@ namespace MasarHub.Application.Abstractions.Identity
             CancellationToken ct = default);
 
         Task<Result<string>> GenerateEmailTokenAsync(Guid userId, CancellationToken ct = default);
+        Task<Result> DeleteUserAsync(Guid userId, CancellationToken ct = default);
     }
 }
