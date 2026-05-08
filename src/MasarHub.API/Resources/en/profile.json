@@ -1,0 +1,10 @@
+{
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected",
+
+  "profile.too_many_social_links": "Social links exceeded the allowed limit",
+  "profile.duplicate_social_link": "Social link already exists",
+  "profile.already_approved": "Account is already approved",
+  "profile.already_rejected": "Account is already rejected"
+}

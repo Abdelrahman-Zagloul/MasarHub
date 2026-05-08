@@ -1,0 +1,17 @@
+{
+  "Validation": "خطأ في التحقق",
+  "BadRequest": "طلب غير صالح",
+  "Unauthorized": "غير مصرح",
+  "Forbidden": "ممنوع",
+  "NotFound": "غير موجود",
+  "Conflict": "يوجد تعارض",
+  "Failure": "حدث خطأ داخلي",
+  "one_or_more_validation": "حدثت أخطاء في التحقق من البيانات",
+
+  "validation.required": "{PropertyName} مطلوب",
+  "validation.max_length": "{PropertyName} يجب ألا يتجاوز {MaxLength} حرف",
+  "validation.min_length": "{PropertyName} يجب ألا يقل عن {MinLength} أحرف",
+  "validation.length": "{PropertyName} يجب أن يتكون من {MaxLength} رقم",
+  "validation.invalid_enum": "{PropertyName} غير صالح",
+  "validation.invalid_url": "صيغة الرابط غير صحيحة."
+}

@@ -1,0 +1,17 @@
+{
+  "Validation": "Validation Error",
+  "BadRequest": "Bad Request",
+  "Unauthorized": "Unauthorized",
+  "Forbidden": "Forbidden",
+  "NotFound": "Not Found",
+  "Conflict": "Conflict",
+  "Failure": "Internal Server Error",
+  "one_or_more_validation": "One or more validation errors occurred.",
+
+  "validation.required": "{PropertyName} is required",
+  "validation.max_length": "{PropertyName} must not exceed {MaxLength} characters",
+  "validation.min_length": "{PropertyName} must be at least {MinLength} characters",
+  "validation.length": "{PropertyName} must contain {MaxLength} digits",
+  "validation.invalid_enum": "{PropertyName} is invalid",
+  "validation.invalid_url": "The URL format is invalid."
+}

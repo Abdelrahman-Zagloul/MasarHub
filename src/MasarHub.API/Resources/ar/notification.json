@@ -1,0 +1,12 @@
+{
+  "Notification": "الإشعار",
+  "NotificationType": "نوع الإشعار",
+  "NotificationPriority": "أولوية الإشعار",
+
+  "Low": "منخفض",
+  "Normal": "عادي",
+  "High": "مرتفع",
+  "Critical": "حرج",
+
+  "notification.instructor_registration": "طلب تسجيل مدرب جديد"
+}

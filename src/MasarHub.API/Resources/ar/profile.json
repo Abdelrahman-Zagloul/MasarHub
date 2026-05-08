@@ -1,0 +1,10 @@
+{
+  "Pending": "قيد المراجعة",
+  "Approved": "تم القبول",
+  "Rejected": "تم الرفض",
+
+  "profile.too_many_social_links": "عدد روابط التواصل تجاوز الحد المسموح",
+  "profile.duplicate_social_link": "رابط التواصل موجود بالفعل",
+  "profile.already_approved": "تم قبول الحساب بالفعل",
+  "profile.already_rejected": "تم رفض الحساب بالفعل"
+}

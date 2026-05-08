@@ -1,0 +1,12 @@
+{
+  "Notification": "Notification",
+  "NotificationType": "Notification Type",
+  "NotificationPriority": "Notification Priority",
+
+  "Low": "Low",
+  "Normal": "Normal",
+  "High": "High",
+  "Critical": "Critical",
+
+  "notification.instructor_registration": "New instructor registration request"
+}
