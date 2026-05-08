@@ -14,13 +14,32 @@
   "Password": "Password",
   "PhoneNumber": "Phone Number",
   "Gender": "Gender",
+  "Headline": "Headline",
+  "Bio": "Bio",
+  "Company": "Company",
+  "PlatformName": "Platform Name",
+  "Url": "URL",
+
+  "SocialLinks": "Social Links",
+  "Notification": "Notification",
+  "NotificationType": "Notification Type",
+  "NotificationPriority": "Notification Priority",
+
+  "Pending": "Pending",
+  "Approved": "Approved",
+  "Rejected": "Rejected",
+
+  "Low": "Low",
+  "Normal": "Normal",
+  "High": "High",
+  "Critical": "Critical",
 
   "validation.required": "{PropertyName} is required",
   "validation.max_length": "{PropertyName} must not exceed {MaxLength} characters",
   "validation.min_length": "{PropertyName} must be at least {MinLength} characters",
   "validation.length": "{PropertyName} must contain {MaxLength} digits",
   "validation.invalid_enum": "{PropertyName} is invalid",
-
+  "validation.invalid_url": "The URL format is invalid.",
   "validation.invalid_email": "Invalid email format",
   "validation.invalid_phone_number": "Invalid phone number",
 
@@ -29,8 +48,17 @@
   "validation.password_requires_uppercase": "Password must contain at least one uppercase letter",
   "validation.password_requires_special": "Password must contain at least one special character",
 
-  "auth.registration.success": "Account registered successfully",
+  "validation.social_links_limit": "Social links cannot exceed 10 links",
+
+  "profile.too_many_social_links": "Social links exceeded the allowed limit",
+  "profile.duplicate_social_link": "Social link already exists",
+  "profile.already_approved": "Account is already approved",
+  "profile.already_rejected": "Account is already rejected",
+
+  "auth.registration.success": "Account registered successfully. Please check your email to verify your account",
   "auth.email.already_exists": "Email is already in use",
   "auth.role_assignment_failed": "Failed to assign user role",
-  "auth.unknown": "An unexpected error occurred"
+  "auth.unknown": "An unexpected error occurred",
+
+  "notification.instructor_registration": "New instructor registration request"
 }

@@ -1,7 +1,7 @@
 ﻿using MasarHub.Application.Abstractions.Identity;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Features.Authentication.Commands.RegisterStudent.Events;
-using MasarHub.Application.Features.Authentication.Shared;
+using MasarHub.Domain.Modules.Profiles;
 using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.RegisterStudent

@@ -4,6 +4,7 @@ namespace MasarHub.Domain.Modules.Notifications
     {
         Low,
         Normal,
-        High
+        High,
+        Critical
     }
 }

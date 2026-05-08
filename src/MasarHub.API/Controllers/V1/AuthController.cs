@@ -1,6 +1,7 @@
 ﻿using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Localization;
+using MasarHub.Application.Features.Authentication.Commands.RegisterInstructor;
 using MasarHub.Application.Features.Authentication.Commands.RegisterStudent;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -20,6 +21,19 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPost("student/register")]
         public async Task<IActionResult> RegisterStudent(RegisterStudentCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(new
+            {
+                Message = await _localizationService.GetAsync(result.SuccessCode!)
+            });
+        }
+
+        [HttpPost("instructor/register")]
+        public async Task<IActionResult> RegisterInstructor(RegisterInstructorCommand command)
         {
             var result = await _mediator.Send(command);
             if (result.IsFailure)

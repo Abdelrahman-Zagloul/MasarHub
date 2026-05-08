@@ -23,6 +23,7 @@ namespace MasarHub.API.Extensions
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
+            app.MapSignalRHubs();
 
             await app.InitializeAsync();
 

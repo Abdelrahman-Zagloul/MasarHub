@@ -14,23 +14,51 @@
   "Password": "كلمة المرور",
   "PhoneNumber": "رقم الهاتف",
   "Gender": "النوع",
+  "Headline": "العنوان التعريفي",
+  "Bio": "نبذة تعريفية",
+  "Company": "الشركة",
+  "PlatformName": "اسم المنصة",
+  "Url": "الرابط",
+
+  "SocialLinks": "روابط التواصل الاجتماعي",
+  "Notification": "الإشعار",
+  "NotificationType": "نوع الإشعار",
+  "NotificationPriority": "أولوية الإشعار",
+
+  "Pending": "قيد المراجعة",
+  "Approved": "تم القبول",
+  "Rejected": "تم الرفض",
+
+  "Low": "منخفض",
+  "Normal": "عادي",
+  "High": "مرتفع",
+  "Critical": "حرج",
 
   "validation.required": "{PropertyName} مطلوب",
   "validation.max_length": "{PropertyName} يجب ألا يتجاوز {MaxLength} حرف",
   "validation.min_length": "{PropertyName} يجب ألا يقل عن {MinLength} أحرف",
   "validation.length": "{PropertyName} يجب أن يتكون من {MaxLength} رقم",
   "validation.invalid_enum": "{PropertyName} غير صالح",
-  
-  
+  "validation.invalid_url": "صيغة الرابط غير صحيحة.",
   "validation.invalid_email": "صيغة البريد الإلكتروني غير صحيحة",
   "validation.invalid_phone_number": "رقم الهاتف غير صحيح",
+
   "validation.password_requires_number": "كلمة المرور يجب أن تحتوي على رقم",
   "validation.password_requires_lowercase": "كلمة المرور يجب أن تحتوي على حرف صغير",
   "validation.password_requires_uppercase": "كلمة المرور يجب أن تحتوي على حرف كبير",
   "validation.password_requires_special": "كلمة المرور يجب أن تحتوي على رمز خاص",
 
-  "auth.registration.success": "تم إنشاء الحساب بنجاح",
+  "validation.social_links_limit": "لا يمكن أن تتجاوز روابط التواصل 10 روابط",
+
+  "profile.too_many_social_links": "عدد روابط التواصل تجاوز الحد المسموح",
+  "profile.duplicate_social_link": "رابط التواصل موجود بالفعل",
+  "profile.already_approved": "تم قبول الحساب بالفعل",
+  "profile.already_rejected": "تم رفض الحساب بالفعل",
+
+  "auth.registration.success": "تم إنشاء الحساب بنجاح، يرجى التحقق من بريدك الإلكتروني لتفعيل الحساب",
   "auth.email.already_exists": "البريد الإلكتروني مستخدم بالفعل",
   "auth.role_assignment_failed": "فشل في تعيين دور المستخدم",
-  "auth.unknown": "حدث خطأ غير متوقع"
+  "auth.unknown": "حدث خطأ غير متوقع",
+
+  "notification.instructor_registration": "طلب تسجيل مدرب جديد"
 }
