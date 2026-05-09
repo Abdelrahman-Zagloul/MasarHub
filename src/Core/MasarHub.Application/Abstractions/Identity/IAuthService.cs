@@ -21,5 +21,6 @@ namespace MasarHub.Application.Abstractions.Identity
         Task<Result<ConfirmEmailTokenResult>> GenerateEmailTokenAsync(string email, CancellationToken ct = default);
         Task<Result<ConfirmedEmailResult>> ConfirmEmailAsync(string email, string token, CancellationToken ct = default);
         Task<Result> DeleteUserAsync(Guid userId, CancellationToken ct = default);
+        Task<Result<TokenUser>> GetUserAsync(Guid UserId);
     }
 }

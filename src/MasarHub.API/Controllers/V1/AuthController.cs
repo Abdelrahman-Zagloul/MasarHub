@@ -3,10 +3,12 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Logout;
+using MasarHub.Application.Features.Authentication.Commands.RefreshToken;
 using MasarHub.Application.Features.Authentication.Commands.RegisterInstructor;
 using MasarHub.Application.Features.Authentication.Commands.RegisterStudent;
 using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.RevokeToken;
+using MasarHub.Application.Features.Authentication.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -53,7 +55,7 @@ namespace MasarHub.API.Controllers.V1
             if (result.IsFailure)
                 return await HandleError(result);
 
-            AddRefreshTokenToCookie(result.Value.RefreshTokenResult.RefreshToken, result.Value.RefreshTokenResult.ExpiresAt);
+            AddRefreshTokenToCookie(result.Value.RefreshTokenResult);
             return Ok(new
             {
                 Message = await _localizationService.GetAsync("auth.email_confirmed"),
@@ -92,14 +94,26 @@ namespace MasarHub.API.Controllers.V1
             RemoveRefreshTokenFromCookie();
             return await SuccessMessage("auth.token_revoked");
         }
-        private void AddRefreshTokenToCookie(string refreshToken, DateTimeOffset expires)
+
+        [HttpPost("token/refresh")]
+        public async Task<IActionResult> RefreshTokenAsync()
         {
-            Response.Cookies.Append(RefreshTokenCookieName, refreshToken, new CookieOptions
+            var refreshToken = Request.Cookies[RefreshTokenCookieName];
+            var result = await _mediator.Send(new RefreshTokenCommand(refreshToken, IpAddress));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            AddRefreshTokenToCookie(result.Value.RefreshTokenResult);
+            return Ok(result.Value.AccessTokenResponse);
+        }
+        private void AddRefreshTokenToCookie(RefreshTokenResult refreshTokenResult)
+        {
+            Response.Cookies.Append(RefreshTokenCookieName, refreshTokenResult.RefreshToken, new CookieOptions
             {
                 HttpOnly = true,
                 Secure = true,
                 SameSite = SameSiteMode.None,
-                Expires = expires
+                Expires = refreshTokenResult.ExpiresAt
             });
         }
         private void RemoveRefreshTokenFromCookie()

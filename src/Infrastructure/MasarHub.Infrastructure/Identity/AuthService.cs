@@ -90,5 +90,15 @@ namespace MasarHub.Infrastructure.Identity
             await _userManager.DeleteAsync(user);
             return Result.Success();
         }
+
+        public async Task<Result<TokenUser>> GetUserAsync(Guid UserId)
+        {
+            var user = await _userManager.FindByIdAsync(UserId.ToString());
+            if (user == null)
+                return Error.NotFound("user.not_found");
+
+            var roles = await _userManager.GetRolesAsync(user);
+            return new TokenUser(UserId, user.Email!, roles);
+        }
     }
 }
