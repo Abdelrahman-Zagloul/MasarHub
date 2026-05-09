@@ -22,5 +22,7 @@ namespace MasarHub.API.Controllers.Shared
 
         protected async Task<IActionResult> HandleError(Result result)
             => await Common.ProblemDetailsFactory.CreateAsync(result, this, _localizationService);
+        protected async Task<OkObjectResult> SuccessMessage(string code)
+            => Ok(new { Message = await _localizationService.GetAsync(code) });
     }
 }

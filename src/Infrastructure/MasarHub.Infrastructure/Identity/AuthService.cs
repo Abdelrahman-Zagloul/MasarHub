@@ -2,6 +2,7 @@
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
+using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
 using MasarHub.Application.Features.Authentication.Shared;
 using MasarHub.Domain.Modules.Profiles;
 using MasarHub.Infrastructure.Persistence.Identity;
@@ -52,14 +53,16 @@ namespace MasarHub.Infrastructure.Identity
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             return new RegisterUserResult(token, user.Id);
         }
-        public async Task<Result<string>> GenerateEmailTokenAsync(Guid userId, CancellationToken ct = default)
+        public async Task<Result<ConfirmEmailTokenResult>> GenerateEmailTokenAsync(string email, CancellationToken ct = default)
         {
-            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return Error.NotFound("user.not_found");
+            if (user.EmailConfirmed)
+                return Error.Conflict("auth.email.already_confirmed");
 
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            return token;
+            return new ConfirmEmailTokenResult(user.FullName, user.Email!, token);
         }
 
         public async Task<Result<ConfirmedEmailResult>> ConfirmEmailAsync(string email, string token, CancellationToken ct = default)

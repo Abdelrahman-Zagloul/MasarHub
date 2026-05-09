@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.RegisterInstructor;
 using MasarHub.Application.Features.Authentication.Commands.RegisterStudent;
+using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,10 +30,7 @@ namespace MasarHub.API.Controllers.V1
             if (result.IsFailure)
                 return await HandleError(result);
 
-            return Ok(new
-            {
-                Message = await _localizationService.GetAsync(result.SuccessCode!)
-            });
+            return await SuccessMessage(result.SuccessCode!);
         }
 
         [HttpPost("instructor/register")]
@@ -42,16 +40,13 @@ namespace MasarHub.API.Controllers.V1
             if (result.IsFailure)
                 return await HandleError(result);
 
-            return Ok(new
-            {
-                Message = await _localizationService.GetAsync(result.SuccessCode!)
-            });
+            return await SuccessMessage(result.SuccessCode!);
         }
 
         [HttpPost("email/confirm")]
-        public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest reuest)
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request)
         {
-            var result = await _mediator.Send(new ConfirmEmailCommand(reuest.Email, reuest.Token, IpAddress));
+            var result = await _mediator.Send(new ConfirmEmailCommand(request.Email, request.Token, IpAddress));
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -63,7 +58,15 @@ namespace MasarHub.API.Controllers.V1
             });
         }
 
+        [HttpPost("email/resend-confirmation")]
+        public async Task<IActionResult> ResendConfirmEmailAsync(ResendConfirmEmailCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsFailure)
+                return await HandleError(result);
 
+            return await SuccessMessage("auth.confirmation_email_sent");
+        }
 
         private void AddRefreshTokenToCookie(string refreshToken, DateTimeOffset expires)
         {
