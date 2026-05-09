@@ -5,11 +5,11 @@ using System.Text.Json;
 
 namespace MasarHub.Infrastructure.ExternalServices
 {
-    public class RedisCacheService : ICacheService
+    public sealed class RedisCacheService : ICacheService
     {
         private readonly IDatabase _database;
-        private readonly IConnectionMultiplexer _redis;
         private readonly ILogger<RedisCacheService> _logger;
+        private static bool _redisUnavailable;
         private static readonly JsonSerializerOptions _options = new()
         {
             PropertyNameCaseInsensitive = true
@@ -17,9 +17,13 @@ namespace MasarHub.Infrastructure.ExternalServices
 
         public RedisCacheService(IConnectionMultiplexer redis, ILogger<RedisCacheService> logger)
         {
-            _redis = redis;
             _logger = logger;
             _database = redis.GetDatabase();
+            redis.ConnectionRestored += (_, _) =>
+            {
+                _redisUnavailable = false;
+                _logger.LogInformation("Redis connection restored.");
+            };
         }
         public async Task<T?> GetAsync<T>(string key, CancellationToken ct = default)
         {
@@ -28,9 +32,9 @@ namespace MasarHub.Infrastructure.ExternalServices
                 var value = await _database.StringGetAsync(key);
                 return value.IsNullOrEmpty ? default : JsonSerializer.Deserialize<T>(value.ToString(), _options);
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.LogError("Error occurred while fetching cache value for key: {Key}", key);
+                LogRedisUnavailable(ex, key);
                 return default;
             }
         }
@@ -40,9 +44,9 @@ namespace MasarHub.Infrastructure.ExternalServices
             {
                 await _database.StringSetAsync(key, JsonSerializer.Serialize(value, _options), expiration);
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.LogError("Error occurred while setting cache value for key: {Key}", key);
+                LogRedisUnavailable(ex, key);
             }
         }
         public async Task RemoveAsync(string key, CancellationToken ct = default)
@@ -51,10 +55,18 @@ namespace MasarHub.Infrastructure.ExternalServices
             {
                 await _database.KeyDeleteAsync(key);
             }
-            catch
+            catch (Exception ex)
             {
-                _logger.LogError("Error occurred while removing cache value for key: {Key}", key);
+                LogRedisUnavailable(ex, key);
             }
+        }
+        private void LogRedisUnavailable(Exception ex, string key)
+        {
+            if (_redisUnavailable)
+                return;
+
+            _redisUnavailable = true;
+            _logger.LogWarning(ex, "Redis cache is unavailable while processing key: {Key}", key);
         }
 
     }

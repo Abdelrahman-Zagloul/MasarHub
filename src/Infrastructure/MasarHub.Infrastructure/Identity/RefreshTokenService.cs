@@ -83,7 +83,7 @@ namespace MasarHub.Infrastructure.Identity
         {
             using var connection = _dbConnectionFactory.CreateConnection();
             string sql = @"
-                UPDATE identity.RefreshTokens 
+                UPDATE [identity].RefreshTokens 
                 SET 
                     RevokedAt = @Now,
                     RevokedByIp = @IpAddress,

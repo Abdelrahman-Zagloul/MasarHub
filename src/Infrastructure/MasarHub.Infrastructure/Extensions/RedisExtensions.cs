@@ -19,23 +19,23 @@ namespace MasarHub.Infrastructure.Extensions
 
                 var options = ConfigurationOptions.Parse(connectionString, true);
                 options.AbortOnConnectFail = false;
-                options.ConnectRetry = 5;
-                options.ConnectTimeout = 5000;
-                options.SyncTimeout = 5000;
+                options.ConnectRetry = 1;
+                options.ConnectTimeout = 1000;
+                options.SyncTimeout = 1000;
+                options.AsyncTimeout = 1000;
                 options.KeepAlive = 60;
                 options.ClientName = "MasarHub";
-
 
                 var multiplexer = ConnectionMultiplexer.Connect(options);
 
                 multiplexer.ConnectionFailed += (_, e) =>
-                    logger.LogError("Redis connection failed: {EndPoint}", e.EndPoint);
+                    logger.LogWarning("Redis connection failed: {EndPoint}", e.EndPoint);
 
                 multiplexer.ConnectionRestored += (_, e) =>
                     logger.LogInformation("Redis connection restored: {EndPoint}", e.EndPoint);
 
                 multiplexer.ErrorMessage += (_, e) =>
-                    logger.LogError("Redis error: {Message}", e.Message);
+                    logger.LogWarning("Redis error: {Message}", e.Message);
 
                 return multiplexer;
             });
