@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -35,7 +34,7 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
                     RevokedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     ReplacedByRefreshTokenId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CreatedByIp = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    RevokedByIp = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    RevokedByIp = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true)

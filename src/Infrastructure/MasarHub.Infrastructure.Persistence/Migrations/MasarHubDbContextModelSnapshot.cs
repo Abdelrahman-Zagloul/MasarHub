@@ -1436,7 +1436,8 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
                     b.Property<string>("RevokedByIp")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .IsRequired(false);
 
                     b.Property<string>("TokenHash")
                         .IsRequired()

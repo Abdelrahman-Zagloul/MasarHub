@@ -1,5 +1,6 @@
 ﻿using MasarHub.Application.Common.DI;
 using MasarHub.Application.Common.Results;
+using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Shared;
 using MasarHub.Domain.Modules.Profiles;
 
@@ -17,6 +18,7 @@ namespace MasarHub.Application.Abstractions.Identity
             CancellationToken ct = default);
 
         Task<Result<string>> GenerateEmailTokenAsync(Guid userId, CancellationToken ct = default);
+        Task<Result<ConfirmedEmailResult>> ConfirmEmailAsync(string email, string token, CancellationToken ct = default);
         Task<Result> DeleteUserAsync(Guid userId, CancellationToken ct = default);
     }
 }

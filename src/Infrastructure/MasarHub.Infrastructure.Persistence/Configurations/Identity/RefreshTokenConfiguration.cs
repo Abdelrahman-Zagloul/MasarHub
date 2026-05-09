@@ -26,7 +26,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Identity
 
             builder.Property(t => t.RevokedByIp)
                    .HasMaxLength(50)
-                   .IsRequired();
+                   .IsRequired(false);
 
             builder.Property(t => t.RevokedAt);
 

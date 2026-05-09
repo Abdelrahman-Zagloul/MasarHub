@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Abstractions.Services;
+using MasarHub.Application.Abstractions.Services;
 using MasarHub.Application.ExternalServices;
 using MasarHub.Application.Settings;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +31,23 @@ namespace MasarHub.Infrastructure.Services
                 .Replace("{token}", encodedToken);
 
             await _mailService.SendEmailAsync(email, "Confirm Email", emailBody, null);
+        }
+
+        public async Task SendWelcomeEmailAsync(string fullName, string email, string role)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "WelcomeEmail.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var roleMessage = role == "Instructor"
+                ? "Your instructor account is now created. Our admin team will review your profile, and you will be notified once it is approved."
+                : "Your account is ready. You can start exploring courses after confirming your email.";
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{RoleMessage}", roleMessage)
+                .Replace("{FrontendUrl}", _settings.BaseURL);
+
+            await _mailService.SendEmailAsync(email, "Welcome to MasarHub", emailBody, null);
         }
     }
 }

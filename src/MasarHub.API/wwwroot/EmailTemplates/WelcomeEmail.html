@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Welcome to MasrHub</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f6f8;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            padding: 35px 30px;
+            text-align: center;
+        }
+
+        .logo {
+            color: #ffffff;
+            font-size: 30px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        h2 {
+            color: #111827;
+            margin-bottom: 18px;
+        }
+
+        p {
+            color: #4b5563;
+            line-height: 1.7;
+            font-size: 15px;
+            margin: 12px 0;
+        }
+
+        .highlight {
+            color: #2563eb;
+            font-weight: bold;
+        }
+
+        .role-message {
+            margin: 25px 0;
+            padding: 18px;
+            background-color: #f9fafb;
+            border-left: 4px solid #2563eb;
+            border-radius: 8px;
+            color: #374151;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 14px 28px;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        .footer {
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #9ca3af;
+            border-top: 1px solid #e5e7eb;
+            background-color: #fafafa;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .content {
+                padding: 30px 20px;
+            }
+
+            .header {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <div class="header">
+            <div class="logo">MasrHub</div>
+        </div>
+
+        <div class="content">
+
+            <h2>
+                Welcome, <span class="highlight">{FullName}</span> 
+            </h2>
+
+            <p>
+                Your email has been successfully confirmed and your MasrHub account is now active.
+            </p>
+
+            <div class="role-message">
+                {RoleMessage}
+            </div>
+
+            <p>
+                We're excited to have you with us. Start exploring opportunities, connect with others, and enjoy everything MasrHub has to offer.
+            </p>
+
+            <a href="{FrontendUrl}" class="button">
+                Explore MasrHub
+            </a>
+
+        </div>
+
+        <div class="footer">
+
+            <p>
+                Need help? Contact the MasrHub support team anytime.
+            </p>
+
+            <p>
+                © 2026 MasrHub. All rights reserved.
+            </p>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
+```
