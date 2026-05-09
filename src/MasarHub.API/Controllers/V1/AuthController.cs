@@ -6,6 +6,7 @@ using MasarHub.Application.Features.Authentication.Commands.Logout;
 using MasarHub.Application.Features.Authentication.Commands.RegisterInstructor;
 using MasarHub.Application.Features.Authentication.Commands.RegisterStudent;
 using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
+using MasarHub.Application.Features.Authentication.Commands.RevokeToken;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -79,6 +80,18 @@ namespace MasarHub.API.Controllers.V1
             return await SuccessMessage("auth.logout_success");
         }
 
+        [Authorize]
+        [HttpPost("token/revoke")]
+        public async Task<IActionResult> RevokeTokenAsync()
+        {
+            var refreshToken = Request.Cookies[RefreshTokenCookieName];
+            var result = await _mediator.Send(new RevokeTokenCommand(refreshToken, IpAddress));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            RemoveRefreshTokenFromCookie();
+            return await SuccessMessage("auth.token_revoked");
+        }
         private void AddRefreshTokenToCookie(string refreshToken, DateTimeOffset expires)
         {
             Response.Cookies.Append(RefreshTokenCookieName, refreshToken, new CookieOptions

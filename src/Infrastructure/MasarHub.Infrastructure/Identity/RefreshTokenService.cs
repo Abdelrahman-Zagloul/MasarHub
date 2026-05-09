@@ -73,7 +73,7 @@ namespace MasarHub.Infrastructure.Identity
             var token = await _refreshTokenRepo.GetAsync(x => x.TokenHash == tokenHash, ct);
 
             if (token is null || !token.IsActive)
-                return Error.BadRequest("token.invalid");
+                return Error.BadRequest("invalid_refresh_token");
 
             token.Revoke(ipAddress);
             await _unitOfWork.SaveChangesAsync(ct);
