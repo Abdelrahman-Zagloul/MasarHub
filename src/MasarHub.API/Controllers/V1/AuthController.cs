@@ -2,10 +2,12 @@ using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
+using MasarHub.Application.Features.Authentication.Commands.Logout;
 using MasarHub.Application.Features.Authentication.Commands.RegisterInstructor;
 using MasarHub.Application.Features.Authentication.Commands.RegisterStudent;
 using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MasarHub.API.Controllers.V1
@@ -66,6 +68,15 @@ namespace MasarHub.API.Controllers.V1
                 return await HandleError(result);
 
             return await SuccessMessage("auth.confirmation_email_sent");
+        }
+
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> LogoutAsync()
+        {
+            await _mediator.Send(new LogoutCommand(GetUserId(), IpAddress));
+            RemoveRefreshTokenFromCookie();
+            return await SuccessMessage("auth.logout_success");
         }
 
         private void AddRefreshTokenToCookie(string refreshToken, DateTimeOffset expires)

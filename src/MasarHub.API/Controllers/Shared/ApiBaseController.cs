@@ -15,10 +15,9 @@ namespace MasarHub.API.Controllers.Shared
         {
             _localizationService = localizationService;
         }
-
-        protected string GetUserId => User.FindFirstValue(ClaimTypes.NameIdentifier) ?? "";
-        protected string GetBaseUrl => $"{Request.Scheme}://{Request.Host}{Request.Path}";
-        protected Dictionary<string, string> GetQueryParams => Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString());
+        protected Guid GetUserId() => Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        protected string GetBaseUrl() => $"{Request.Scheme}://{Request.Host}{Request.Path}";
+        protected Dictionary<string, string> GetQueryParams() => Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString());
 
         protected async Task<IActionResult> HandleError(Result result)
             => await Common.ProblemDetailsFactory.CreateAsync(result, this, _localizationService);
