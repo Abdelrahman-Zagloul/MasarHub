@@ -33,6 +33,15 @@ namespace MasarHub.Infrastructure.Services
             await _mailService.SendEmailAsync(email, "Confirm Email", emailBody, null);
         }
 
+        public async Task SendPasswordChangedEmailAsync(string fullName, string email)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "PasswordChanged.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+            var emailBody = templateContent.Replace("{FullName}", fullName);
+
+            await _mailService.SendEmailAsync(email, "Password Changed Successfully", emailBody, null);
+        }
+
         public async Task SendWelcomeEmailAsync(string fullName, string email, string role)
         {
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "WelcomeEmail.html");

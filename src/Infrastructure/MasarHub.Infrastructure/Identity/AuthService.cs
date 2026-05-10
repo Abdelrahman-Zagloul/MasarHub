@@ -1,6 +1,7 @@
 ﻿using MasarHub.Application.Abstractions.Identity;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
+using MasarHub.Application.Features.Authentication.Commands.ChangePassword;
 using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
 using MasarHub.Application.Features.Authentication.Shared;
@@ -91,14 +92,27 @@ namespace MasarHub.Infrastructure.Identity
             return Result.Success();
         }
 
-        public async Task<Result<TokenUser>> GetUserAsync(Guid UserId)
+        public async Task<Result<TokenUser>> GetUserAsync(Guid userId)
         {
-            var user = await _userManager.FindByIdAsync(UserId.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
                 return Error.NotFound("user.not_found");
 
             var roles = await _userManager.GetRolesAsync(user);
-            return new TokenUser(UserId, user.Email!, roles);
+            return new TokenUser(userId, user.Email!, roles);
+        }
+
+        public async Task<Result<PasswordChangedResult>> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword, CancellationToken ct = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Error.NotFound("user.not_found");
+
+            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            if (!result.Succeeded)
+                return IdentityErrorsMapper.Map(result.Errors);
+
+            return new PasswordChangedResult(userId, user.FullName, user.Email!);
         }
     }
 }

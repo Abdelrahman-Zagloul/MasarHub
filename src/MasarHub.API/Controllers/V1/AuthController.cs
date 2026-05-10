@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Localization;
+using MasarHub.Application.Features.Authentication.Commands.ChangePassword;
 using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Logout;
 using MasarHub.Application.Features.Authentication.Commands.RefreshToken;
@@ -105,6 +106,17 @@ namespace MasarHub.API.Controllers.V1
 
             AddRefreshTokenToCookie(result.Value.RefreshTokenResult);
             return Ok(result.Value.AccessTokenResponse);
+        }
+
+        [Authorize]
+        [HttpPost("password/change")]
+        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordRequest request)
+        {
+            var result = await _mediator.Send(new ChangePasswordCommand(GetUserId(), request.CurrentPassword, request.NewPassword));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return await SuccessMessage("auth.password_changed");
         }
         private void AddRefreshTokenToCookie(RefreshTokenResult refreshTokenResult)
         {

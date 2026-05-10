@@ -21,6 +21,7 @@ namespace MasarHub.Infrastructure.Identity
                 "PasswordRequiresLower" => Error.BadRequest("validation.password_requires_lowercase", "password"),
                 "PasswordRequiresUpper" => Error.BadRequest("validation.password_requires_uppercase", "password"),
                 "PasswordRequiresNonAlphanumeric" => Error.BadRequest("validation.password_requires_special", "password"),
+                "PasswordMismatch" => Error.BadRequest("auth.current_password_incorrect"),
                 _ => Error.BadRequest("auth.unknown")
             };
         }
