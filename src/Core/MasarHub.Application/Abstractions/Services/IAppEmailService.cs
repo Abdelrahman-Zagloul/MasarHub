@@ -7,5 +7,6 @@ namespace MasarHub.Application.Abstractions.Services
         Task SendConfirmEmailAsync(string fullName, string email, string encodedToken);
         Task SendWelcomeEmailAsync(string fullName, string email, string role);
         Task SendPasswordChangedEmailAsync(string fullName, string email);
+        Task SendPasswordResetEmailAsync(string fullName, string email, string encodedToken);
     }
 }

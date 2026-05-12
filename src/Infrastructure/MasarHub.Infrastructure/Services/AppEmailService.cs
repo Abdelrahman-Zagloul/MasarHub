@@ -42,6 +42,21 @@ namespace MasarHub.Infrastructure.Services
             await _mailService.SendEmailAsync(email, "Password Changed Successfully", emailBody, null);
         }
 
+        public async Task SendPasswordResetEmailAsync(string fullName, string email, string encodedToken)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "ResetPassword.html");
+
+            var resetLink = $"{_settings.ResetPasswordPath}?email={email}&token={encodedToken}";
+
+            var templateContent = await File.ReadAllTextAsync(path);
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{ResetLink}", resetLink)
+                .Replace("{Token}", encodedToken);
+
+            await _mailService.SendEmailAsync(email, "Reset Password", emailBody, null);
+        }
+
         public async Task SendWelcomeEmailAsync(string fullName, string email, string role)
         {
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "WelcomeEmail.html");

@@ -9,6 +9,9 @@ namespace MasarHub.Application.Settings
 
         [Required]
         public string ConfirmEmailPath { get; set; } = null!;
+
+        [Required]
+        public string ResetPasswordPath { get; set; } = null!;
     }
 }
 

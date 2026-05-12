@@ -17,7 +17,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.ResendConfirmEma
 
         public async Task<Result> Handle(ResendConfirmEmailCommand request, CancellationToken cancellationToken)
         {
-            var emailTokenResult = await _authService.GenerateEmailTokenAsync(request.Email, cancellationToken);
+            var emailTokenResult = await _authService.GenerateEmailTokenAsync(request.Email);
             if (emailTokenResult.IsFailure)
             {
                 if (emailTokenResult.Errors.Any(x => x.Code == "auth.email.already_confirmed"))

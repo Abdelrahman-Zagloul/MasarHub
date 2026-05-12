@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.ChangePassword;
 using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
+using MasarHub.Application.Features.Authentication.Commands.ForgetPassword;
 using MasarHub.Application.Features.Authentication.Commands.Logout;
 using MasarHub.Application.Features.Authentication.Commands.RefreshToken;
 using MasarHub.Application.Features.Authentication.Commands.RegisterInstructor;
@@ -118,6 +119,17 @@ namespace MasarHub.API.Controllers.V1
 
             return await SuccessMessage("auth.password_changed");
         }
+
+        [HttpPost("password/forget")]
+        public async Task<IActionResult> ForgetPasswordAsync(ForgetPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return await SuccessMessage("auth.forget_password");
+        }
+
         private void AddRefreshTokenToCookie(RefreshTokenResult refreshTokenResult)
         {
             Response.Cookies.Append(RefreshTokenCookieName, refreshTokenResult.RefreshToken, new CookieOptions

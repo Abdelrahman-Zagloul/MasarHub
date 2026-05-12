@@ -22,8 +22,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.ChangePassword
             var result = await _authService.ChangePasswordAsync(
                 request.UserId,
                 request.CurrentPassword,
-                request.NewPassword,
-                cancellationToken);
+                request.NewPassword);
 
             if (result.IsFailure)
                 return result;

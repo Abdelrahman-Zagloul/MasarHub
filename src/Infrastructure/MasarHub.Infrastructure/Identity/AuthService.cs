@@ -3,6 +3,7 @@ using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Authentication.Commands.ChangePassword;
 using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
+using MasarHub.Application.Features.Authentication.Commands.ForgetPassword;
 using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
 using MasarHub.Application.Features.Authentication.Shared;
 using MasarHub.Domain.Modules.Profiles;
@@ -54,7 +55,7 @@ namespace MasarHub.Infrastructure.Identity
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             return new RegisterUserResult(token, user.Id);
         }
-        public async Task<Result<ConfirmEmailTokenResult>> GenerateEmailTokenAsync(string email, CancellationToken ct = default)
+        public async Task<Result<ConfirmEmailTokenResult>> GenerateEmailTokenAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -83,7 +84,7 @@ namespace MasarHub.Infrastructure.Identity
             return new ConfirmedEmailResult(new TokenUser(user.Id, user.Email!, roles), user.FullName);
         }
 
-        public async Task<Result> DeleteUserAsync(Guid userId, CancellationToken ct = default)
+        public async Task<Result> DeleteUserAsync(Guid userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
@@ -102,7 +103,7 @@ namespace MasarHub.Infrastructure.Identity
             return new TokenUser(userId, user.Email!, roles);
         }
 
-        public async Task<Result<PasswordChangedResult>> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword, CancellationToken ct = default)
+        public async Task<Result<PasswordChangedResult>> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user == null)
@@ -113,6 +114,15 @@ namespace MasarHub.Infrastructure.Identity
                 return IdentityErrorsMapper.Map(result.Errors);
 
             return new PasswordChangedResult(userId, user.FullName, user.Email!);
+        }
+
+        public async Task<Result<ForgetPasswordResult>> ForgetPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return Error.NotFound("user.not_found");
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return new ForgetPasswordResult(user.FullName, email, token);
         }
     }
 }
