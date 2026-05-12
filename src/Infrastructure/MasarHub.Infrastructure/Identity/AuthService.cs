@@ -124,5 +124,18 @@ namespace MasarHub.Infrastructure.Identity
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
             return new ForgetPasswordResult(user.FullName, email, token);
         }
+
+        public async Task<Result<PasswordChangedResult>> ResetPasswordAsync(string email, string token, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return Error.NotFound("user.not_found");
+            var result = await _userManager.ResetPasswordAsync(user, token, newPassword);
+
+            if (!result.Succeeded)
+                return IdentityErrorsMapper.Map(result.Errors);
+
+            return new PasswordChangedResult(user.Id, user.FullName, user.Email!);
+        }
     }
 }
