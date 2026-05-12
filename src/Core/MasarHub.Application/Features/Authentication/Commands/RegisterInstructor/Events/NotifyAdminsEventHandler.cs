@@ -6,12 +6,12 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.RegisterInstructor.Events
 {
-    public sealed class NotifyAdminsHandler : INotificationHandler<InstructorRegisteredEvent>
+    public sealed class NotifyAdminsEventHandler : INotificationHandler<InstructorRegisteredEvent>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<Notification> _notificationRepository;
         private readonly INotificationRealtimeService _notificationRealtimeService;
-        public NotifyAdminsHandler(IUnitOfWork unitOfWork, IRepository<Notification> notificationRepository, INotificationRealtimeService notificationRealtimeService)
+        public NotifyAdminsEventHandler(IUnitOfWork unitOfWork, IRepository<Notification> notificationRepository, INotificationRealtimeService notificationRealtimeService)
         {
             _unitOfWork = unitOfWork;
             _notificationRepository = notificationRepository;

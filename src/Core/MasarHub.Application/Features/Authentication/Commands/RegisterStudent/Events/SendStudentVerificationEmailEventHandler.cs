@@ -4,11 +4,11 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.RegisterStudent.Events
 {
-    public sealed class SendStudentVerificationEmailHandler : INotificationHandler<StudentRegisteredEvent>
+    public sealed class SendStudentVerificationEmailEventHandler : INotificationHandler<StudentRegisteredEvent>
     {
         private readonly IAppEmailService _appEmailService;
         private readonly IBackgroundJobService _backgroundJobService;
-        public SendStudentVerificationEmailHandler(IAppEmailService appEmailService, IBackgroundJobService backgroundJobService)
+        public SendStudentVerificationEmailEventHandler(IAppEmailService appEmailService, IBackgroundJobService backgroundJobService)
         {
             _appEmailService = appEmailService;
             _backgroundJobService = backgroundJobService;

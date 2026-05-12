@@ -5,12 +5,12 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.ConfirmEmail.Events
 {
-    public sealed class SendWelcomeEmailHandler : INotificationHandler<EmailConfirmedEvent>
+    public sealed class SendWelcomeEmailEventHandler : INotificationHandler<EmailConfirmedEvent>
     {
         private readonly IAppEmailService _appEmailService;
         private readonly IBackgroundJobService _backgroundJobService;
 
-        public SendWelcomeEmailHandler(IAppEmailService appEmailService, IBackgroundJobService backgroundJobService)
+        public SendWelcomeEmailEventHandler(IAppEmailService appEmailService, IBackgroundJobService backgroundJobService)
         {
             _appEmailService = appEmailService;
             _backgroundJobService = backgroundJobService;
