@@ -17,6 +17,8 @@ namespace MasarHub.Infrastructure.Identity
 
         public string? Email => User?.FindFirstValue(ClaimTypes.Email);
 
+        public string? IpAddress => _contextAccessor.HttpContext?.Connection?.RemoteIpAddress?.ToString();
+
         public bool IsAuthenticated => User?.Identity?.IsAuthenticated ?? false;
 
         public bool IsInRole(string role) => User?.IsInRole(role) ?? false;
@@ -24,5 +26,6 @@ namespace MasarHub.Infrastructure.Identity
         public IEnumerable<string> Roles => User?.Claims
                     .Where(x => x.Type == ClaimTypes.Role)
                     .Select(x => x.Value) ?? [];
+
     }
 }

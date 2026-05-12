@@ -6,6 +6,7 @@ namespace MasarHub.Application.Abstractions.Identity
     {
         Guid? UserId { get; }
         string? Email { get; }
+        string? IpAddress { get; }
         bool IsAuthenticated { get; }
         bool IsInRole(string role);
         IEnumerable<string> Roles { get; }

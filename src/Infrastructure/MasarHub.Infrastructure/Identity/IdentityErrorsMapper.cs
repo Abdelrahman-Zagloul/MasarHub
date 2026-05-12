@@ -22,6 +22,7 @@ namespace MasarHub.Infrastructure.Identity
                 "PasswordRequiresUpper" => Error.BadRequest("validation.password_requires_uppercase", "password"),
                 "PasswordRequiresNonAlphanumeric" => Error.BadRequest("validation.password_requires_special", "password"),
                 "PasswordMismatch" => Error.BadRequest("auth.current_password_incorrect"),
+                "InvalidToken" => Error.BadRequest("auth.invalid_or_expired_reset_token"),
                 _ => Error.BadRequest("auth.unknown")
             };
         }
