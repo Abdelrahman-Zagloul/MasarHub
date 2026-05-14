@@ -7,9 +7,9 @@ namespace MasarHub.API.Controllers.Shared
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ApiBaseController : ControllerBase
+    public abstract class ApiBaseController : ControllerBase
     {
-        private readonly ILocalizationService _localizationService;
+        protected readonly ILocalizationService _localizationService;
 
         public ApiBaseController(ILocalizationService localizationService)
         {

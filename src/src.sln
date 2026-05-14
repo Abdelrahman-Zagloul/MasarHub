@@ -1,0 +1,58 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasarHub.API", "MasarHub.API\MasarHub.API.csproj", "{0DFB4112-EF70-BBA2-D82D-B48ADFDB1AEF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{FBF56CC3-7AE6-AD2D-3F14-7F97FD322CD6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{DFEE68D8-A7D0-1A41-506C-9B74AA9A7B7B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasarHub.Application", "Core\MasarHub.Application\MasarHub.Application.csproj", "{A6341C43-E703-9D1E-8B2F-D74EB86A28B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasarHub.Domain", "Core\MasarHub.Domain\MasarHub.Domain.csproj", "{5C165109-C687-F602-5D6A-5822F4F2C187}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasarHub.Infrastructure", "Infrastructure\MasarHub.Infrastructure\MasarHub.Infrastructure.csproj", "{9077A254-0A84-07DA-10F4-BBC273E641BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasarHub.Infrastructure.Persistence", "Infrastructure\MasarHub.Infrastructure.Persistence\MasarHub.Infrastructure.Persistence.csproj", "{94CE8904-C627-852A-8268-33F48478CA60}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0DFB4112-EF70-BBA2-D82D-B48ADFDB1AEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DFB4112-EF70-BBA2-D82D-B48ADFDB1AEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DFB4112-EF70-BBA2-D82D-B48ADFDB1AEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DFB4112-EF70-BBA2-D82D-B48ADFDB1AEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6341C43-E703-9D1E-8B2F-D74EB86A28B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6341C43-E703-9D1E-8B2F-D74EB86A28B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6341C43-E703-9D1E-8B2F-D74EB86A28B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6341C43-E703-9D1E-8B2F-D74EB86A28B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C165109-C687-F602-5D6A-5822F4F2C187}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C165109-C687-F602-5D6A-5822F4F2C187}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C165109-C687-F602-5D6A-5822F4F2C187}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C165109-C687-F602-5D6A-5822F4F2C187}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9077A254-0A84-07DA-10F4-BBC273E641BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9077A254-0A84-07DA-10F4-BBC273E641BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9077A254-0A84-07DA-10F4-BBC273E641BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9077A254-0A84-07DA-10F4-BBC273E641BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94CE8904-C627-852A-8268-33F48478CA60}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94CE8904-C627-852A-8268-33F48478CA60}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{94CE8904-C627-852A-8268-33F48478CA60}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{94CE8904-C627-852A-8268-33F48478CA60}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A6341C43-E703-9D1E-8B2F-D74EB86A28B5} = {FBF56CC3-7AE6-AD2D-3F14-7F97FD322CD6}
+		{5C165109-C687-F602-5D6A-5822F4F2C187} = {FBF56CC3-7AE6-AD2D-3F14-7F97FD322CD6}
+		{9077A254-0A84-07DA-10F4-BBC273E641BE} = {DFEE68D8-A7D0-1A41-506C-9B74AA9A7B7B}
+		{94CE8904-C627-852A-8268-33F48478CA60} = {DFEE68D8-A7D0-1A41-506C-9B74AA9A7B7B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7E806CA5-8B7B-4064-80E9-1C14D4CCFCE0}
+	EndGlobalSection
+EndGlobal

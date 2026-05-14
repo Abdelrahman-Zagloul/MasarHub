@@ -1,9 +1,9 @@
 ﻿using MasarHub.Application.Common.DI;
 using MasarHub.Application.Common.Results;
-using MasarHub.Application.Features.Authentication.Commands.ChangePassword;
-using MasarHub.Application.Features.Authentication.Commands.ConfirmEmail;
-using MasarHub.Application.Features.Authentication.Commands.ForgetPassword;
-using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
+using MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail;
+using MasarHub.Application.Features.Authentication.Commands.Email.ResendConfirmEmail;
+using MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword;
+using MasarHub.Application.Features.Authentication.Commands.Password.ForgetPassword;
 using MasarHub.Application.Features.Authentication.Shared;
 using MasarHub.Domain.Modules.Profiles;
 
