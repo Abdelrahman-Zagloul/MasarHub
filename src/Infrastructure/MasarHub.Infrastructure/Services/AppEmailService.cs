@@ -1,6 +1,7 @@
 using MasarHub.Application.Abstractions.Services;
 using MasarHub.Application.ExternalServices;
 using MasarHub.Application.Settings;
+using MasarHub.Domain.Modules.Profiles;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Options;
 
@@ -72,6 +73,18 @@ namespace MasarHub.Infrastructure.Services
                 .Replace("{FrontendUrl}", _settings.BaseURL);
 
             await _mailService.SendEmailAsync(email, "Welcome to MasarHub", emailBody, null);
+        }
+
+        public async Task SendTwoFactorEnabledEmailAsync(string fullName, string email, TwoFactorProvider provider)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "TwoFactorEnabled.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{Provider}", provider.ToString());
+
+            await _mailService.SendEmailAsync(email, "Two Factor Enable", emailBody, null);
         }
     }
 }

@@ -6,9 +6,9 @@ namespace MasarHub.Infrastructure.Persistence.Identity
     public class ApplicationUser : IdentityUser<Guid>
     {
         public string FullName { get; set; } = default!;
-        public string? ProfileImagePublicId { get; set; }
+        public string? ProfileImagePublicId { get; private set; }
         public Gender Gender { get; set; }
-
+        public TwoFactorProvider? PreferredTwoFactorProvider { get; private set; }
         public void UpdateFullName(string fullName)
         {
             FullName = fullName;
@@ -17,6 +17,15 @@ namespace MasarHub.Infrastructure.Persistence.Identity
         {
             ProfileImagePublicId = publicId;
         }
-
+        public void EnableTwoFactor(TwoFactorProvider provider)
+        {
+            TwoFactorEnabled = true;
+            PreferredTwoFactorProvider = provider;
+        }
+        public void DisableTwoFactor()
+        {
+            TwoFactorEnabled = false;
+            PreferredTwoFactorProvider = null;
+        }
     }
 }

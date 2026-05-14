@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Two-Factor Authentication Enabled</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        p {
+            color: #555555;
+            line-height: 1.6;
+        }
+
+        .provider-box {
+            margin: 20px auto;
+            padding: 12px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            font-weight: bold;
+            color: #333333;
+            width: fit-content;
+        }
+
+        .warning {
+            margin-top: 20px;
+            color: #dc3545;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #999999;
+        }
+
+            .footer a {
+                color: #007BFF;
+                text-decoration: none;
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <h1>Two-Factor Authentication Enabled</h1>
+
+        <p>Hello <strong>{FullName}</strong>,</p>
+
+        <p>
+            Two-factor authentication has been successfully enabled on your account.
+        </p>
+
+        <div class="provider-box">
+            Provider: {Provider}
+        </div>
+
+        <p>
+            Your account is now protected with an additional security verification step.
+        </p>
+
+        <p class="warning">
+            If you did not enable this feature, please contact support immediately.
+        </p>
+
+        <p class="footer">
+            Support:
+            <a href="mailto:admin@elerning.com">
+                admin@elerning.com
+            </a>
+        </p>
+
+    </div>
+</body>
+</html>

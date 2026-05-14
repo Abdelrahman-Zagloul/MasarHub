@@ -27,6 +27,12 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Identity
                 .HasMaxLength(10)
                 .IsRequired();
 
+            builder.Property(x => x.PreferredTwoFactorProvider)
+                .HasConversion<string>()
+                .HasColumnType("nvarchar")
+                .HasMaxLength(15)
+                .IsRequired(false);
+
         }
     }
 }
