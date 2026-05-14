@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasarHub.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MasarHubDbContext))]
-    [Migration("20260514125131_AddPreferredTwoFactorProviderToApplicationUser")]
+    [Migration("20260514201310_AddPreferredTwoFactorProviderToApplicationUser")]
     partial class AddPreferredTwoFactorProviderToApplicationUser
     {
         /// <inheritdoc />
@@ -1414,7 +1414,10 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("Users", "identity");
+                    b.ToTable("Users", "identity", t =>
+                        {
+                            t.HasCheckConstraint("CK_Users_TwoFactorProvider", "[TwoFactorEnabled] = 0 OR [PreferredTwoFactorProvider] IS NOT NULL");
+                        });
                 });
 
             modelBuilder.Entity("MasarHub.Infrastructure.Persistence.Identity.RefreshToken", b =>

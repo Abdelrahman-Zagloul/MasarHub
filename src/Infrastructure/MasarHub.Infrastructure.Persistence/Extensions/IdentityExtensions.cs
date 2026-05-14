@@ -16,9 +16,14 @@ namespace MasarHub.Infrastructure.Persistence.Extensions
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = true;
                 options.Password.RequiredLength = 6;
+
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
             })
             .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<MasarHubDbContext>()
+            .AddSignInManager()
             .AddDefaultTokenProviders();
 
             return services;

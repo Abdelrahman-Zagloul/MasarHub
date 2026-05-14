@@ -1,6 +1,7 @@
 ﻿using MasarHub.Application.Abstractions.Identity;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
+using MasarHub.Application.Features.Authentication.Commands.Account.Login;
 using MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Email.ResendConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword;
@@ -16,10 +17,12 @@ namespace MasarHub.Infrastructure.Identity
     public sealed class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AuthService(UserManager<ApplicationUser> userManager)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
         {
             _userManager = userManager;
+            _signInManager = signInManager;
         }
         public async Task<Result<RegisterUserResult>> RegisterUserAsync(
             string fullName,
@@ -38,9 +41,10 @@ namespace MasarHub.Infrastructure.Identity
             {
                 FullName = fullName,
                 Email = email,
-                UserName = Guid.CreateVersion7().ToString(),
+                UserName = email,
                 PhoneNumber = phoneNumber,
                 Gender = gender,
+                LockoutEnabled = true,
             };
 
             var createResult = await _userManager.CreateAsync(user, password);
@@ -55,6 +59,30 @@ namespace MasarHub.Infrastructure.Identity
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             return new RegisterUserResult(token, user.Id);
         }
+        public async Task<Result<AuthenticateUserResult>> LoginAsync(string email, string password, CancellationToken ct = default)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user is null)
+                return Error.Unauthorized("auth.invalid_credentials");
+
+            if (!user.EmailConfirmed)
+                return Error.Forbidden("auth.email_not_confirmed");
+
+            var signInResult = await _signInManager.CheckPasswordSignInAsync(user, password, lockoutOnFailure: true);
+            if (signInResult.IsLockedOut)
+                return Error.Forbidden("auth.account_locked");
+
+            if (!signInResult.Succeeded)
+                return Error.Unauthorized("auth.invalid_credentials");
+
+            if (user.TwoFactorEnabled && user.PreferredTwoFactorProvider.HasValue)
+                return new AuthenticateUserResult(true, new TokenUser(user.Id, user.Email!, []), user.PreferredTwoFactorProvider);
+
+            var roles = await _userManager.GetRolesAsync(user);
+            return new AuthenticateUserResult(false, new TokenUser(user.Id, user.Email!, roles), user.PreferredTwoFactorProvider);
+        }
+
         public async Task<Result<ConfirmEmailTokenResult>> GenerateEmailTokenAsync(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

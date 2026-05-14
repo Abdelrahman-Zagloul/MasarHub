@@ -48,7 +48,8 @@ namespace MasarHub.Infrastructure.Persistence.SeedData
                 FullName = name,
                 UserName = email,
                 Email = email,
-                EmailConfirmed = true
+                EmailConfirmed = true,
+                LockoutEnabled = true,
             };
 
             var result = await _userManager.CreateAsync(user, password);

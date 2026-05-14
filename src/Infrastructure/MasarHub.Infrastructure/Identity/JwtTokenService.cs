@@ -18,7 +18,7 @@ namespace MasarHub.Infrastructure.Identity
             _settings = options.Value;
         }
 
-        public async Task<AccessTokenResponse> GenerateTokenAsync(TokenUser user)
+        public Task<AccessTokenResponse> GenerateTokenAsync(TokenUser user)
         {
             var claims = new List<Claim>
             {
@@ -42,7 +42,7 @@ namespace MasarHub.Infrastructure.Identity
             );
 
             var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-            return new AccessTokenResponse(jwtToken, token.ValidTo, user.Id, user.Roles.ToArray());
+            return Task.FromResult(new AccessTokenResponse(jwtToken, token.ValidTo, user.Id, user.Roles.ToArray()));
         }
     }
 }

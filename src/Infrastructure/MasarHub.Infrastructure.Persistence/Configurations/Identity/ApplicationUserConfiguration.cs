@@ -9,7 +9,10 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Identity
         public void Configure(EntityTypeBuilder<ApplicationUser> builder)
         {
             builder.HasKey(x => x.Id);
-            builder.ToTable("Users", "identity");
+            builder.ToTable("Users", "identity", ba =>
+            {
+                ba.HasCheckConstraint("CK_Users_TwoFactorProvider", "[TwoFactorEnabled] = 0 OR [PreferredTwoFactorProvider] IS NOT NULL");
+            });
 
             builder.Property(x => x.FullName)
                 .HasColumnType("nvarchar")
@@ -17,21 +20,21 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Identity
                 .IsRequired();
 
             builder.Property(x => x.ProfileImagePublicId)
-               .HasColumnType("nvarchar")
-               .HasMaxLength(100)
-               .IsRequired(false);
+                   .HasColumnType("nvarchar")
+                   .HasMaxLength(100)
+                   .IsRequired(false);
 
             builder.Property(x => x.Gender)
-                .HasConversion<string>()
-                .HasColumnType("nvarchar")
-                .HasMaxLength(10)
-                .IsRequired();
+                    .HasConversion<string>()
+                    .HasColumnType("nvarchar")
+                    .HasMaxLength(10)
+                    .IsRequired();
 
             builder.Property(x => x.PreferredTwoFactorProvider)
-                .HasConversion<string>()
-                .HasColumnType("nvarchar")
-                .HasMaxLength(15)
-                .IsRequired(false);
+                    .HasConversion<string>()
+                    .HasColumnType("nvarchar")
+                    .HasMaxLength(15)
+                    .IsRequired(false);
 
         }
     }

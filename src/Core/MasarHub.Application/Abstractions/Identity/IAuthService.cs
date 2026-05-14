@@ -1,5 +1,6 @@
 ﻿using MasarHub.Application.Common.DI;
 using MasarHub.Application.Common.Results;
+using MasarHub.Application.Features.Authentication.Commands.Account.Login;
 using MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Email.ResendConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword;
@@ -20,6 +21,7 @@ namespace MasarHub.Application.Abstractions.Identity
             UserRole role,
             CancellationToken ct = default);
 
+        Task<Result<AuthenticateUserResult>> LoginAsync(string email, string password, CancellationToken ct = default);
         Task<Result<ConfirmEmailTokenResult>> GenerateEmailTokenAsync(string email);
         Task<Result<ConfirmedEmailResult>> ConfirmEmailAsync(string email, string token, CancellationToken ct = default);
         Task<Result> DeleteUserAsync(Guid userId);
