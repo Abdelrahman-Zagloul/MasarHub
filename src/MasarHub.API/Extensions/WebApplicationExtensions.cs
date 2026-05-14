@@ -1,5 +1,7 @@
-﻿using MasarHub.API.Middlewares;
+﻿using Hangfire;
+using MasarHub.API.Middlewares;
 using MasarHub.Application.Abstractions.Persistence;
+using MasarHub.Infrastructure.Extensions;
 using Scalar.AspNetCore;
 
 namespace MasarHub.API.Extensions
@@ -26,6 +28,9 @@ namespace MasarHub.API.Extensions
             app.MapSignalRHubs();
 
             await app.InitializeAsync();
+
+            app.UseHangfireDashboard();
+            app.UseHangfireJobs();
 
             return app;
         }

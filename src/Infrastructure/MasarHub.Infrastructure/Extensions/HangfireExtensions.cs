@@ -1,5 +1,7 @@
 ﻿using Hangfire;
 using Hangfire.SqlServer;
+using MasarHub.Infrastructure.Localization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,7 +28,17 @@ namespace MasarHub.Infrastructure.Extensions
             });
 
             services.AddHangfireServer();
+
+            services.AddScoped<LocalizationSyncJob>();
             return services;
+        }
+
+        public static IApplicationBuilder UseHangfireJobs(this IApplicationBuilder app)
+        {
+            BackgroundJob.Enqueue<LocalizationSyncJob>(x => x.SyncAsync(default));
+            RecurringJob.AddOrUpdate<LocalizationSyncJob>("localization-cache-refresh", x => x.SyncAsync(default), Cron.Daily);
+
+            return app;
         }
     }
 }

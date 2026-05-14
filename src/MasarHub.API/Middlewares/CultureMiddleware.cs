@@ -37,12 +37,14 @@ public class CultureMiddleware : IMiddleware
     {
         try
         {
-            if (_settings.SupportedCultures is not null && !_settings.SupportedCultures.Contains(culture))
-            {
-                return CultureInfo.GetCultureInfo(_settings.DefaultCulture);
-            }
+            if (_settings.SupportedCultures.Contains(culture))
+                return CultureInfo.GetCultureInfo(culture);
 
-            return CultureInfo.GetCultureInfo(culture);
+            var parent = CultureInfo.GetCultureInfo(culture).Parent.Name;
+            if (!string.IsNullOrWhiteSpace(parent) && _settings.SupportedCultures.Contains(parent))
+                return CultureInfo.GetCultureInfo(parent);
+
+            return CultureInfo.GetCultureInfo(_settings.DefaultCulture);
         }
         catch
         {

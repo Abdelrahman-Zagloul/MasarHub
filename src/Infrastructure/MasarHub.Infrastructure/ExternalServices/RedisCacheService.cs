@@ -47,6 +47,7 @@ namespace MasarHub.Infrastructure.ExternalServices
             catch (Exception ex)
             {
                 LogRedisUnavailable(ex, key);
+                throw;
             }
         }
         public async Task RemoveAsync(string key, CancellationToken ct = default)
@@ -58,6 +59,7 @@ namespace MasarHub.Infrastructure.ExternalServices
             catch (Exception ex)
             {
                 LogRedisUnavailable(ex, key);
+                throw;
             }
         }
         private void LogRedisUnavailable(Exception ex, string key)
