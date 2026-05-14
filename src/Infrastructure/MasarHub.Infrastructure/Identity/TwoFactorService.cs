@@ -1,6 +1,7 @@
 ﻿using MasarHub.Application.Abstractions.Identity;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
+using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
 using MasarHub.Domain.Modules.Profiles;
 using MasarHub.Infrastructure.Persistence.Identity;
@@ -33,6 +34,25 @@ namespace MasarHub.Infrastructure.Identity
                 return Error.Failure("auth.2fa_enable_failed");
 
             return new EnableTwoFactorResult(user.Id, user.FullName, user.Email!, user.PreferredTwoFactorProvider!.Value);
+        }
+
+        public async Task<Result<DisableTwoFactorResult>> DisableAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Error.NotFound("user.not_found");
+
+            if (!user.TwoFactorEnabled)
+                return Error.Conflict("auth.2fa_already_disabled");
+
+            user.DisableTwoFactor();
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return Error.Failure("auth.2fa_disable_failed");
+
+            return new DisableTwoFactorResult(user.Id, user.FullName, user.Email!);
         }
     }
 }

@@ -84,7 +84,19 @@ namespace MasarHub.Infrastructure.Services
                 .Replace("{FullName}", fullName)
                 .Replace("{Provider}", provider.ToString());
 
-            await _mailService.SendEmailAsync(email, "Two Factor Enable", emailBody, null);
+            await _mailService.SendEmailAsync(email, "Two Factor Authentication Enabled", emailBody, null);
+        }
+
+        public async Task SendTwoFactorDisabledEmailAsync(string fullName, string email)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "TwoFactorDisabled.html");
+
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName);
+
+            await _mailService.SendEmailAsync(email, "Two-Factor Authentication Disabled", emailBody, null);
         }
     }
 }

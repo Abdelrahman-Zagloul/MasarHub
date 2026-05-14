@@ -1,4 +1,5 @@
 ﻿using MasarHub.Application.Abstractions.Localization;
+using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +21,18 @@ namespace MasarHub.API.Controllers.V1.Auth
             if (result.IsFailure)
                 return await HandleError(result);
             return await SuccessMessage("auth.2fa_enabled");
+        }
+
+        [Authorize]
+        [HttpPost("2fa/disable")]
+        public async Task<IActionResult> Disable()
+        {
+            var result = await _mediator.Send(new DisableTwoFactorCommand(GetUserId()));
+
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return await SuccessMessage("auth.2fa_disabled");
         }
     }
 }
