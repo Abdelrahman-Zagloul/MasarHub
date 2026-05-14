@@ -27,5 +27,6 @@ namespace MasarHub.Application.Abstractions.Identity
         Task<Result<PasswordChangedResult>> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword);
         Task<Result<ForgetPasswordResult>> ForgetPasswordAsync(string email);
         Task<Result<PasswordChangedResult>> ResetPasswordAsync(string email, string token, string newPassword);
+        Task<Result> VerifyPasswordAsync(Guid userId, string password);
     }
 }

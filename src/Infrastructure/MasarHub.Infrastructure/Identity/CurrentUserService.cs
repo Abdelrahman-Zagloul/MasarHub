@@ -13,7 +13,7 @@ namespace MasarHub.Infrastructure.Identity
             _contextAccessor = contextAccessor;
         }
 
-        public Guid? UserId => User?.FindFirstValue(ClaimTypes.NameIdentifier) is string userId ? Guid.Parse(userId) : null;
+        public Guid UserId => User?.FindFirstValue(ClaimTypes.NameIdentifier) is string userId ? Guid.Parse(userId) : Guid.Empty;
 
         public string? Email => User?.FindFirstValue(ClaimTypes.Email);
 

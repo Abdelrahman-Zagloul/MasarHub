@@ -11,6 +11,7 @@ using MasarHub.Application.Features.Authentication.Commands.RegisterStudent;
 using MasarHub.Application.Features.Authentication.Commands.ResendConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.ResetPassword;
 using MasarHub.Application.Features.Authentication.Commands.RevokeToken;
+using MasarHub.Application.Features.Authentication.Commands.VerifyPassword;
 using MasarHub.Application.Features.Authentication.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -139,6 +140,20 @@ namespace MasarHub.API.Controllers.V1
                 return await HandleError(result);
 
             return await SuccessMessage("auth.password_reset");
+        }
+
+        [Authorize]
+        [HttpPost("password/verify")]
+        public async Task<IActionResult> VerifyPassword(VerifyPasswordCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(new
+            {
+                verified = true
+            });
         }
 
         private void AddRefreshTokenToCookie(RefreshTokenResult refreshTokenResult)

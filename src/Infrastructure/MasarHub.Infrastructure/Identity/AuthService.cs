@@ -137,5 +137,18 @@ namespace MasarHub.Infrastructure.Identity
 
             return new PasswordChangedResult(user.Id, user.FullName, user.Email!);
         }
+
+        public async Task<Result> VerifyPasswordAsync(Guid userId, string password)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Error.NotFound("user.not_found");
+
+            var valid = await _userManager.CheckPasswordAsync(user, password);
+            if (!valid)
+                return Error.BadRequest("auth.invalid_password");
+
+            return Result.Success();
+        }
     }
 }

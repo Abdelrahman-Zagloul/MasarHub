@@ -4,7 +4,7 @@ namespace MasarHub.Application.Abstractions.Identity
 {
     public interface ICurrentUserService : IScopedService
     {
-        Guid? UserId { get; }
+        Guid UserId { get; }
         string? Email { get; }
         string? IpAddress { get; }
         bool IsAuthenticated { get; }
