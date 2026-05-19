@@ -7,14 +7,14 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.Login
     (
         bool RequiresTwoFactor,
         AccessWithRefreshTokenResult? Tokens,
-         string? ChallengeId,
+         Guid? ChallengeId,
          TwoFactorProvider? Provider
     )
     {
         public static LoginResult Success(AccessWithRefreshTokenResult tokens)
             => new(false, tokens, null, null);
 
-        public static LoginResult TwoFactorRequired(string challengeId, TwoFactorProvider provider)
+        public static LoginResult TwoFactorRequired(Guid challengeId, TwoFactorProvider provider)
             => new(true, null, challengeId, provider);
     }
 

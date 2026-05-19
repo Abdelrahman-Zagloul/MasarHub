@@ -7,15 +7,19 @@ using MasarHub.Domain.Modules.Profiles;
 using MasarHub.Infrastructure.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
 
-namespace MasarHub.Infrastructure.Identity
+namespace MasarHub.Infrastructure.Identity.TwoFactor
 {
     public sealed class TwoFactorService : ITwoFactorService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ITwoFactorChallengeStore _twoFactorChallengeStore;
+        private readonly IEnumerable<ITwoFactorProvider> _twoFactorProviders;
 
-        public TwoFactorService(UserManager<ApplicationUser> userManager)
+        public TwoFactorService(UserManager<ApplicationUser> userManager, ITwoFactorChallengeStore twoFactorChallengeStore, IEnumerable<ITwoFactorProvider> twoFactorProviders)
         {
             _userManager = userManager;
+            _twoFactorChallengeStore = twoFactorChallengeStore;
+            _twoFactorProviders = twoFactorProviders;
         }
 
         public async Task<Result<EnableTwoFactorResult>> EnableAsync(Guid userId, TwoFactorProvider provider)
@@ -26,6 +30,9 @@ namespace MasarHub.Infrastructure.Identity
 
             if (user.TwoFactorEnabled)
                 return Error.Conflict("auth.2fa_already_enabled");
+
+            if (provider == TwoFactorProvider.Authenticator)
+                await _userManager.ResetAuthenticatorKeyAsync(user);
 
             user.EnableTwoFactor(provider);
 
@@ -53,6 +60,17 @@ namespace MasarHub.Infrastructure.Identity
                 return Error.Failure("auth.2fa_disable_failed");
 
             return new DisableTwoFactorResult(user.Id, user.FullName, user.Email!);
+        }
+
+        public async Task<Result> SendCodeAsync(Guid challengeId, CancellationToken ct = default)
+        {
+            var challengeData = await _twoFactorChallengeStore.GetAsync(challengeId, ct);
+            if (challengeData == null)
+                return Error.BadRequest("auth.invalid_2fa_challenge");
+
+            var provider = _twoFactorProviders.First(x => x.Provider == challengeData.Provider);
+
+            return await provider.SendCodeAsync(challengeData.UserId);
         }
     }
 }

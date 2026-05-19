@@ -10,5 +10,6 @@ namespace MasarHub.Application.Abstractions.Identity
     {
         Task<Result<EnableTwoFactorResult>> EnableAsync(Guid userId, TwoFactorProvider provider);
         Task<Result<DisableTwoFactorResult>> DisableAsync(Guid userId);
+        Task<Result> SendCodeAsync(Guid challengeId, CancellationToken ct = default);
     }
 }

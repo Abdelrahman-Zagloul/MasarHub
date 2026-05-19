@@ -98,5 +98,18 @@ namespace MasarHub.Infrastructure.Services
 
             await _mailService.SendEmailAsync(email, "Two-Factor Authentication Disabled", emailBody, null);
         }
+
+        public async Task SendTwoFactorCodeEmailAsync(string fullName, string email, string code)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "TwoFactorCode.html");
+
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{Code}", code);
+
+            await _mailService.SendEmailAsync(email, "Two-Factor Authentication Code", emailBody, null);
+        }
     }
 }
