@@ -97,7 +97,6 @@ public static class ValidationExtensions
             .WithName(propertyName);
     }
 
-
     public static IRuleBuilderOptions<T, Guid> ValidGuid<T>(
         this IRuleBuilder<T, Guid> ruleBuilder,
         string propertyName)
@@ -105,6 +104,15 @@ public static class ValidationExtensions
         return ruleBuilder
             .NotEmpty()
             .WithErrorCode("validation.invalid_guid")
+            .WithName(propertyName);
+    }
+    public static IRuleBuilderOptions<T, string> ValidOtpCode<T>(
+        this IRuleBuilder<T, string> ruleBuilder,
+        string propertyName)
+    {
+        return ruleBuilder
+            .Matches(@"^\d{6}$")
+            .WithErrorCode("validation.invalid_otp")
             .WithName(propertyName);
     }
 }

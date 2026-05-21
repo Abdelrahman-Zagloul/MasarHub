@@ -90,7 +90,7 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
             return verificationResult.Value;
         }
 
-        public async Task<Result<SetupAuthenticatorResult>> SetupAuthenticatorAsync(Guid userId, CancellationToken ct = default)
+        public async Task<Result<SetupAuthenticatorResult>> SetupAuthenticatorAsync(Guid userId)
         {
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user is null)
@@ -107,6 +107,25 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
 
             var authenticatorUri = $"otpauth://totp/MasarHub:{user.Email}?secret={key}&issuer=MasarHub";
             return new SetupAuthenticatorResult(key, authenticatorUri);
+        }
+
+        public async Task<Result<EnableTwoFactorResult>> VerifyAuthenticatorSetupAsync(Guid userId, string code)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+                return Error.NotFound("user.not_found");
+
+            var verificationResult = await _userManager.VerifyTwoFactorTokenAsync(user, TokenOptions.DefaultAuthenticatorProvider, code);
+            if (!verificationResult)
+                return Error.BadRequest("auth.2fa_verification_failed");
+
+            user.EnableTwoFactor(TwoFactorProvider.Authenticator);
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+                return Error.Failure("auth.2fa_enable_failed");
+
+            return new EnableTwoFactorResult(userId, user.FullName, user.Email!, TwoFactorProvider.Authenticator);
         }
     }
 }

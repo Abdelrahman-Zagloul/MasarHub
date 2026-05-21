@@ -3,6 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwo
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendCode;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SetupAuthenticator;
+using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyAuthenticator;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyCode;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -69,6 +70,17 @@ namespace MasarHub.API.Controllers.V1.Auth
                 return await HandleError(result);
 
             return Ok(result.Value);
+        }
+
+        [Authorize]
+        [HttpPost("afa/authenticator/verify")]
+        public async Task<IActionResult> VerifyAuthenticator(VerifyAuthenticatorCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return await SuccessMessage("auth.2fa_enabled");
         }
     }
 }

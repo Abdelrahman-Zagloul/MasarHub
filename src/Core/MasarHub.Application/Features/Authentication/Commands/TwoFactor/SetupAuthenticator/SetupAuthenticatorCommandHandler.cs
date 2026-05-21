@@ -15,7 +15,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.SetupA
 
         public async Task<Result<SetupAuthenticatorResult>> Handle(SetupAuthenticatorCommand request, CancellationToken cancellationToken)
         {
-            return await _twoFactorService.SetupAuthenticatorAsync(request.UserId, cancellationToken);
+            return await _twoFactorService.SetupAuthenticatorAsync(request.UserId);
         }
     }
 }

@@ -12,9 +12,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.Verify
 
             RuleFor(x => x.Code)
                 .Required("Code")
-                .Matches(@"^\d{6}$")
-                .WithErrorCode("validation.invalid_2fa_code")
-                .WithName("Code");
+                .ValidOtpCode("Code");
         }
     }
 }
