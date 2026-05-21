@@ -2,6 +2,7 @@
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendCode;
+using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SetupAuthenticator;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyCode;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -56,6 +57,18 @@ namespace MasarHub.API.Controllers.V1.Auth
 
             AddRefreshTokenToCookie(result.Value.RefreshTokenResult);
             return Ok(result.Value.AccessTokenResponse);
+        }
+
+
+        [Authorize]
+        [HttpPost("2fa/authenticator/setup")]
+        public async Task<IActionResult> SetupAuthenticator()
+        {
+            var result = await _mediator.Send(new SetupAuthenticatorCommand(GetUserId()));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
         }
     }
 }

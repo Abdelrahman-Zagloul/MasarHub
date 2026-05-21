@@ -3,6 +3,7 @@ using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
+using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SetupAuthenticator;
 using MasarHub.Application.Features.Authentication.Shared;
 using MasarHub.Domain.Modules.Profiles;
 using MasarHub.Infrastructure.Persistence.Identity;
@@ -33,7 +34,7 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
                 return Error.Conflict("auth.2fa_already_enabled");
 
             if (provider == TwoFactorProvider.Authenticator)
-                await _userManager.ResetAuthenticatorKeyAsync(user);
+                return Error.BadRequest("auth.2fa.use_authenticator_setup");
 
             user.EnableTwoFactor(provider);
 
@@ -87,6 +88,25 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
 
             await _twoFactorChallengeStore.RemoveAsync(challengeId);
             return verificationResult.Value;
+        }
+
+        public async Task<Result<SetupAuthenticatorResult>> SetupAuthenticatorAsync(Guid userId, CancellationToken ct = default)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user is null)
+                return Error.NotFound("user.not_found");
+
+            var isAuthenticatorEnabled = user.TwoFactorEnabled && user.PreferredTwoFactorProvider == TwoFactorProvider.Authenticator;
+            if (isAuthenticatorEnabled)
+                return Error.Conflict("auth.2fa_already_enabled");
+
+            await _userManager.ResetAuthenticatorKeyAsync(user);
+            var key = await _userManager.GetAuthenticatorKeyAsync(user);
+            if (string.IsNullOrWhiteSpace(key))
+                return Error.Failure("auth.2fa.authenticator_setup_failed");
+
+            var authenticatorUri = $"otpauth://totp/MasarHub:{user.Email}?secret={key}&issuer=MasarHub";
+            return new SetupAuthenticatorResult(key, authenticatorUri);
         }
     }
 }
