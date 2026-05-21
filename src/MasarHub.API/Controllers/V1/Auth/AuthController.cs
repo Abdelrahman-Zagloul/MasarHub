@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using MasarHub.Application.Abstractions.Localization;
+using MasarHub.Application.Features.Authentication.Commands.Account.ExternalLogin;
 using MasarHub.Application.Features.Authentication.Commands.Account.Login;
 using MasarHub.Application.Features.Authentication.Commands.Account.Logout;
 using MasarHub.Application.Features.Authentication.Commands.Account.RegisterInstructor;
@@ -64,6 +65,17 @@ namespace MasarHub.API.Controllers.V1.Auth
                 Message = await _localizationService.GetAsync("auth.login_success"),
                 result.Value.Tokens.AccessTokenResponse
             });
+        }
+
+        [HttpPost("external/login")]
+        public async Task<IActionResult> ExternalLogin(ExternalLoginCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            AddRefreshTokenToCookie(result.Value.RefreshTokenResult);
+            return Ok(result.Value.AccessTokenResponse);
         }
 
         [Authorize]

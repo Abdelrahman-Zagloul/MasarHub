@@ -16,7 +16,8 @@ namespace MasarHub.Infrastructure.Extensions
                 .AddAndValidateSettings<TwilioSettings>(configuration, nameof(TwilioSettings))
                 .AddAndValidateSettings<FrontendURLsSettings>(configuration, nameof(FrontendURLsSettings))
                 .AddAndValidateSettings<RefreshTokenSettings>(configuration, nameof(RefreshTokenSettings))
-                .AddAndValidateSettings<CorsSettings>(configuration, nameof(CorsSettings));
+                .AddAndValidateSettings<CorsSettings>(configuration, nameof(CorsSettings))
+                .AddAndValidateSettings<ExternalAuthSettings>(configuration, nameof(ExternalAuthSettings));
 
 
             return services;

@@ -15,6 +15,7 @@ namespace MasarHub.Infrastructure.Identity
             return error.Code switch
             {
                 "DuplicateUserName" => Error.BadRequest("auth.user_name.already_exists", "userName"),
+                "DuplicateEmail" => Error.BadRequest("auth.email.already_exists", "email"),
                 "InvalidEmail" => Error.BadRequest("validation.invalid_email", "email"),
                 "PasswordTooShort" => Error.BadRequest("validation.min_length", "password"),
                 "PasswordRequiresDigit" => Error.BadRequest("validation.password_requires_number", "password"),
@@ -23,6 +24,7 @@ namespace MasarHub.Infrastructure.Identity
                 "PasswordRequiresNonAlphanumeric" => Error.BadRequest("validation.password_requires_special", "password"),
                 "PasswordMismatch" => Error.BadRequest("auth.current_password_incorrect"),
                 "InvalidToken" => Error.BadRequest("auth.invalid_or_expired_reset_token"),
+                "LoginAlreadyAssociated" => Error.BadRequest("auth.external_login_already_associated"),
                 _ => Error.BadRequest("auth.unknown")
             };
         }

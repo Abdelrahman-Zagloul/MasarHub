@@ -17,6 +17,7 @@ namespace MasarHub.Infrastructure.Extensions
             .AddScrutor()
             .AddHangfire(configuration);
 
+            services.AddHttpClient();
             services.AddHttpContextAccessor();
             return services;
         }
