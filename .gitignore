@@ -37,6 +37,7 @@ Logs/
 
 #appsettings files
 appsettings.Development.json
+appsettings.Production.json
 
 # .NET Core
 .project

@@ -11,6 +11,7 @@ namespace MasarHub.API.Extensions
                 .AddJwtAuthentication(configuration)
                 .AddProblemDetails()
                 .AddVersioning()
+                .AddSwaggerDocumentation()
                 .AddSignalRServices();
 
 

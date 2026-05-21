@@ -10,11 +10,12 @@ namespace MasarHub.API.Extensions
     {
         public static async Task<WebApplication> UseApiPipeline(this WebApplication app)
         {
-            if (app.Environment.IsDevelopment())
-            {
-                app.MapOpenApi();
-                app.MapScalarApiReference();
-            }
+            //if (app.Environment.IsDevelopment())
+            //{
+            app.MapOpenApi();
+            app.UseSwaggerDocumentation();
+            app.MapScalarApiReference();
+            //}
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
