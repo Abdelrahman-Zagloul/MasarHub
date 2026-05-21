@@ -15,8 +15,8 @@ namespace MasarHub.Infrastructure.Extensions
                 .AddAndValidateSettings<MailSettings>(configuration, nameof(MailSettings))
                 .AddAndValidateSettings<TwilioSettings>(configuration, nameof(TwilioSettings))
                 .AddAndValidateSettings<FrontendURLsSettings>(configuration, nameof(FrontendURLsSettings))
-                .AddAndValidateSettings<RefreshTokenSettings>(configuration, nameof(RefreshTokenSettings));
-
+                .AddAndValidateSettings<RefreshTokenSettings>(configuration, nameof(RefreshTokenSettings))
+                .AddAndValidateSettings<CorsSettings>(configuration, nameof(CorsSettings));
 
 
             return services;

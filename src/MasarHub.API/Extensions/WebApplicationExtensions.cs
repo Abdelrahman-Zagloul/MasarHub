@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using MasarHub.API.Middlewares;
 using MasarHub.Application.Abstractions.Persistence;
+using MasarHub.Application.Settings;
 using MasarHub.Infrastructure.Extensions;
 using Scalar.AspNetCore;
 
@@ -10,12 +11,17 @@ namespace MasarHub.API.Extensions
     {
         public static async Task<WebApplication> UseApiPipeline(this WebApplication app)
         {
-            //if (app.Environment.IsDevelopment())
-            //{
-            app.MapOpenApi();
-            app.UseSwaggerDocumentation();
-            app.MapScalarApiReference();
-            //}
+            if (app.Environment.IsDevelopment())
+            {
+                app.MapOpenApi();
+                app.UseSwaggerDocumentation();
+                app.MapScalarApiReference();
+                app.UseCors(CorsSettings.DevelopmentPolicy);
+            }
+            else
+            {
+                app.UseCors(CorsSettings.ProductionPolicy);
+            }
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
