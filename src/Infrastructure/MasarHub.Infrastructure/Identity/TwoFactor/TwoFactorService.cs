@@ -3,6 +3,7 @@ using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
+using MasarHub.Application.Features.Authentication.Shared;
 using MasarHub.Domain.Modules.Profiles;
 using MasarHub.Infrastructure.Persistence.Identity;
 using Microsoft.AspNetCore.Identity;
@@ -71,6 +72,21 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
             var provider = _twoFactorProviders.First(x => x.Provider == challengeData.Provider);
 
             return await provider.SendCodeAsync(challengeData.UserId);
+        }
+
+        public async Task<Result<TokenUser>> VerifyCodeAsync(Guid challengeId, string code, CancellationToken ct = default)
+        {
+            var challengeData = await _twoFactorChallengeStore.GetAsync(challengeId);
+            if (challengeData == null)
+                return Error.BadRequest("auth.invalid_2fa_challenge");
+
+            var provider = _twoFactorProviders.First(x => x.Provider == challengeData.Provider);
+            var verificationResult = await provider.VerifyCodeAsync(challengeData.UserId, code, ct);
+            if (verificationResult.IsFailure)
+                return verificationResult;
+
+            await _twoFactorChallengeStore.RemoveAsync(challengeId);
+            return verificationResult.Value;
         }
     }
 }

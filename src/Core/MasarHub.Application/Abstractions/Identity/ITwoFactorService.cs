@@ -2,6 +2,7 @@
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
+using MasarHub.Application.Features.Authentication.Shared;
 using MasarHub.Domain.Modules.Profiles;
 
 namespace MasarHub.Application.Abstractions.Identity
@@ -11,5 +12,6 @@ namespace MasarHub.Application.Abstractions.Identity
         Task<Result<EnableTwoFactorResult>> EnableAsync(Guid userId, TwoFactorProvider provider);
         Task<Result<DisableTwoFactorResult>> DisableAsync(Guid userId);
         Task<Result> SendCodeAsync(Guid challengeId, CancellationToken ct = default);
+        Task<Result<TokenUser>> VerifyCodeAsync(Guid challengeId, string code, CancellationToken ct = default);
     }
 }

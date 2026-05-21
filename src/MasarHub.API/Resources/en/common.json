@@ -13,5 +13,6 @@
   "validation.min_length": "{PropertyName} must be at least {MinLength} characters",
   "validation.length": "{PropertyName} must contain {MaxLength} digits",
   "validation.invalid_enum": "{PropertyName} is invalid",
+  "validation.invalid_guid": "{PropertyName} is invalid",
   "validation.invalid_url": "The URL format is invalid."
 }

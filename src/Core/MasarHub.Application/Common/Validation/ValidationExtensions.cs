@@ -96,4 +96,15 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_url")
             .WithName(propertyName);
     }
+
+
+    public static IRuleBuilderOptions<T, Guid> ValidGuid<T>(
+        this IRuleBuilder<T, Guid> ruleBuilder,
+        string propertyName)
+    {
+        return ruleBuilder
+            .NotEmpty()
+            .WithErrorCode("validation.invalid_guid")
+            .WithName(propertyName);
+    }
 }

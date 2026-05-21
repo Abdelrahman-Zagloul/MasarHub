@@ -13,5 +13,6 @@
   "validation.min_length": "{PropertyName} يجب ألا يقل عن {MinLength} أحرف",
   "validation.length": "{PropertyName} يجب أن يتكون من {MaxLength} رقم",
   "validation.invalid_enum": "{PropertyName} غير صالح",
+  "validation.invalid_guid": "{PropertyName} غير صالح",
   "validation.invalid_url": "صيغة الرابط غير صحيحة."
 }

@@ -5,8 +5,8 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.Login
 {
     public sealed record LoginResult
     (
-        bool RequiresTwoFactor,
-        AccessWithRefreshTokenResult? Tokens,
+         bool RequiresTwoFactor,
+         AccessWithRefreshTokenResult? Tokens,
          Guid? ChallengeId,
          TwoFactorProvider? Provider
     )
