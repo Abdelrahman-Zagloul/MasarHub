@@ -25,6 +25,7 @@ namespace MasarHub.Infrastructure.Identity.ExternalLogin.Providers
         {
             try
             {
+                // token is authorization code
                 var accessToken = await ExchangeCodeAsync(token, cancellationToken);
                 if (string.IsNullOrWhiteSpace(accessToken))
                     return Error.Unauthorized("auth.external_token_invalid");

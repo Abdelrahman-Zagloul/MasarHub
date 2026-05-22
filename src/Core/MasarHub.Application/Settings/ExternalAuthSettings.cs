@@ -9,6 +9,9 @@ namespace MasarHub.Application.Settings
 
         [Required]
         public GitHubSettings GitHub { get; init; } = new();
+
+        [Required]
+        public LinkedInSettings LinkedIn { get; init; } = new();
     }
 
     public sealed class GoogleSettings
@@ -34,5 +37,23 @@ namespace MasarHub.Application.Settings
 
         [Required]
         public string UserEmailsUrl { get; init; } = default!;
+    }
+
+    public sealed class LinkedInSettings
+    {
+        [Required]
+        public string ClientId { get; init; } = default!;
+
+        [Required]
+        public string ClientSecret { get; init; } = default!;
+
+        [Required]
+        public string RedirectUrl { get; init; } = default!;
+
+        [Required]
+        public string TokenUrl { get; init; } = default!;
+
+        [Required]
+        public string UserInfoUrl { get; init; } = default!;
     }
 }
