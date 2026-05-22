@@ -12,13 +12,21 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Notifications
         {
             ConfigureSoftDelete(builder);
 
-            builder.ToTable("Notifications", "notifications");
+            builder.ToTable("Notifications", "notifications", ba =>
+            {
+                ba.HasCheckConstraint("CK_Notifications_TargetRole_Or_UserId",
+                    "[TargetRole] IS NOT NULL OR [UserId] IS NOT NULL");
+            });
 
             builder.Property(x => x.TargetRole)
                 .HasConversion<string>()
                 .HasColumnType("nvarchar")
                 .HasMaxLength(50)
-                .IsRequired();
+                .IsRequired(false);
+
+            builder.Property(x => x.UserId)
+                .HasColumnType("uniqueidentifier")
+                .IsRequired(false);
 
             builder.Property(x => x.Title)
                 .HasColumnType("nvarchar")
@@ -60,6 +68,8 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Notifications
                 .IsRequired(false);
 
             builder.HasIndex(x => x.TargetRole);
+            builder.HasIndex(x => x.UserId);
+
         }
     }
 }

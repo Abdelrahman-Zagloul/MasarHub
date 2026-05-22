@@ -21,14 +21,14 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.Register
         public async Task Handle(InstructorRegisteredEvent notification, CancellationToken cancellationToken)
         {
             var actionUrl = $"/admin/instructors/{notification.InstructorProfileId}";
-            var notificationResult = Notification.Create(
-                    UserRole.Admin,
-                    "New instructor registration",
-                    $"{notification.FullName} registered as an instructor.",
-                    NotificationType.InstructorRegistration,
-                    NotificationPriority.High,
-                    actionUrl,
-                    notification.InstructorProfileId
+            var notificationResult = Notification.CreateForRole(
+                  targetRole: UserRole.Admin,
+                  title: "New instructor registration",
+                  message: $"{notification.FullName} registered as an instructor.",
+                  type: NotificationType.InstructorRegistration,
+                  priority: NotificationPriority.High,
+                  actionUrl: actionUrl,
+                  resourceId: notification.InstructorProfileId
             );
 
             if (notificationResult.IsFailure)
@@ -37,16 +37,15 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.Register
             await _notificationRepository.AddAsync(notificationResult.Value, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            var notifcation = notificationResult.Value;
             await _notificationRealtimeService.SendToAdminsAsync(new
             {
-                notifcation.Id,
-                notifcation.Title,
-                notifcation.Message,
-                notifcation.Type,
-                notifcation.Priority,
-                notifcation.ActionUrl,
-                notifcation.CreatedAt
+                notificationResult.Value.Id,
+                notificationResult.Value.Title,
+                notificationResult.Value.Message,
+                notificationResult.Value.Type,
+                notificationResult.Value.Priority,
+                notificationResult.Value.ActionUrl,
+                notificationResult.Value.CreatedAt
             }, cancellationToken);
         }
     }

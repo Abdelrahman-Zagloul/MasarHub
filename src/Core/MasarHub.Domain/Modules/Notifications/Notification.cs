@@ -7,7 +7,8 @@ namespace MasarHub.Domain.Modules.Notifications
 {
     public sealed class Notification : SoftDeletableEntity
     {
-        public UserRole TargetRole { get; private set; }
+        public UserRole? TargetRole { get; private set; }
+        public Guid? UserId { get; private set; }
         public string Title { get; private set; } = null!;
         public string Message { get; private set; } = null!;
         public NotificationType Type { get; private set; }
@@ -16,10 +17,12 @@ namespace MasarHub.Domain.Modules.Notifications
         public DateTimeOffset? ReadAt { get; private set; }
         public string? ActionUrl { get; private set; }
         public Guid? ResourceId { get; private set; }
+
         private Notification() { }
 
         private Notification(
-            UserRole targetRole,
+            UserRole? targetRole,
+            Guid? userId,
             string title,
             string message,
             NotificationType type,
@@ -28,15 +31,19 @@ namespace MasarHub.Domain.Modules.Notifications
             Guid? resourceId)
         {
             TargetRole = targetRole;
+            UserId = userId;
+
             Title = title;
             Message = message;
+
             Type = type;
             Priority = priority;
+
             ActionUrl = actionUrl;
             ResourceId = resourceId;
         }
 
-        public static Result<Notification> Create(
+        public static Result<Notification> CreateForRole(
             UserRole targetRole,
             string title,
             string message,
@@ -64,6 +71,44 @@ namespace MasarHub.Domain.Modules.Notifications
 
             return new Notification(
                 targetRole,
+                null,
+                title.Trim(),
+                message.Trim(),
+                type,
+                priority,
+                actionUrl?.Trim(),
+                resourceId);
+        }
+
+        public static Result<Notification> CreateForUser(
+            Guid userId,
+            string title,
+            string message,
+            NotificationType type,
+            NotificationPriority priority = NotificationPriority.Normal,
+            string? actionUrl = null,
+            Guid? resourceId = null)
+        {
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstNullOrWhiteSpace(title, nameof(title)),
+                Guard.AgainstNullOrWhiteSpace(message, nameof(message)),
+                Guard.AgainstEnumOutOfRange(type, nameof(type)),
+                Guard.AgainstEnumOutOfRange(priority, nameof(priority))
+            );
+
+            if (error is not null)
+                return error;
+
+            if (actionUrl is not null && string.IsNullOrWhiteSpace(actionUrl))
+                return Guard.AgainstNullOrWhiteSpace(actionUrl, nameof(actionUrl))!;
+
+            if (resourceId.HasValue && resourceId == Guid.Empty)
+                return Guard.AgainstEmptyGuid(resourceId.Value, nameof(resourceId))!;
+
+            return new Notification(
+                null,
+                userId,
                 title.Trim(),
                 message.Trim(),
                 type,
@@ -82,7 +127,6 @@ namespace MasarHub.Domain.Modules.Notifications
 
             MarkAsUpdated();
         }
-
         public void MarkAsUnread()
         {
             if (!IsRead)
