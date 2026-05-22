@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Hangfire;
+using MasarHub.Infrastructure.Localization;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using StackExchange.Redis;
@@ -7,6 +9,8 @@ namespace MasarHub.Infrastructure.Extensions
 {
     public static class RedisExtensions
     {
+        private static bool _jobQueued;
+
         public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
         {
             var connectionString = configuration.GetConnectionString("Redis")
@@ -32,7 +36,17 @@ namespace MasarHub.Infrastructure.Extensions
                     logger.LogWarning("Redis connection failed: {EndPoint}", e.EndPoint);
 
                 multiplexer.ConnectionRestored += (_, e) =>
+                {
                     logger.LogInformation("Redis connection restored: {EndPoint}", e.EndPoint);
+
+                    // Prevent duplicate enqueue
+                    if (_jobQueued)
+                        return;
+
+                    _jobQueued = true;
+                    BackgroundJob.Enqueue<LocalizationSyncJob>(x => x.SyncAsync(default));
+                    Task.Delay(TimeSpan.FromSeconds(60)).ContinueWith(_ => _jobQueued = false);
+                };
 
                 multiplexer.ErrorMessage += (_, e) =>
                     logger.LogWarning("Redis error: {Message}", e.Message);
