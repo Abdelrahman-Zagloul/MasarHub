@@ -16,5 +16,6 @@ namespace MasarHub.Application.Abstractions.Identity
         Task<Result<TokenUser>> VerifyCodeAsync(Guid challengeId, string code, CancellationToken ct = default);
         Task<Result<SetupAuthenticatorResult>> SetupAuthenticatorAsync(Guid userId);
         Task<Result<EnableTwoFactorResult>> VerifyAuthenticatorSetupAsync(Guid userId, string code);
+        Task<Result<IEnumerable<string>>> GenerateRecoveryCodesAsync(Guid userId);
     }
 }

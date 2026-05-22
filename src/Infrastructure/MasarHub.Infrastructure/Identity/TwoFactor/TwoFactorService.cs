@@ -34,7 +34,7 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
                 return Error.Conflict("auth.2fa_already_enabled");
 
             if (provider == TwoFactorProvider.Authenticator)
-                return Error.BadRequest("auth.2fa.use_authenticator_setup");
+                return Error.BadRequest("auth.2fa_use_authenticator_setup");
 
             user.EnableTwoFactor(provider);
 
@@ -103,7 +103,7 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
             await _userManager.ResetAuthenticatorKeyAsync(user);
             var key = await _userManager.GetAuthenticatorKeyAsync(user);
             if (string.IsNullOrWhiteSpace(key))
-                return Error.Failure("auth.2fa.authenticator_setup_failed");
+                return Error.Failure("auth.2fa_authenticator_setup_failed");
 
             var authenticatorUri = $"otpauth://totp/MasarHub:{user.Email}?secret={key}&issuer=MasarHub";
             return new SetupAuthenticatorResult(key, authenticatorUri);
@@ -126,6 +126,20 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
                 return Error.Failure("auth.2fa_enable_failed");
 
             return new EnableTwoFactorResult(userId, user.FullName, user.Email!, TwoFactorProvider.Authenticator);
+        }
+
+        public async Task<Result<IEnumerable<string>>> GenerateRecoveryCodesAsync(Guid userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+                return Error.NotFound("user.not_found");
+
+            if (!user.TwoFactorEnabled)
+                return Error.BadRequest("auth.2fa_not_enabled");
+
+            var codes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
+            return Result<IEnumerable<string>>.Success(codes!);
         }
     }
 }

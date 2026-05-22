@@ -2,6 +2,7 @@
 using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
+using MasarHub.Application.Features.Authentication.Commands.TwoFactor.GenerateRecoveryCodes;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendCode;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SetupAuthenticator;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyAuthenticator;
@@ -79,7 +80,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [Authorize]
-        [HttpPost("afa/authenticator/verify")]
+        [HttpPost("2fa/authenticator/verify")]
         [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> VerifyAuthenticator(VerifyAuthenticatorCommand command)
         {
@@ -88,6 +89,22 @@ namespace MasarHub.API.Controllers.V1.Auth
                 return await HandleError(result);
 
             return await SuccessMessage("auth.2fa_enabled");
+        }
+
+        [Authorize]
+        [HttpPost("2fa/recovery-codes/generate")]
+        [EnableRateLimiting(RateLimitingPolicies.Strict)]
+        public async Task<IActionResult> GenerateRecoveryCodes()
+        {
+            var result = await _mediator.Send(new GenerateRecoveryCodesCommand(GetUserId()));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(new
+            {
+                message = "",
+                codes = result.Value
+            });
         }
     }
 }
