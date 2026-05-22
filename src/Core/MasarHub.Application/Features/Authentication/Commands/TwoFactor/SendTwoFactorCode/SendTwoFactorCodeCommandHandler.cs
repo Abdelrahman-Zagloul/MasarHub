@@ -2,7 +2,7 @@
 using MasarHub.Application.Common.Results;
 using MediatR;
 
-namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendCode
+namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendTwoFactorCode
 {
     public sealed class SendTwoFactorCodeCommandHandler : IRequestHandler<SendTwoFactorCodeCommand, Result>
     {

@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using MasarHub.Application.Common.Validation;
 
-namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendCode
+namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendTwoFactorCode
 {
     public sealed class SendTwoFactorCodeCommandValidator : AbstractValidator<SendTwoFactorCodeCommand>
     {

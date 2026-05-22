@@ -2,7 +2,6 @@
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Authentication.Commands.Account.Login;
-using MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Email.ResendConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword;
 using MasarHub.Application.Features.Authentication.Commands.Password.ForgetPassword;
@@ -77,10 +76,10 @@ namespace MasarHub.Infrastructure.Identity
                 return Error.Unauthorized("auth.invalid_credentials");
 
             if (user.TwoFactorEnabled && user.PreferredTwoFactorProvider.HasValue)
-                return new AuthenticateUserResult(true, new TokenUser(user.Id, user.Email!, []), user.PreferredTwoFactorProvider);
+                return new AuthenticateUserResult(true, new TokenUser(user.Id, user.FullName, user.Email!, []), user.PreferredTwoFactorProvider);
 
             var roles = await _userManager.GetRolesAsync(user);
-            return new AuthenticateUserResult(false, new TokenUser(user.Id, user.Email!, roles), user.PreferredTwoFactorProvider);
+            return new AuthenticateUserResult(false, new TokenUser(user.Id, user.FullName, user.Email!, roles), user.PreferredTwoFactorProvider);
         }
 
         public async Task<Result<ConfirmEmailTokenResult>> GenerateEmailTokenAsync(string email)
@@ -95,7 +94,7 @@ namespace MasarHub.Infrastructure.Identity
             return new ConfirmEmailTokenResult(user.FullName, user.Email!, token);
         }
 
-        public async Task<Result<ConfirmedEmailResult>> ConfirmEmailAsync(string email, string token, CancellationToken ct = default)
+        public async Task<Result<TokenUser>> ConfirmEmailAsync(string email, string token, CancellationToken ct = default)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Email == email, ct);
             if (user is null)
@@ -109,7 +108,7 @@ namespace MasarHub.Infrastructure.Identity
                 return Error.BadRequest("auth.email_confirmation_failed");
 
             var roles = await _userManager.GetRolesAsync(user);
-            return new ConfirmedEmailResult(new TokenUser(user.Id, user.Email!, roles), user.FullName);
+            return new TokenUser(user.Id, user.FullName, user.Email!, roles);
         }
 
         public async Task<Result> DeleteUserAsync(Guid userId)
@@ -128,7 +127,7 @@ namespace MasarHub.Infrastructure.Identity
                 return Error.NotFound("user.not_found");
 
             var roles = await _userManager.GetRolesAsync(user);
-            return new TokenUser(userId, user.Email!, roles);
+            return new TokenUser(userId, user.FullName, user.Email!, roles);
         }
 
         public async Task<Result<PasswordChangedResult>> ChangePasswordAsync(Guid userId, string currentPassword, string newPassword)

@@ -160,7 +160,7 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            return new TokenUser(user.Id, user.Email!, roles);
+            return new TokenUser(user.Id, user.FullName, user.Email!, roles);
         }
     }
 }

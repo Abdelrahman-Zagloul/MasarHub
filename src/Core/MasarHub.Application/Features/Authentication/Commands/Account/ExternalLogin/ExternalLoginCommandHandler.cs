@@ -47,7 +47,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.External
                 return refreshTokenResult.Errors[0];
 
             if (loginResult.Value.IsNew)
-                await _mediator.Publish(new EmailConfirmedEvent(loginResult.Value.User, loginResult.Value.fullName));
+                await _mediator.Publish(new EmailConfirmedEvent(loginResult.Value.User));
 
             return new AccessWithRefreshTokenResult(accessToken, refreshTokenResult.Value);
         }

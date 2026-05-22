@@ -52,7 +52,7 @@ namespace MasarHub.Infrastructure.Identity.ExternalLogin
 
 
             var roles = await _userManager.GetRolesAsync(user);
-            return new ExternalLoginResult(new TokenUser(user.Id, user.Email!, roles), user.FullName, isNew);
+            return new ExternalLoginResult(new TokenUser(user.Id, user.FullName, user.Email!, roles), user.FullName, isNew);
         }
     }
 }

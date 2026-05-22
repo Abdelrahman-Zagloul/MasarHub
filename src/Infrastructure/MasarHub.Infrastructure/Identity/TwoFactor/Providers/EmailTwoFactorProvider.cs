@@ -48,7 +48,7 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor.Providers
                 return Error.BadRequest("auth.2fa_verification_failed");
 
             var roles = await _userManager.GetRolesAsync(user);
-            return new TokenUser(userId, user.Email!, roles);
+            return new TokenUser(userId, user.FullName, user.Email!, roles);
         }
     }
 }

@@ -28,13 +28,13 @@ namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEma
                 return confirmResult.Errors[0];
 
 
-            var accessToken = await _tokenService.GenerateTokenAsync(confirmResult.Value.User);
-            var refreshTokenResult = await _refreshTokenService.CreateAsync(confirmResult.Value.User, request.IpAddress, cancellationToken);
+            var accessToken = await _tokenService.GenerateTokenAsync(confirmResult.Value);
+            var refreshTokenResult = await _refreshTokenService.CreateAsync(confirmResult.Value, request.IpAddress, cancellationToken);
 
             if (refreshTokenResult.IsFailure)
                 return refreshTokenResult.Errors[0];
 
-            await _mediator.Publish(new EmailConfirmedEvent(confirmResult.Value.User, confirmResult.Value.FullName));
+            await _mediator.Publish(new EmailConfirmedEvent(confirmResult.Value));
 
             return new AccessWithRefreshTokenResult(accessToken, refreshTokenResult.Value);
         }

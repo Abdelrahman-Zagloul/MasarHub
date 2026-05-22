@@ -3,7 +3,7 @@ using MasarHub.Application.Common.Results;
 using MasarHub.Application.Features.Authentication.Shared;
 using MediatR;
 
-namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyCode
+namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyTwoFactorCode
 {
     public sealed class VerifyTwoFactorCodeCommandHandler : IRequestHandler<VerifyTwoFactorCodeCommand, Result<AccessWithRefreshTokenResult>>
     {

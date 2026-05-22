@@ -1,5 +1,4 @@
-﻿using MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword;
-using MediatR;
+﻿using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword.Events
 {

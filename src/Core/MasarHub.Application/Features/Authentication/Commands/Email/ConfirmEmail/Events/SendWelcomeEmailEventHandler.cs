@@ -19,7 +19,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEma
         public Task Handle(EmailConfirmedEvent notification, CancellationToken cancellationToken)
         {
             _backgroundJobService.Enqueue(() =>
-                _appEmailService.SendWelcomeEmailAsync(notification.fullName, notification.User.Email, notification.User.Roles.FirstOrDefault() ?? Roles.Student));
+                _appEmailService.SendWelcomeEmailAsync(notification.User.FullName, notification.User.Email, notification.User.Roles.FirstOrDefault() ?? Roles.Student));
 
             return Task.CompletedTask;
         }

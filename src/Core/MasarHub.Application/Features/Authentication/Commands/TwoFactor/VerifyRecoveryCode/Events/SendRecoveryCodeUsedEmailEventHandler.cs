@@ -19,7 +19,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.Verify
         {
             _backgroundJobService.Enqueue(() =>
                 _appEmailService.SendRecoveryCodeUsedEmailAsync(
-                    "notification.FullName", //TODo:
+                    notification.User.FullName,
                     notification.User.Email
                 )
             );
