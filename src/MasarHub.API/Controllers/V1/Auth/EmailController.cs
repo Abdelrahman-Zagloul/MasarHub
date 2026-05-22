@@ -16,9 +16,9 @@ namespace MasarHub.API.Controllers.V1.Auth
             : base(localizationService, mediator) { }
 
         [HttpPost("email/confirm")]
-        public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request)
+        public async Task<IActionResult> ConfirmEmail(ConfirmEmailCommand command)
         {
-            var result = await _mediator.Send(new ConfirmEmailCommand(request.Email, request.Token, IpAddress));
+            var result = await _mediator.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 

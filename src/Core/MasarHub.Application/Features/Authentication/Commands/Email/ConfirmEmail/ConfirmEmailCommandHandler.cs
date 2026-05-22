@@ -12,12 +12,14 @@ namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEma
         private readonly ITokenService _tokenService;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IMediator _mediator;
-        public ConfirmEmailCommandHandler(IAuthService authService, ITokenService tokenService, IRefreshTokenService refreshTokenService, IMediator mediator)
+        private readonly ICurrentUserService _currentUserService;
+        public ConfirmEmailCommandHandler(IAuthService authService, ITokenService tokenService, IRefreshTokenService refreshTokenService, IMediator mediator, ICurrentUserService currentUserService)
         {
             _authService = authService;
             _tokenService = tokenService;
             _refreshTokenService = refreshTokenService;
             _mediator = mediator;
+            _currentUserService = currentUserService;
         }
 
         public async Task<Result<AccessWithRefreshTokenResult>> Handle(ConfirmEmailCommand request, CancellationToken cancellationToken)
@@ -29,7 +31,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEma
 
 
             var accessToken = await _tokenService.GenerateTokenAsync(confirmResult.Value);
-            var refreshTokenResult = await _refreshTokenService.CreateAsync(confirmResult.Value, request.IpAddress, cancellationToken);
+            var refreshTokenResult = await _refreshTokenService.CreateAsync(confirmResult.Value, _currentUserService.IpAddress, cancellationToken);
 
             if (refreshTokenResult.IsFailure)
                 return refreshTokenResult.Errors[0];

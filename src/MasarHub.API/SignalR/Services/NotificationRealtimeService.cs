@@ -19,5 +19,12 @@ namespace MasarHub.API.SignalR.Services
                 .Group(SignalRGroups.Admins)
                 .SendAsync("NotificationReceived", data, cancellationToken);
         }
+
+        public async Task SendToUserAsync(Guid userId, object payload, CancellationToken cancellationToken = default)
+        {
+            await _hubContext.Clients
+                .User(userId.ToString())
+                .SendAsync("NotificationReceived", payload, cancellationToken);
+        }
     }
 }

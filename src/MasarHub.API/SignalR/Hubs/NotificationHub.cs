@@ -7,10 +7,17 @@ namespace MasarHub.API.SignalR.Hubs
     {
         public override async Task OnConnectedAsync()
         {
-            if (Context.User?.IsInRole(Roles.Admin) == true)
+            if (IsInRole(Roles.Admin))
                 await Groups.AddToGroupAsync(Context.ConnectionId, SignalRGroups.Admins);
+
+            if (IsInRole(Roles.Instructor))
+                await Groups.AddToGroupAsync(Context.ConnectionId, SignalRGroups.Instructors);
+
+            if (IsInRole(Roles.Student))
+                await Groups.AddToGroupAsync(Context.ConnectionId, SignalRGroups.Students);
 
             await base.OnConnectedAsync();
         }
+        private bool IsInRole(string role) => Context.User?.IsInRole(role) == true;
     }
 }
