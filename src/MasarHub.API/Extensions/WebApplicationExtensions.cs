@@ -28,6 +28,8 @@ namespace MasarHub.API.Extensions
             app.UseRouting();
             app.UseMiddleware<CultureMiddleware>();
 
+            app.UseForwardedHeaders();
+            app.UseRateLimiter();
 
             app.UseAuthentication();
             app.UseAuthorization();

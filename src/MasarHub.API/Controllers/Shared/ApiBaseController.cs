@@ -1,12 +1,15 @@
-﻿using MasarHub.Application.Abstractions.Localization;
+﻿using MasarHub.API.Extensions;
+using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Common.Results;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace MasarHub.API.Controllers.Shared
 {
     [ApiController]
     [Route("api/[controller]")]
+    [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
     public abstract class ApiBaseController : ControllerBase
     {
         protected readonly ILocalizationService _localizationService;

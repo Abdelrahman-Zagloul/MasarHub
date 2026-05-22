@@ -1,4 +1,5 @@
-﻿using MasarHub.Application.Abstractions.Localization;
+﻿using MasarHub.API.Extensions;
+using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendCode;
@@ -8,10 +9,12 @@ using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyCode
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace MasarHub.API.Controllers.V1.Auth
 {
     [Tags("Authentication")]
+    [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
     public sealed class TwoFactorController : AuthBaseController
     {
         public TwoFactorController(ILocalizationService localizationService, IMediator mediator)
@@ -40,6 +43,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("2fa/send-code")]
+        [EnableRateLimiting(RateLimitingPolicies.Otp)]
         public async Task<IActionResult> SendCode(SendTwoFactorCodeCommand command)
         {
             var result = await _mediator.Send(command);
@@ -50,6 +54,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("2fa/verify")]
+        [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> VerifyCode(VerifyTwoFactorCodeCommand command)
         {
             var result = await _mediator.Send(command);
@@ -63,6 +68,7 @@ namespace MasarHub.API.Controllers.V1.Auth
 
         [Authorize]
         [HttpPost("2fa/authenticator/setup")]
+        [EnableRateLimiting(RateLimitingPolicies.Otp)]
         public async Task<IActionResult> SetupAuthenticator()
         {
             var result = await _mediator.Send(new SetupAuthenticatorCommand(GetUserId()));
@@ -74,6 +80,7 @@ namespace MasarHub.API.Controllers.V1.Auth
 
         [Authorize]
         [HttpPost("afa/authenticator/verify")]
+        [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> VerifyAuthenticator(VerifyAuthenticatorCommand command)
         {
             var result = await _mediator.Send(command);

@@ -1,18 +1,19 @@
-﻿using MasarHub.Application.Abstractions.Localization;
+﻿using MasarHub.API.Extensions;
+using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail;
 using MasarHub.Application.Features.Authentication.Commands.Email.ResendConfirmEmail;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace MasarHub.API.Controllers.V1.Auth
 {
     [Tags("Authentication")]
+    [EnableRateLimiting(RateLimitingPolicies.Otp)]
     public sealed class EmailController : AuthBaseController
     {
         public EmailController(ILocalizationService localizationService, IMediator mediator)
-            : base(localizationService, mediator)
-        {
-        }
+            : base(localizationService, mediator) { }
 
         [HttpPost("email/confirm")]
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailRequest request)

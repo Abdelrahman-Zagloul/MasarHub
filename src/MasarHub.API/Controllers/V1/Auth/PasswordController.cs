@@ -1,4 +1,5 @@
-﻿using MasarHub.Application.Abstractions.Localization;
+﻿using MasarHub.API.Extensions;
+using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword;
 using MasarHub.Application.Features.Authentication.Commands.Password.ForgetPassword;
 using MasarHub.Application.Features.Authentication.Commands.Password.ResetPassword;
@@ -6,6 +7,7 @@ using MasarHub.Application.Features.Authentication.Commands.Password.VerifyPassw
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace MasarHub.API.Controllers.V1.Auth
 {
@@ -13,11 +15,11 @@ namespace MasarHub.API.Controllers.V1.Auth
     public sealed class PasswordController : AuthBaseController
     {
         public PasswordController(ILocalizationService localizationService, IMediator mediator)
-            : base(localizationService, mediator)
-        {
-        }
+            : base(localizationService, mediator) { }
+
         [Authorize]
         [HttpPost("password/change")]
+        [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
             var result = await _mediator.Send(new ChangePasswordCommand(GetUserId(), request.CurrentPassword, request.NewPassword));
@@ -28,6 +30,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("password/forget")]
+        [EnableRateLimiting(RateLimitingPolicies.Otp)]
         public async Task<IActionResult> ForgetPasswordAsync(ForgetPasswordCommand command)
         {
             var result = await _mediator.Send(command);
@@ -38,6 +41,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("password/reset")]
+        [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordCommand command)
         {
             var result = await _mediator.Send(command);
@@ -49,6 +53,7 @@ namespace MasarHub.API.Controllers.V1.Auth
 
         [Authorize]
         [HttpPost("password/verify")]
+        [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
         public async Task<IActionResult> VerifyPassword(VerifyPasswordCommand command)
         {
             var result = await _mediator.Send(command);

@@ -1,4 +1,4 @@
-﻿using Asp.Versioning;
+﻿using MasarHub.API.Extensions;
 using MasarHub.Application.Abstractions.Localization;
 using MasarHub.Application.Features.Authentication.Commands.Account.ExternalLogin;
 using MasarHub.Application.Features.Authentication.Commands.Account.Login;
@@ -8,18 +8,16 @@ using MasarHub.Application.Features.Authentication.Commands.Account.RegisterStud
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace MasarHub.API.Controllers.V1.Auth
 {
-    [ApiVersion(1.0)]
     [Tags("Authentication")]
-    [Route("api/auth")]
+    [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
     public class AuthController : AuthBaseController
     {
         public AuthController(ILocalizationService localizationService, IMediator mediator)
-              : base(localizationService, mediator)
-        {
-        }
+              : base(localizationService, mediator) { }
 
         [HttpPost("student/register")]
         public async Task<IActionResult> RegisterStudent(RegisterStudentCommand command)

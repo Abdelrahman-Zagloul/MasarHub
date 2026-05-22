@@ -14,7 +14,8 @@ namespace MasarHub.API.Extensions
         }
         public static IEndpointRouteBuilder MapSignalRHubs(this IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapHub<NotificationHub>("/hubs/notifications");
+            endpoints.MapHub<NotificationHub>("/hubs/notifications").DisableRateLimiting();
+
             return endpoints;
         }
     }

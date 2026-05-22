@@ -13,7 +13,9 @@ namespace MasarHub.API.Extensions
                 .AddSwaggerDocumentation()
                 .AddSignalRServices()
                 .AddProblemDetails()
-                .AddVersioning();
+                .AddVersioning()
+                .AddRateLimitingConfiguration()
+                .AddProxyConfiguration();
 
 
             return services;

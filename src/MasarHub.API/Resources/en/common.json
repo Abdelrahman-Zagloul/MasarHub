@@ -14,5 +14,7 @@
   "validation.length": "{PropertyName} must contain {MaxLength} digits",
   "validation.invalid_enum": "{PropertyName} is invalid",
   "validation.invalid_guid": "{PropertyName} is invalid",
-  "validation.invalid_url": "The URL format is invalid."
+  "validation.invalid_url": "The URL format is invalid.",
+
+  "TooManyRequests": "Too many requests. Please try again in a few minutes."
 }

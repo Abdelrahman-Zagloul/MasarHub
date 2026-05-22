@@ -11,9 +11,7 @@ namespace MasarHub.API.Controllers.V1.Auth
     public sealed class TokenController : AuthBaseController
     {
         public TokenController(ILocalizationService localizationService, IMediator mediator)
-            : base(localizationService, mediator)
-        {
-        }
+            : base(localizationService, mediator) { }
 
         [Authorize]
         [HttpPost("token/revoke")]

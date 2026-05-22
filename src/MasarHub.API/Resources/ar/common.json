@@ -14,5 +14,7 @@
   "validation.length": "{PropertyName} يجب أن يتكون من {MaxLength} رقم",
   "validation.invalid_enum": "{PropertyName} غير صالح",
   "validation.invalid_guid": "{PropertyName} غير صالح",
-  "validation.invalid_url": "صيغة الرابط غير صحيحة."
+  "validation.invalid_url": "صيغة الرابط غير صحيحة.",
+
+  "TooManyRequests": "عدد الطلبات كبير جدًا، يرجى المحاولة مرة أخرى بعد قليل."
 }
