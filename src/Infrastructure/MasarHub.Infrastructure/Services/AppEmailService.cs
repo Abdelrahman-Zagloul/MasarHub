@@ -111,5 +111,17 @@ namespace MasarHub.Infrastructure.Services
 
             await _mailService.SendEmailAsync(email, "Two-Factor Authentication Code", emailBody, null);
         }
+
+        public async Task SendRecoveryCodeUsedEmailAsync(string fullName, string email)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "RecoveryCodeUsed.html");
+
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName);
+
+            await _mailService.SendEmailAsync(email, "Recovery Code Used", emailBody, null);
+        }
     }
 }

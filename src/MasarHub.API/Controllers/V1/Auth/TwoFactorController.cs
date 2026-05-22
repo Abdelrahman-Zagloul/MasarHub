@@ -7,6 +7,7 @@ using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendCode;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SetupAuthenticator;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyAuthenticator;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyCode;
+using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyRecoveryCode;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -102,9 +103,21 @@ namespace MasarHub.API.Controllers.V1.Auth
 
             return Ok(new
             {
-                message = "",
+                message = await _localizationService.GetAsync("auth.recovery_codes_generated"),
                 codes = result.Value
             });
+        }
+
+        [HttpPost("2fa/recovery-codes/verify")]
+        [EnableRateLimiting(RateLimitingPolicies.Strict)]
+        public async Task<IActionResult> VerifyRecoveryCodes(VerifyRecoveryCodeCommand command)
+        {
+            var result = await _mediator.Send(command);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            AddRefreshTokenToCookie(result.Value.RefreshTokenResult);
+            return Ok(result.Value.AccessTokenResponse);
         }
     }
 }

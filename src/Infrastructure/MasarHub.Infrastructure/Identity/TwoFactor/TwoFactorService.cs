@@ -141,5 +141,26 @@ namespace MasarHub.Infrastructure.Identity.TwoFactor
             var codes = await _userManager.GenerateNewTwoFactorRecoveryCodesAsync(user, 10);
             return Result<IEnumerable<string>>.Success(codes!);
         }
+
+        public async Task<Result<TokenUser>> VerifyRecoveryCodeAsync(Guid challengeId, string code)
+        {
+            var challenge = await _twoFactorChallengeStore.GetAsync(challengeId);
+            if (challenge == null)
+                return Error.BadRequest("auth.invalid_2fa_challenge");
+
+            var user = await _userManager.FindByIdAsync(challenge.UserId.ToString());
+            if (user == null)
+                return Error.NotFound("user.not_found");
+
+            var result = await _userManager.RedeemTwoFactorRecoveryCodeAsync(user, code);
+            if (!result.Succeeded)
+                return Error.BadRequest("auth.invalid_recovery_code");
+
+            await _twoFactorChallengeStore.RemoveAsync(challengeId);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            return new TokenUser(user.Id, user.Email!, roles);
+        }
     }
 }
