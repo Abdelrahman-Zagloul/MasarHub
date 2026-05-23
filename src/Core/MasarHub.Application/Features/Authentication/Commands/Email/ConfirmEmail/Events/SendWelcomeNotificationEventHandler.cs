@@ -1,6 +1,7 @@
 ﻿using MasarHub.Application.Abstractions.ExternalServices;
 using MasarHub.Application.Abstractions.Jobs;
 using MasarHub.Application.Abstractions.Services;
+using MasarHub.Application.Common.Extensions;
 using MasarHub.Domain.Modules.Notifications;
 using MediatR;
 
@@ -31,21 +32,14 @@ namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEma
             if (notificationResult.IsFailure)
                 return;
 
-            await _notificationRealtimeService.SendToUserAsync(notification.User.Id,
-            new
-            {
-                notificationResult.Value.Id,
-                notificationResult.Value.Title,
-                notificationResult.Value.Message,
-                notificationResult.Value.Type,
-                notificationResult.Value.Priority,
-                notificationResult.Value.ActionUrl,
-                notificationResult.Value.CreatedAt
-            },
-            cancellationToken);
+            await _notificationRealtimeService.SendToUserAsync(
+                notification.User.Id,
+                notificationResult.Value.ToRealtimeResponse(),
+                cancellationToken
+            );
 
             _backgroundJobService.Enqueue<ICreateNotificationJob>(x =>
-                x.ExecuteAsync(CreateNotificationRequest.ForUser(notificationResult.Value)));
+                x.ExecuteAsync(notificationResult.Value.ToCreateRequest()));
         }
     }
 }

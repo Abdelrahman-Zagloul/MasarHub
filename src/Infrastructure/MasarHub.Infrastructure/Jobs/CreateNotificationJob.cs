@@ -1,5 +1,6 @@
 ﻿using MasarHub.Application.Abstractions.Jobs;
 using MasarHub.Application.Abstractions.Persistence;
+using MasarHub.Application.Common.Models.Notifications;
 using MasarHub.Domain.Modules.Notifications;
 
 namespace MasarHub.Infrastructure.Jobs
