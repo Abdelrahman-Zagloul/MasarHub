@@ -5,6 +5,8 @@
         InstructorRegistration,
         EmailConfirmation,
         PasswordChanged,
+        TwoFactorEnabled,
+        TwoFactorDisabled,
         CourseApproval,
         OrderCreated,
         PaymentReceived

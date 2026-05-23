@@ -44,7 +44,8 @@ namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEma
             },
             cancellationToken);
 
-            _backgroundJobService.Enqueue<ICreateNotificationJob>(x => x.ExecuteAsync(notificationResult.Value));
+            _backgroundJobService.Enqueue<ICreateNotificationJob>(x =>
+                x.ExecuteAsync(CreateNotificationRequest.ForUser(notificationResult.Value)));
         }
     }
 }

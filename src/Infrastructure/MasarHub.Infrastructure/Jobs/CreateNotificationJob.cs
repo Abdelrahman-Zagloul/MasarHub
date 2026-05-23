@@ -15,9 +15,9 @@ namespace MasarHub.Infrastructure.Jobs
             _unitOfWork = unitOfWork;
         }
 
-        public async Task ExecuteAsync(Notification notification)
+        public async Task ExecuteAsync(CreateNotificationRequest request)
         {
-            await _notificationRepository.AddAsync(notification);
+            await _notificationRepository.AddAsync(request.ToNotification());
             await _unitOfWork.SaveChangesAsync();
         }
     }

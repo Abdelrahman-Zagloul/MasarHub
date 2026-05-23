@@ -4,26 +4,27 @@ using MasarHub.Application.Abstractions.Services;
 using MasarHub.Domain.Modules.Notifications;
 using MediatR;
 
-namespace MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword.Events
+namespace MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor.Events
 {
-    public sealed class SendPasswordChangedNotificationEventHandler : INotificationHandler<PasswordChangedEvent>
+    public sealed class SendTwoFactorDisabledNotificationEventHandler
+        : INotificationHandler<TwoFactorDisabledEvent>
     {
         private readonly INotificationRealtimeService _notificationRealtimeService;
         private readonly IBackgroundJobService _backgroundJobService;
 
-        public SendPasswordChangedNotificationEventHandler(INotificationRealtimeService notificationRealtimeService, IBackgroundJobService backgroundJobService)
+        public SendTwoFactorDisabledNotificationEventHandler(INotificationRealtimeService notificationRealtimeService, IBackgroundJobService backgroundJobService)
         {
             _notificationRealtimeService = notificationRealtimeService;
             _backgroundJobService = backgroundJobService;
         }
 
-        public async Task Handle(PasswordChangedEvent notification, CancellationToken cancellationToken)
+        public async Task Handle(TwoFactorDisabledEvent notification, CancellationToken cancellationToken)
         {
             var notificationResult = Notification.CreateForUser(
-                userId: notification.PasswordChangedResult.UserId,
-                title: "Password Changed",
-                message: "Your password has been changed successfully.",
-                type: NotificationType.PasswordChanged,
+                userId: notification.Result.UserId,
+                title: "Two-Factor Authentication Disabled",
+                message: "Two-factor authentication has been disabled for your account.",
+                type: NotificationType.TwoFactorDisabled,
                 priority: NotificationPriority.High,
                 actionUrl: "/settings/security");
 
@@ -31,7 +32,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.Password.ChangeP
                 return;
 
             await _notificationRealtimeService.SendToUserAsync(
-                notification.PasswordChangedResult.UserId,
+                notification.Result.UserId,
                 new
                 {
                     notificationResult.Value.Id,
@@ -44,8 +45,9 @@ namespace MasarHub.Application.Features.Authentication.Commands.Password.ChangeP
                 },
                 cancellationToken);
 
+
             _backgroundJobService.Enqueue<ICreateNotificationJob>(x =>
-                    x.ExecuteAsync(CreateNotificationRequest.ForUser(notificationResult.Value)));
+                x.ExecuteAsync(CreateNotificationRequest.ForUser(notificationResult.Value)));
         }
     }
 }
