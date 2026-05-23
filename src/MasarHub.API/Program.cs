@@ -1,4 +1,5 @@
 using MasarHub.API.Extensions;
+using MasarHub.API.Middlewares;
 using MasarHub.Application.Extensions;
 using MasarHub.Infrastructure.Extensions;
 using Serilog;
@@ -31,9 +32,11 @@ namespace MasarHub.API
 
                 var app = builder.Build();
 
+                app.UseMiddleware<CultureMiddleware>();
+                app.UseMiddleware<GlobalExceptionMiddleware>();
                 app.UseSerilogRequestLogging();
-
                 await app.UseApiPipeline();
+
                 app.Run();
             }
             catch (Exception ex)

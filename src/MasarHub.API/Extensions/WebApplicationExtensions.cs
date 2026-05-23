@@ -1,5 +1,4 @@
 ﻿using Hangfire;
-using MasarHub.API.Middlewares;
 using MasarHub.Application.Abstractions.Persistence;
 using MasarHub.Application.Settings;
 using MasarHub.Infrastructure.Extensions;
@@ -26,7 +25,6 @@ namespace MasarHub.API.Extensions
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseMiddleware<CultureMiddleware>();
 
             app.UseForwardedHeaders();
             app.UseRateLimiter();
