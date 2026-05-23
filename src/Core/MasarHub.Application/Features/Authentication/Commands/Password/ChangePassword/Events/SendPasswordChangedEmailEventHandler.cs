@@ -4,12 +4,12 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword.Events
 {
-    public sealed class SendPasswordChangedEventHandler : INotificationHandler<PasswordChangedEvent>
+    public sealed class SendPasswordChangedEmailEventHandler : INotificationHandler<PasswordChangedEvent>
     {
         private readonly IAppEmailService _appEmailService;
         private readonly IBackgroundJobService _backgroundJobService;
 
-        public SendPasswordChangedEventHandler(IAppEmailService emailService, IBackgroundJobService backgroundJobService)
+        public SendPasswordChangedEmailEventHandler(IAppEmailService emailService, IBackgroundJobService backgroundJobService)
         {
             _appEmailService = emailService;
             _backgroundJobService = backgroundJobService;

@@ -4,6 +4,7 @@
     {
         InstructorRegistration,
         EmailConfirmation,
+        PasswordChanged,
         CourseApproval,
         OrderCreated,
         PaymentReceived
