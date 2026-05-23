@@ -7,6 +7,7 @@
         PasswordChanged,
         TwoFactorEnabled,
         TwoFactorDisabled,
+        RecoveryCodeUsed,
         CourseApproval,
         OrderCreated,
         PaymentReceived
