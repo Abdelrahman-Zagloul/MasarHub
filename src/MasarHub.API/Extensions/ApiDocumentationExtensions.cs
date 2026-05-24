@@ -1,18 +1,20 @@
 using MasarHub.API.Filters;
 using Microsoft.OpenApi;
+using Scalar.AspNetCore;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 namespace MasarHub.API.Extensions
 {
-    public static class SwaggerExtensions
+    public static class ApiDocumentationExtensions
     {
-        public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
+        public static IServiceCollection AddApiDocumentation(this IServiceCollection services)
         {
             services.AddEndpointsApiExplorer();
 
             services.AddSwaggerGen(options =>
             {
                 options.OperationFilter<RemoveApiVersionParametersFilter>();
+                options.OperationFilter<AcceptLanguageHeaderFilter>();
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "MasarHub API",
@@ -37,7 +39,12 @@ namespace MasarHub.API.Extensions
                     Scheme = "bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter JWT token like: Bearer {your token}"
+                    Description = "Enter JWT token"
+                });
+
+                options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+                {
+                    [new OpenApiSecuritySchemeReference("Bearer", document, null)] = []
                 });
             });
 
@@ -59,5 +66,18 @@ namespace MasarHub.API.Extensions
 
             return app;
         }
+        public static WebApplication UseScalarDocumentation(this WebApplication app)
+        {
+            app.MapScalarApiReference("/scalar", options =>
+            {
+                options
+                    .WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json")
+                    .AddPreferredSecuritySchemes("Bearer")
+                    .AddHttpAuthentication("Bearer", _ => { })
+                    .EnablePersistentAuthentication();
+            });
+            return app;
+        }
+
     }
 }

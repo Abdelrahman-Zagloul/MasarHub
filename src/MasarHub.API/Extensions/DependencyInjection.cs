@@ -10,7 +10,7 @@ namespace MasarHub.API.Extensions
                 .AddTransient<CultureMiddleware>()
                 .AddJwtAuthentication(configuration)
                 .AddCorsPolicy(configuration)
-                .AddSwaggerDocumentation()
+                .AddApiDocumentation()
                 .AddSignalRServices()
                 .AddProblemDetails()
                 .AddVersioning()

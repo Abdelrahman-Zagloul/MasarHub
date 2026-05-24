@@ -2,7 +2,6 @@
 using MasarHub.Application.Abstractions.Persistence.Seeding;
 using MasarHub.Application.Settings;
 using MasarHub.Infrastructure.Extensions;
-using Scalar.AspNetCore;
 
 namespace MasarHub.API.Extensions
 {
@@ -14,7 +13,7 @@ namespace MasarHub.API.Extensions
             {
                 app.MapOpenApi();
                 app.UseSwaggerDocumentation();
-                app.MapScalarApiReference();
+                app.UseScalarDocumentation();
                 app.UseCors(CorsSettings.DevelopmentPolicy);
             }
             else
