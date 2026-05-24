@@ -1,4 +1,5 @@
 ﻿using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 using MasarHub.Domain.Modules.Categories.Events;
@@ -51,7 +52,7 @@ namespace MasarHub.Domain.Modules.Categories
                 return error;
 
             if (parent.Level >= 3)
-                return CategoryErrors.MaxDepth;
+                return new DomainError("category.max_depth", "Level");
 
 
             return new Category(name, slug, parent.Level + 1, displayOrder, parent.Id);

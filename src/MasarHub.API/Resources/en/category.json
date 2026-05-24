@@ -1,0 +1,12 @@
+{
+  "Name": "Name",
+  "Slug": "Slug",
+  "DisplayOrder": "Display order",
+  "ParentCategoryId": "Parent category",
+
+  "category.created": "Category created successfully.",
+  "category.not_found": "Category not found.",
+  "category.slug_already_exists": "A category with the same name already exists here. Try a different name.",
+  "category.parent_not_found": "Parent category was not found.",
+  "category.max_depth": "Category depth cannot be greater than 3 levels."
+}

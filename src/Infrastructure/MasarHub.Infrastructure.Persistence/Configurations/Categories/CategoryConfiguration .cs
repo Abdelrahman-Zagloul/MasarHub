@@ -43,8 +43,13 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Categories
                    .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasIndex(c => c.ParentCategoryId);
+            builder.HasIndex(c => c.Slug)
+                   .IsUnique()
+                   .HasFilter("[ParentCategoryId] IS NULL");
+
             builder.HasIndex(c => new { c.ParentCategoryId, c.Slug })
-                .IsUnique();
+                   .IsUnique()
+                   .HasFilter("[ParentCategoryId] IS NOT NULL");
 
         }
     }
