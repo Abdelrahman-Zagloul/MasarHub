@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Features.Categories.Queries.GetCategoryById;
 using MasarHub.Domain.Modules.Categories;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
@@ -114,6 +115,31 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: ct);
             using var multi = await connection.QueryMultipleAsync(command);
             return (await multi.ReadFirstAsync<bool>(), await multi.ReadFirstAsync<bool>());
+        }
+        public async Task<CategoryWithChildrenResponse?> GetWithChildrenByIdAsync(Guid id, CancellationToken ct = default)
+        {
+            const string sql = @"
+                -- Get the category
+                SELECT Id, Name, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
+                FROM categories.Categories
+                WHERE Id = @Id;
+
+                -- Get child categories
+                SELECT Id, Name, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
+                FROM categories.Categories
+                WHERE ParentCategoryId = @Id
+                ORDER BY DisplayOrder;";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var category = await multi.ReadFirstOrDefaultAsync<CategoryResponse>();
+            if (category is null)
+                return null;
+
+            var children = (await multi.ReadAsync<CategoryResponse>()).ToList();
+            return new CategoryWithChildrenResponse(category, children);
         }
     }
 }
