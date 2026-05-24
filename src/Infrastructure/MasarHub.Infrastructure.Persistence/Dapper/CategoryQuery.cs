@@ -141,5 +141,51 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var children = (await multi.ReadAsync<CategoryResponse>()).ToList();
             return new CategoryWithChildrenResponse(category, children);
         }
+        public async Task<(int TotalCount, List<CategoryResponse> Categories)> GetAllAsync(
+            int pageNumber,
+            int pageSize,
+            string? categoryName,
+            int? level,
+            CancellationToken ct = default)
+        {
+            const string sql = @"
+                -- Get total count for pagination
+                SELECT COUNT(*)
+                FROM categories.Categories
+                WHERE (@Level IS NULL OR Level = @Level)
+                    AND (
+                        @CategoryName  IS NULL
+                        OR Name LIKE '%' + @CategoryName  + '%'
+                    );
+
+                -- Get paginated results
+                SELECT Id, Name, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
+                FROM categories.Categories
+                WHERE (@Level IS NULL OR Level = @Level)
+                    AND (
+                        @CategoryName  IS NULL
+                        OR Name LIKE '%' + @CategoryName  + '%'
+                    )
+                ORDER BY Level, DisplayOrder
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+
+            var offset = (pageNumber - 1) * pageSize;
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(
+                sql,
+                new
+                {
+                    CategoryName = categoryName,
+                    Level = level,
+                    Offset = offset,
+                    PageSize = pageSize
+                },
+                cancellationToken: ct);
+
+            using var multi = await connection.QueryMultipleAsync(command);
+            var totalCount = await multi.ReadFirstAsync<int>();
+            var categories = (await multi.ReadAsync<CategoryResponse>()).ToList();
+            return (totalCount, categories);
+        }
     }
 }

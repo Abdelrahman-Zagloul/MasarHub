@@ -5,6 +5,7 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Categories.Commands.CreateCategory;
 using MasarHub.Application.Features.Categories.Commands.DeleteCategory;
 using MasarHub.Application.Features.Categories.Commands.UpdateCategoryName;
+using MasarHub.Application.Features.Categories.Queries.GetCategories;
 using MasarHub.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -40,6 +41,16 @@ namespace MasarHub.API.Controllers.V1
             });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, string? categoryName = null, int? level = null)
+        {
+            var result = await _mediator.Send(new GetCategoriesQuery(pageNumber, pageSize, categoryName, level));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
+        }
+
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -50,7 +61,7 @@ namespace MasarHub.API.Controllers.V1
             return Ok(result.Value);
         }
 
-        [HttpPut("{id:guid}/name")]
+        [HttpPut("{id:guid}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> UpdateName(Guid id, UpdateCategoryNameRequest request)
         {

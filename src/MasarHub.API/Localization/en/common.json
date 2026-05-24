@@ -15,6 +15,9 @@
   "validation.invalid_enum": "{PropertyName} is invalid",
   "validation.invalid_guid": "{PropertyName} is invalid",
   "validation.invalid_url": "The URL format is invalid.",
+  "validation.page_number_invalid": "Page number must be greater than 0.",
+  "validation.page_size_invalid": "Page size must be greater than 0.",
+  "validation.page_size_too_large": "Page size must be less than 50",
 
   "TooManyRequests": "Too many requests. Please try again in a few minutes.",
 

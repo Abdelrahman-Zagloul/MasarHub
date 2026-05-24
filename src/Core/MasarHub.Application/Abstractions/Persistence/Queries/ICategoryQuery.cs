@@ -11,5 +11,6 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<CategoryWithChildrenResponse?> GetWithChildrenByIdAsync(Guid id, CancellationToken ct = default);
         Task<(int DisplayOrder, bool SlugExists)> GetCreationDataAsync(string slug, Guid? parentCategoryId, CancellationToken ct = default);
         Task<(bool hasChildren, bool hasCourses)> CanDeleteAsync(Guid id, CancellationToken ct = default);
+        Task<(int TotalCount, List<CategoryResponse> Categories)> GetAllAsync(int pageNumber, int pageSize, string? categoryName, int? level, CancellationToken ct = default);
     }
 }

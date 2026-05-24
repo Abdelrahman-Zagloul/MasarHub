@@ -9,13 +9,13 @@ namespace MasarHub.Application.Common.Pagination
 
             RuleFor(x => x.PageNumber)
                 .GreaterThan(0)
-                .WithMessage("Page number must be greater than 0.");
+                .WithErrorCode("validation.page_number_invalid");
 
             RuleFor(x => x.PageSize)
                 .GreaterThan(0)
-                .WithMessage("Page size must be greater than 0.")
+                .WithErrorCode("validation.page_size_invalid")
                 .LessThanOrEqualTo(50)
-                .WithMessage("Page size must be less than 50");
+                .WithErrorCode("validation.page_size_too_large");
         }
     }
 }

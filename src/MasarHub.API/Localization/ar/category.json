@@ -10,6 +10,7 @@
   "category.not_found": "القسم غير موجود.",
   "category.has_children": "لا يمكن حذف القسم لأنه يحتوي على أقسام فرعية.",
   "category.has_courses": "لا يمكن حذف القسم لأنه يحتوي على دورات.",
+  "category.invalid_level": "يجب أن يكون مستوى القسم بين 1 و 3.",
   "category.slug_already_exists": "يوجد تصنيف بنفس الاسم هنا بالفعل. حاول اختيار اسم مختلف.",
   "category.parent_not_found": "القسم الأب غير موجود.",
   "category.max_depth": "لا يمكن أن يتجاوز عمق الأقسام 3 مستويات."
