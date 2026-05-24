@@ -2,7 +2,6 @@
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
-using MasarHub.Domain.Modules.Categories.Events;
 
 namespace MasarHub.Domain.Modules.Categories
 {
@@ -24,8 +23,6 @@ namespace MasarHub.Domain.Modules.Categories
             Level = level;
             DisplayOrder = displayOrder;
             ParentCategoryId = parentCategoryId;
-
-            RaiseDomainEvent(new CategoryCreatedEvent(Id));
         }
         public static Result<Category> CreateRoot(string name, string slug, int displayOrder)
         {

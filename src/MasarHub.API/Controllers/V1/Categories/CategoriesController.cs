@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Categories.Commands.CreateCategory;
+using MasarHub.Application.Features.Categories.Commands.DeleteCategory;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,6 +36,17 @@ namespace MasarHub.API.Controllers.V1.Categories
                 Message = await _localizationService.GetAsync("category.created"),
                 Category = result.Value
             });
+        }
+
+        [HttpDelete("{id:guid}")]
+        [Authorize(Roles = Roles.Admin)]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _mediator.Send(new DeleteCategoryCommand(id));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return await SuccessMessage("category.deleted");
         }
     }
 }

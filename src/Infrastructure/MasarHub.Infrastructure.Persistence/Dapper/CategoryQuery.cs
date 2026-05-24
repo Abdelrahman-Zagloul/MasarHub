@@ -71,7 +71,6 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             ";
 
             using var connection = _connectionFactory.CreateConnection();
-
             var command = new CommandDefinition(
                 sql,
                 new
@@ -82,8 +81,39 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 cancellationToken: ct);
 
             using var multi = await connection.QueryMultipleAsync(command);
-
             return (await multi.ReadFirstAsync<int>(), await multi.ReadFirstAsync<bool>());
+        }
+        public async Task<(bool hasChildren, bool hasCourses)> CanDeleteAsync(Guid id, CancellationToken ct = default)
+        {
+            const string sql = @"
+                 -- Check for child categories
+                 SELECT CASE
+                     WHEN EXISTS (
+                         SELECT 1
+                         FROM categories.Categories
+                         WHERE ParentCategoryId = @Id
+                     )
+                     THEN CAST(1 AS BIT)
+                     ELSE CAST(0 AS BIT)
+                 END;
+
+
+                -- Check for associated courses
+                SELECT CASE
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM courses.Courses
+                        WHERE CategoryId = @Id
+                    )
+                    THEN CAST(1 AS BIT)
+                    ELSE CAST(0 AS BIT)
+                END;
+             ";
+            using var connection = _connectionFactory.CreateConnection();
+
+            var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+            return (await multi.ReadFirstAsync<bool>(), await multi.ReadFirstAsync<bool>());
         }
     }
 }

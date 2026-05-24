@@ -7,7 +7,9 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
     {
         Task<bool> CategoryExistsAsync(Guid id, CancellationToken ct = default);
         Task<Category?> GetByIdAsync(Guid id, CancellationToken ct = default);
+
         Task<(int DisplayOrder, bool SlugExists)> GetCreationDataAsync(string slug, Guid? parentCategoryId, CancellationToken ct = default);
+        Task<(bool hasChildren, bool hasCourses)> CanDeleteAsync(Guid id, CancellationToken ct = default);
 
     }
 }

@@ -5,7 +5,10 @@
   "ParentCategoryId": "القسم الأب",
 
   "category.created": "تم إنشاء القسم بنجاح.",
+  "category.deleted": "تم حذف القسم بنجاح.",
   "category.not_found": "القسم غير موجود.",
+  "category.has_children": "لا يمكن حذف القسم لأنه يحتوي على أقسام فرعية.",
+  "category.has_courses": "لا يمكن حذف القسم لأنه يحتوي على دورات.",
   "category.slug_already_exists": "يوجد تصنيف بنفس الاسم هنا بالفعل. حاول اختيار اسم مختلف.",
   "category.parent_not_found": "القسم الأب غير موجود.",
   "category.max_depth": "لا يمكن أن يتجاوز عمق الأقسام 3 مستويات."
