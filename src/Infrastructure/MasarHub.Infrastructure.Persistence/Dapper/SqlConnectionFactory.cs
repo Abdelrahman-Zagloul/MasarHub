@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Abstractions.Queries;
+﻿using MasarHub.Application.Abstractions.Persistence.Queries;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Data;

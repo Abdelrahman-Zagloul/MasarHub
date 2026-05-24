@@ -1,5 +1,5 @@
 ﻿using MasarHub.API.Extensions;
-using MasarHub.Application.Abstractions.Localization;
+using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -23,7 +23,7 @@ namespace MasarHub.API.Controllers.Shared
         protected Dictionary<string, string> GetQueryParams() => Request.Query.ToDictionary(x => x.Key, x => x.Value.ToString());
 
         protected async Task<IActionResult> HandleError(Result result)
-            => await Common.ProblemDetailsFactory.CreateAsync(result, this, _localizationService);
+            => await Errors.ProblemDetailsFactory.CreateAsync(result, this, _localizationService);
         protected async Task<OkObjectResult> SuccessMessage(string code)
             => Ok(new { Message = await _localizationService.GetAsync(code) });
     }

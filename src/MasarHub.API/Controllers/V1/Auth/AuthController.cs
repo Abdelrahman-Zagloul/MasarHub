@@ -1,5 +1,5 @@
 ﻿using MasarHub.API.Extensions;
-using MasarHub.Application.Abstractions.Localization;
+using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Features.Authentication.Commands.Account.ExternalLogin;
 using MasarHub.Application.Features.Authentication.Commands.Account.Login;
 using MasarHub.Application.Features.Authentication.Commands.Account.Logout;

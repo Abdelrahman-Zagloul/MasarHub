@@ -1,6 +1,6 @@
 ﻿using Hangfire;
 using Hangfire.SqlServer;
-using MasarHub.Infrastructure.Localization;
+using MasarHub.Infrastructure.Services.Localization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

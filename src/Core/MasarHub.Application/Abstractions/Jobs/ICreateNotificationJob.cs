@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Common.DI;
+﻿using MasarHub.Application.Common.DependencyInjection;
 using MasarHub.Application.Common.Models.Notifications;
 
 namespace MasarHub.Application.Abstractions.Jobs

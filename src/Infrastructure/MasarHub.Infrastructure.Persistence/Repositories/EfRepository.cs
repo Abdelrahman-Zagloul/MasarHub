@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Abstractions.Persistence;
+﻿using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Domain.Common.Base;
 using MasarHub.Infrastructure.Persistence.Contexts;
 using Microsoft.EntityFrameworkCore;

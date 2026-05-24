@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Common.DI;
+﻿using MasarHub.Application.Common.DependencyInjection;
 using System.Linq.Expressions;
 
 namespace MasarHub.Application.Abstractions.ExternalServices

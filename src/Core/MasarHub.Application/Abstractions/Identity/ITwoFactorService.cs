@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Common.DI;
+﻿using MasarHub.Application.Common.DependencyInjection;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.DisableTwoFactor;
 using MasarHub.Application.Features.Authentication.Commands.TwoFactor.EnableTwoFactor;

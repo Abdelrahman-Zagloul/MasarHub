@@ -1,6 +1,6 @@
 using MasarHub.Application.Abstractions.ExternalServices;
 using MasarHub.Application.Abstractions.Jobs;
-using MasarHub.Application.Abstractions.Persistence;
+using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Application.Abstractions.Services;
 using MasarHub.Application.Common.Extensions;
 using MasarHub.Application.Common.Models.Notifications;

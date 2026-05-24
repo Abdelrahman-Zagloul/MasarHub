@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using MasarHub.Application.Common.Validation;
+using MasarHub.Application.Common.Extensions;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Password.VerifyPassword
 {

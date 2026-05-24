@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Common.Constants;
+﻿using MasarHub.Application.Common.Models;
 using Microsoft.AspNetCore.SignalR;
 
 namespace MasarHub.API.SignalR.Hubs

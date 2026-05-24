@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Abstractions.Persistence;
+﻿using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Infrastructure.Persistence.Contexts;
 
 namespace MasarHub.Infrastructure.Persistence.Repositories

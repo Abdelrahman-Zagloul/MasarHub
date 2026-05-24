@@ -1,5 +1,5 @@
 ﻿using MasarHub.Application.Abstractions.Identity;
-using MasarHub.Application.Abstractions.Persistence;
+using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Authentication.Commands.Account.RegisterInstructor.Events;

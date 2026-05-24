@@ -1,6 +1,6 @@
 using MasarHub.Application.Abstractions.ExternalServices;
 using MasarHub.Application.Abstractions.Services;
-using MasarHub.Application.Common.Constants;
+using MasarHub.Application.Common.Models;
 using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail.Events

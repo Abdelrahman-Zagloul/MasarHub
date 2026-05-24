@@ -1,5 +1,5 @@
 ﻿using Dapper;
-using MasarHub.Application.Abstractions.Queries;
+using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Domain.Modules.Categories;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper

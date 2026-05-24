@@ -1,5 +1,5 @@
 ﻿using Hangfire;
-using MasarHub.Infrastructure.Localization;
+using MasarHub.Infrastructure.Services.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

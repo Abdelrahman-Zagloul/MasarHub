@@ -1,5 +1,5 @@
 ﻿using Hangfire;
-using MasarHub.Application.Abstractions.Persistence;
+using MasarHub.Application.Abstractions.Persistence.Seeding;
 using MasarHub.Application.Settings;
 using MasarHub.Infrastructure.Extensions;
 using Scalar.AspNetCore;

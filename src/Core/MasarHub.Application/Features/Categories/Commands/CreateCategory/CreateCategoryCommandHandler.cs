@@ -1,8 +1,8 @@
-using MasarHub.Application.Abstractions.Persistence;
-using MasarHub.Application.Abstractions.Queries;
-using MasarHub.Application.Common.Helpers;
+using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
+using MasarHub.Application.Common.Utilities;
 using MasarHub.Domain.Modules.Categories;
 using MediatR;
 using CategoryResult = MasarHub.Domain.Common.Results.Result<MasarHub.Domain.Modules.Categories.Category>;

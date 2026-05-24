@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Common.Events;
+﻿using MasarHub.Application.Common.DomainEvents;
 using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Events;
 using MasarHub.Infrastructure.Persistence.Configurations.Identity;

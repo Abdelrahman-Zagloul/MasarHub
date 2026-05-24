@@ -1,6 +1,6 @@
 ﻿using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
-using MasarHub.Application.Abstractions.Localization;
+using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Features.Authentication.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Abstractions.Localization;
+﻿using MasarHub.Application.Abstractions.Services.Localization;
 using Microsoft.AspNetCore.RateLimiting;
 using System.Threading.RateLimiting;
 

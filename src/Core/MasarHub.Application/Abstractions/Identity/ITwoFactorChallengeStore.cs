@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Common.DI;
+﻿using MasarHub.Application.Common.DependencyInjection;
 using MasarHub.Domain.Modules.Profiles;
 
 namespace MasarHub.Application.Abstractions.Identity

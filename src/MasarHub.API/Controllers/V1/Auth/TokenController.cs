@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Abstractions.Localization;
+﻿using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Features.Authentication.Commands.Token.RefreshToken;
 using MasarHub.Application.Features.Authentication.Commands.Token.RevokeToken;
 using MediatR;
