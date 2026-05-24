@@ -9,7 +9,7 @@ namespace MasarHub.API.Controllers.Shared
 {
     [ApiController]
     [Route("api/[controller]")]
-    [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
+    [EnableRateLimiting(RateLimitingPolicies.Global)]
     public abstract class ApiBaseController : ControllerBase
     {
         protected readonly ILocalizationService _localizationService;

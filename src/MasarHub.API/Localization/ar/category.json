@@ -5,6 +5,7 @@
   "ParentCategoryId": "القسم الأب",
 
   "category.created": "تم إنشاء القسم بنجاح.",
+  "category.updated": "تم تحديث القسم بنجاح.",
   "category.deleted": "تم حذف القسم بنجاح.",
   "category.not_found": "القسم غير موجود.",
   "category.has_children": "لا يمكن حذف القسم لأنه يحتوي على أقسام فرعية.",

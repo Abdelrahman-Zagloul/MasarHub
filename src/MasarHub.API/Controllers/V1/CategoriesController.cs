@@ -4,11 +4,12 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Categories.Commands.CreateCategory;
 using MasarHub.Application.Features.Categories.Commands.DeleteCategory;
+using MasarHub.Application.Features.Categories.Commands.UpdateCategoryName;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MasarHub.API.Controllers.V1.Categories
+namespace MasarHub.API.Controllers.V1
 {
     [ApiVersion(1.0)]
     [Tags("Categories")]
@@ -38,6 +39,17 @@ namespace MasarHub.API.Controllers.V1.Categories
             });
         }
 
+        [HttpPut("{id:guid}/name")]
+        [Authorize(Roles = Roles.Admin)]
+        public async Task<IActionResult> UpdateName(Guid id, UpdateCategoryNameRequest request)
+        {
+            var result = await _mediator.Send(new UpdateCategoryNameCommand(id, request.Name));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return await SuccessMessage("category.updated");
+        }
+
         [HttpDelete("{id:guid}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> Delete(Guid id)
@@ -49,4 +61,5 @@ namespace MasarHub.API.Controllers.V1.Categories
             return await SuccessMessage("category.deleted");
         }
     }
+
 }

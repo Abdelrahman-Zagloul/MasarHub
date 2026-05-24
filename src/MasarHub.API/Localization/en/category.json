@@ -5,6 +5,7 @@
   "ParentCategoryId": "Parent category",
 
   "category.created": "Category created successfully.",
+  "category.updated": "Category updated successfully.",
   "category.deleted": "Category deleted successfully.",
   "category.not_found": "Category not found.",
   "category.has_children": "Category cannot be deleted because it has child categories.",
