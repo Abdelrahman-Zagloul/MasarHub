@@ -17,7 +17,7 @@ namespace MasarHub.Domain.Modules.Profiles
             Url = url;
         }
 
-        public static Result<SocialLink> Create(string platform, string url)
+        public static DomainResult<SocialLink> Create(string platform, string url)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstNullOrWhiteSpace(platform, nameof(platform)),

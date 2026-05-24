@@ -23,7 +23,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             CourseId = courseId;
         }
 
-        public static Result<LessonProgress> Create(Guid userId, Guid lessonId, Guid moduleId, Guid courseId)
+        public static DomainResult<LessonProgress> Create(Guid userId, Guid lessonId, Guid moduleId, Guid courseId)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(userId, nameof(userId)),
@@ -38,25 +38,25 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             return new LessonProgress(userId, lessonId, moduleId, courseId);
         }
 
-        public Result MarkCompleted()
+        public DomainResult MarkCompleted()
         {
             if (IsCompleted)
-                return Result.Success();
+                return DomainResult.Success();
 
             IsCompleted = true;
             CompletedAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Reset()
+        public DomainResult Reset()
         {
             IsCompleted = false;
             CompletedAt = null;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
     }
 }

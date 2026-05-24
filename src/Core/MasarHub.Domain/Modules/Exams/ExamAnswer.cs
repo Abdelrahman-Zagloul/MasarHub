@@ -25,7 +25,7 @@ namespace MasarHub.Domain.Modules.Exams
                 _selectedOptions.Add(new ExamAnswerOptionBuilder(Id, selectedOptionId).Build());
         }
 
-        public static Result<ExamAnswer> Create(Guid examAttemptId, Guid questionId, IEnumerable<Guid> selectedOptionIds)
+        public static DomainResult<ExamAnswer> Create(Guid examAttemptId, Guid questionId, IEnumerable<Guid> selectedOptionIds)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(examAttemptId, nameof(examAttemptId)),
@@ -50,7 +50,7 @@ namespace MasarHub.Domain.Modules.Exams
             return new ExamAnswer(examAttemptId, questionId, optionIds);
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
 
         private sealed class ExamAnswerOptionBuilder
         {

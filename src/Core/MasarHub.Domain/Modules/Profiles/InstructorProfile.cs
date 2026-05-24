@@ -24,7 +24,7 @@ namespace MasarHub.Domain.Modules.Profiles
             VerificationStatus = VerificationStatus.Pending;
         }
 
-        public static Result<InstructorProfile> Create(Guid userId, string headline, string? bio, string? company)
+        public static DomainResult<InstructorProfile> Create(Guid userId, string headline, string? bio, string? company)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(userId, nameof(userId)),
@@ -37,7 +37,7 @@ namespace MasarHub.Domain.Modules.Profiles
             return new InstructorProfile(userId, headline, bio, company);
         }
 
-        public Result UpdateHeadline(string headline)
+        public DomainResult UpdateHeadline(string headline)
         {
             var error = Guard.AgainstNullOrWhiteSpace(headline, nameof(headline));
             if (error is not null)
@@ -45,21 +45,21 @@ namespace MasarHub.Domain.Modules.Profiles
 
             Headline = headline;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
-        public Result UpdateBio(string? bio)
+        public DomainResult UpdateBio(string? bio)
         {
             Bio = bio;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
-        public Result UpdateCompany(string? company)
+        public DomainResult UpdateCompany(string? company)
         {
             Company = company;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
-        public Result Approve()
+        public DomainResult Approve()
         {
             if (VerificationStatus == VerificationStatus.Approved)
                 return ProfileErrors.AlreadyApproved;
@@ -67,19 +67,19 @@ namespace MasarHub.Domain.Modules.Profiles
             VerificationStatus = VerificationStatus.Approved;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
-        public Result Reject()
+        public DomainResult Reject()
         {
             if (VerificationStatus == VerificationStatus.Rejected)
                 return ProfileErrors.AlreadyRejected;
 
             VerificationStatus = VerificationStatus.Rejected;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result AddSocialLink(SocialLink socialLink)
+        public DomainResult AddSocialLink(SocialLink socialLink)
         {
             var error = Guard.AgainstNull(socialLink, nameof(socialLink));
             if (error is not null)
@@ -93,17 +93,17 @@ namespace MasarHub.Domain.Modules.Profiles
 
             _socialLinks.Add(socialLink);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
-        public Result RemoveSocialLink(string url)
+        public DomainResult RemoveSocialLink(string url)
         {
             var link = _socialLinks.FirstOrDefault(x => x.Url == url);
             if (link is null)
-                return Result.Success();
+                return DomainResult.Success();
 
             _socialLinks.Remove(link);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
     }
 }

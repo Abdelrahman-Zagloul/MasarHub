@@ -43,7 +43,7 @@ namespace MasarHub.Domain.Modules.Notifications
             ResourceId = resourceId;
         }
 
-        public static Result<Notification> CreateForRole(
+        public static DomainResult<Notification> CreateForRole(
             UserRole targetRole,
             string title,
             string message,
@@ -80,7 +80,7 @@ namespace MasarHub.Domain.Modules.Notifications
                 resourceId);
         }
 
-        public static Result<Notification> CreateForUser(
+        public static DomainResult<Notification> CreateForUser(
             Guid userId,
             string title,
             string message,

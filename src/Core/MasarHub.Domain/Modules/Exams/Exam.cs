@@ -38,7 +38,7 @@ namespace MasarHub.Domain.Modules.Exams
             DurationInMinutes = durationMinutes;
         }
 
-        public static Result<Exam> Create(
+        public static DomainResult<Exam> Create(
             Guid courseId,
             string title,
             int passingScorePercentage,
@@ -75,7 +75,7 @@ namespace MasarHub.Domain.Modules.Exams
             return new Exam(courseId, title, passingScorePercentage, maxAttempts, moduleId, description, durationMinutes);
         }
 
-        public Result UpdateTitle(string title)
+        public DomainResult UpdateTitle(string title)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -87,10 +87,10 @@ namespace MasarHub.Domain.Modules.Exams
 
             Title = title;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateDescription(string? description)
+        public DomainResult UpdateDescription(string? description)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -98,10 +98,10 @@ namespace MasarHub.Domain.Modules.Exams
 
             Description = description;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result SetPassingScore(int passingScorePercentage)
+        public DomainResult SetPassingScore(int passingScorePercentage)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -112,10 +112,10 @@ namespace MasarHub.Domain.Modules.Exams
 
             PassingScorePercentage = passingScorePercentage;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result SetDuration(int? durationMinutes)
+        public DomainResult SetDuration(int? durationMinutes)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -130,10 +130,10 @@ namespace MasarHub.Domain.Modules.Exams
 
             DurationInMinutes = durationMinutes;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result AddQuestion(Question question)
+        public DomainResult AddQuestion(Question question)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -148,10 +148,10 @@ namespace MasarHub.Domain.Modules.Exams
 
             _questions.Add(question);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Publish()
+        public DomainResult Publish()
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -162,20 +162,20 @@ namespace MasarHub.Domain.Modules.Exams
 
             IsPublished = true;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Unpublish(bool hasSubmissions)
+        public DomainResult Unpublish(bool hasSubmissions)
         {
             if (!IsPublished)
-                return Result.Success();
+                return DomainResult.Success();
 
             if (hasSubmissions)
                 return ExamErrors.CannotUnpublishAfterAttempts;
 
             IsPublished = false;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
         public decimal TotalMarks() => _questions.Sum(q => q.QuestionMark);
@@ -184,13 +184,13 @@ namespace MasarHub.Domain.Modules.Exams
 
         public bool CanAttempt(int currentAttempts) => currentAttempts < MaxAttempts;
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
 
-        private Result EnsureDraft()
+        private DomainResult EnsureDraft()
         {
             return IsPublished
                 ? ExamErrors.CannotModifyPublishedExam
-                : Result.Success();
+                : DomainResult.Success();
         }
 
         private static bool IsValidPassingScore(int passingScorePercentage)

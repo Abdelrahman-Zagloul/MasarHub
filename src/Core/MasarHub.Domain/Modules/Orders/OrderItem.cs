@@ -24,7 +24,7 @@ namespace MasarHub.Domain.Modules.Orders
             FinalPrice = Math.Round(originalPrice - discountAmount, 2);
         }
 
-        public static Result<OrderItem> Create(
+        public static DomainResult<OrderItem> Create(
             Guid courseId,
             string courseTitle,
             decimal originalPrice,

@@ -1,4 +1,5 @@
 ﻿using MasarHub.Application.Common.Results.Errors;
+using MasarHub.Domain.Common.Errors;
 
 namespace MasarHub.Application.Common.Results
 {
@@ -32,7 +33,7 @@ namespace MasarHub.Application.Common.Results
 
         // Implicit conversions
         public static implicit operator Result(Error error) => Failure(error);
-
+        public static implicit operator Result(DomainError error) => Failure(error);
         public static implicit operator Result(List<Error> errors) => Failure(errors);
     }
 }

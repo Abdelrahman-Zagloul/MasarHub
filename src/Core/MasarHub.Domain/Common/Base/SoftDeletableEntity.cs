@@ -8,7 +8,7 @@ namespace MasarHub.Domain.Common.Base
         public bool IsDeleted { get; private set; }
         public DateTimeOffset? DeletedAt { get; private set; }
 
-        protected Result MarkAsDeleted()
+        protected DomainResult MarkAsDeleted()
         {
             if (IsDeleted)
                 return DomainError.AlreadyDeleted();
@@ -17,10 +17,10 @@ namespace MasarHub.Domain.Common.Base
             DeletedAt = DateTimeOffset.UtcNow;
 
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        protected Result Restore()
+        protected DomainResult Restore()
         {
             if (!IsDeleted)
                 return DomainError.NotDeleted();
@@ -29,7 +29,7 @@ namespace MasarHub.Domain.Common.Base
             DeletedAt = null;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
     }
 }

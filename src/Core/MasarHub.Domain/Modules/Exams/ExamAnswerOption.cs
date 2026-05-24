@@ -16,7 +16,7 @@ namespace MasarHub.Domain.Modules.Exams
             OptionId = optionId;
         }
 
-        public static Result<ExamAnswerOption> Create(Guid examAnswerId, Guid optionId)
+        public static DomainResult<ExamAnswerOption> Create(Guid examAnswerId, Guid optionId)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(examAnswerId, nameof(examAnswerId)),

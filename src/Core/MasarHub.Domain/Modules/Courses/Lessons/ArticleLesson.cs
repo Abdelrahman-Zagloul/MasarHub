@@ -15,7 +15,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             Content = content;
         }
 
-        public static Result<ArticleLesson> Create(Guid moduleId, string title, int order, string? description, string content)
+        public static DomainResult<ArticleLesson> Create(Guid moduleId, string title, int order, string? description, string content)
         {
             var error = GuardExtensions.FirstError(
                 ValidateLesson(moduleId, title, order),
@@ -28,7 +28,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             return new ArticleLesson(moduleId, title, order, description, content);
         }
 
-        public Result UpdateContent(string content)
+        public DomainResult UpdateContent(string content)
         {
             var error = Guard.AgainstNullOrWhiteSpace(content, nameof(content));
             if (error is not null)
@@ -36,7 +36,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
             Content = content;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
     }
 }

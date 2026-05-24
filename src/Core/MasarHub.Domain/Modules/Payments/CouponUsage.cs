@@ -19,7 +19,7 @@ namespace MasarHub.Domain.Modules.Payments
             UsedAt = DateTimeOffset.UtcNow;
         }
 
-        public static Result<CouponUsage> Create(Guid couponId, Guid userId)
+        public static DomainResult<CouponUsage> Create(Guid couponId, Guid userId)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(couponId, nameof(couponId)),

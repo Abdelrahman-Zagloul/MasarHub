@@ -26,7 +26,7 @@ namespace MasarHub.Domain.Modules.Exams
             QuestionType = questionType;
         }
 
-        public static Result<Question> Create(
+        public static DomainResult<Question> Create(
             Guid examId,
             string questionText,
             decimal questionMark,
@@ -52,7 +52,7 @@ namespace MasarHub.Domain.Modules.Exams
                 : question;
         }
 
-        private Result SetOptions(IEnumerable<OptionInput> options)
+        private DomainResult SetOptions(IEnumerable<OptionInput> options)
         {
             var optionInputs = options.ToList();
             if (!optionInputs.Any())
@@ -75,7 +75,7 @@ namespace MasarHub.Domain.Modules.Exams
             return EnsureValid();
         }
 
-        private Result ValidateOptionRules(Option option)
+        private DomainResult ValidateOptionRules(Option option)
         {
             switch (QuestionType)
             {
@@ -101,10 +101,10 @@ namespace MasarHub.Domain.Modules.Exams
                     return ExamErrors.InvalidQuestionType;
             }
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        private Result EnsureValid()
+        private DomainResult EnsureValid()
         {
             if (!_options.Any())
                 return ExamErrors.QuestionMustHaveOptions;
@@ -133,7 +133,7 @@ namespace MasarHub.Domain.Modules.Exams
                     break;
             }
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
         private bool HasCorrectOption() => _options.Any(o => o.IsCorrect);

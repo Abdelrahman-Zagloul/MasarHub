@@ -18,7 +18,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             DurationInSeconds = duration;
         }
 
-        public static Result<VideoLesson> Create(Guid moduleId, string title, int order, string? description, string videoPublicId, int duration)
+        public static DomainResult<VideoLesson> Create(Guid moduleId, string title, int order, string? description, string videoPublicId, int duration)
         {
             var error = GuardExtensions.FirstError(
                 ValidateLesson(moduleId, title, order),
@@ -32,11 +32,11 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             return new VideoLesson(moduleId, title, order, description, videoPublicId, duration);
         }
 
-        public Result UpdateThumbnail(string? thumbnailPublicId)
+        public DomainResult UpdateThumbnail(string? thumbnailPublicId)
         {
             ThumbnailPublicId = thumbnailPublicId;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
     }
 }

@@ -35,7 +35,7 @@ namespace MasarHub.Domain.Modules.Courses
             IsPublished = false;
         }
 
-        public static Result<CourseAnnouncement> Create(
+        public static DomainResult<CourseAnnouncement> Create(
             Guid courseId,
             Guid instructorId,
             string title,
@@ -56,7 +56,7 @@ namespace MasarHub.Domain.Modules.Courses
             return new CourseAnnouncement(courseId, instructorId, title, content, importance);
         }
 
-        public Result UpdateTitle(string title)
+        public DomainResult UpdateTitle(string title)
         {
             var editable = EnsureEditable();
             if (editable.IsFailure)
@@ -68,10 +68,10 @@ namespace MasarHub.Domain.Modules.Courses
 
             Title = title;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateContent(string content)
+        public DomainResult UpdateContent(string content)
         {
             var editable = EnsureEditable();
             if (editable.IsFailure)
@@ -83,10 +83,10 @@ namespace MasarHub.Domain.Modules.Courses
 
             Content = content;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Publish()
+        public DomainResult Publish()
         {
             if (IsPublished)
                 return CourseAnnouncementErrors.AlreadyPublished;
@@ -97,10 +97,10 @@ namespace MasarHub.Domain.Modules.Courses
             IsPublished = true;
             PublishedAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Schedule(DateTimeOffset scheduledAt)
+        public DomainResult Schedule(DateTimeOffset scheduledAt)
         {
             if (IsPublished)
                 return CourseAnnouncementErrors.AlreadyPublished;
@@ -110,20 +110,20 @@ namespace MasarHub.Domain.Modules.Courses
 
             ScheduledAt = scheduledAt;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result SetExpiration(DateTimeOffset expiresAt)
+        public DomainResult SetExpiration(DateTimeOffset expiresAt)
         {
             if (expiresAt <= DateTimeOffset.UtcNow)
                 return CourseAnnouncementErrors.InvalidExpirationTime;
 
             ExpiresAt = expiresAt;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result SetImportance(AnnouncementImportance importance)
+        public DomainResult SetImportance(AnnouncementImportance importance)
         {
             var error = Guard.AgainstEnumOutOfRange(importance, nameof(importance));
             if (error is not null)
@@ -131,25 +131,25 @@ namespace MasarHub.Domain.Modules.Courses
 
             Importance = importance;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Pin()
+        public DomainResult Pin()
         {
             IsPinned = true;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Unpin()
+        public DomainResult Unpin()
         {
             IsPinned = false;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
 
-        private Result EnsureEditable() => IsPublished ? CourseAnnouncementErrors.CannotEditAfterPublish : Result.Success();
+        private DomainResult EnsureEditable() => IsPublished ? CourseAnnouncementErrors.CannotEditAfterPublish : DomainResult.Success();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MasarHub.Application.Common.Results.Errors;
+using MasarHub.Domain.Common.Errors;
 
 namespace MasarHub.Application.Common.Results
 {
@@ -47,6 +48,9 @@ namespace MasarHub.Application.Common.Results
             => Success(value);
 
         public static implicit operator Result<TValue>(Error error)
+            => Failure(error);
+
+        public static implicit operator Result<TValue>(DomainError error)
             => Failure(error);
 
         public static implicit operator Result<TValue>(List<Error> errors)

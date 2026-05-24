@@ -57,7 +57,7 @@ namespace MasarHub.Domain.Modules.Courses
         #endregion
 
         #region Course Management
-        public static Result<Course> Create(
+        public static DomainResult<Course> Create(
            string title,
            string slug,
            string description,
@@ -85,7 +85,7 @@ namespace MasarHub.Domain.Modules.Courses
             return new Course(title, slug, description, price, language, level, instructorId, categoryId, thumbnailUrl);
         }
 
-        public Result UpdateTitle(string title)
+        public DomainResult UpdateTitle(string title)
         {
             var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
             if (error is not null)
@@ -93,10 +93,10 @@ namespace MasarHub.Domain.Modules.Courses
 
             Title = title;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateDescription(string description)
+        public DomainResult UpdateDescription(string description)
         {
             var error = Guard.AgainstNullOrWhiteSpace(description, nameof(description));
             if (error is not null)
@@ -104,17 +104,17 @@ namespace MasarHub.Domain.Modules.Courses
 
             Description = description;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateThumbnailUrl(string? thumbnailUrl)
+        public DomainResult UpdateThumbnailUrl(string? thumbnailUrl)
         {
             ThumbnailUrl = thumbnailUrl;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdatePrice(decimal price)
+        public DomainResult UpdatePrice(decimal price)
         {
             var error = Guard.AgainstNegative(price, nameof(price));
             if (error is not null)
@@ -122,10 +122,10 @@ namespace MasarHub.Domain.Modules.Courses
 
             Price = price;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateLanguage(CourseLanguage language)
+        public DomainResult UpdateLanguage(CourseLanguage language)
         {
             var error = Guard.AgainstEnumOutOfRange(language, nameof(language));
             if (error is not null)
@@ -133,10 +133,10 @@ namespace MasarHub.Domain.Modules.Courses
 
             Language = language;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateLevel(CourseLevel level)
+        public DomainResult UpdateLevel(CourseLevel level)
         {
             var error = Guard.AgainstEnumOutOfRange(level, nameof(level));
             if (error is not null)
@@ -144,24 +144,24 @@ namespace MasarHub.Domain.Modules.Courses
 
             Level = level;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
         #endregion
 
         #region Course Submiting & Publication
 
-        public Result SubmitForApproval()
+        public DomainResult SubmitForApproval()
         {
             if (Status != CourseStatus.Draft && Status != CourseStatus.Rejected)
                 return CourseErrors.InvalidStatusTransition;
 
             Status = CourseStatus.PendingApproval;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result ApprovePublication(Guid adminId)
+        public DomainResult ApprovePublication(Guid adminId)
         {
             var pendingResult = EnsurePendingApproval();
             if (pendingResult.IsFailure)
@@ -178,10 +178,10 @@ namespace MasarHub.Domain.Modules.Courses
             RejectionReason = null;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result RejectPublication(string reason, Guid adminId)
+        public DomainResult RejectPublication(string reason, Guid adminId)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstNullOrWhiteSpace(reason, nameof(reason)),
@@ -200,14 +200,14 @@ namespace MasarHub.Domain.Modules.Courses
             RejectedBy = adminId;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
         #endregion
 
         #region CoursePrerequisite & CourseRequirement & CourseLearningObjective Management
 
-        public Result AddPrerequisite(string value)
+        public DomainResult AddPrerequisite(string value)
         {
             var result = CoursePrerequisite.Create(value);
             if (result.IsFailure)
@@ -215,14 +215,14 @@ namespace MasarHub.Domain.Modules.Courses
 
             var item = result.Value!;
             if (_prerequisites.Any(p => p.Value.Equals(item.Value, StringComparison.OrdinalIgnoreCase)))
-                return Result.Success();
+                return DomainResult.Success();
 
             _prerequisites.Add(item);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result AddRequirement(string value)
+        public DomainResult AddRequirement(string value)
         {
             var result = CourseRequirement.Create(value);
             if (result.IsFailure)
@@ -230,14 +230,14 @@ namespace MasarHub.Domain.Modules.Courses
 
             var item = result.Value!;
             if (_requirements.Any(r => r.Value.Equals(item.Value, StringComparison.OrdinalIgnoreCase)))
-                return Result.Success();
+                return DomainResult.Success();
 
             _requirements.Add(item);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result AddLearningObjective(string value)
+        public DomainResult AddLearningObjective(string value)
         {
             var result = CourseLearningObjective.Create(value);
             if (result.IsFailure)
@@ -245,47 +245,47 @@ namespace MasarHub.Domain.Modules.Courses
 
             var item = result.Value!;
             if (_learningObjectives.Any(l => l.Value.Equals(item.Value, StringComparison.OrdinalIgnoreCase)))
-                return Result.Success();
+                return DomainResult.Success();
 
             _learningObjectives.Add(item);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result RemoveRequirement(string value)
+        public DomainResult RemoveRequirement(string value)
         {
             var item = _requirements.FirstOrDefault(r => r.Value.Equals(value, StringComparison.OrdinalIgnoreCase));
             if (item is null)
-                return Result.Success();
+                return DomainResult.Success();
 
             _requirements.Remove(item);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result RemovePrerequisite(string value)
+        public DomainResult RemovePrerequisite(string value)
         {
             var item = _prerequisites.FirstOrDefault(p => p.Value.Equals(value, StringComparison.OrdinalIgnoreCase));
             if (item is null)
-                return Result.Success();
+                return DomainResult.Success();
 
             _prerequisites.Remove(item);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result RemoveLearningObjective(string value)
+        public DomainResult RemoveLearningObjective(string value)
         {
             var item = _learningObjectives.FirstOrDefault(l => l.Value.Equals(value, StringComparison.OrdinalIgnoreCase));
             if (item is null)
-                return Result.Success();
+                return DomainResult.Success();
 
             _learningObjectives.Remove(item);
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result SetPrerequisites(IEnumerable<string> prerequisites)
+        public DomainResult SetPrerequisites(IEnumerable<string> prerequisites)
         {
             _prerequisites.Clear();
             foreach (var prerequisite in prerequisites.Distinct(StringComparer.OrdinalIgnoreCase))
@@ -298,10 +298,10 @@ namespace MasarHub.Domain.Modules.Courses
             }
 
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result SetRequirements(IEnumerable<string> requirements)
+        public DomainResult SetRequirements(IEnumerable<string> requirements)
         {
             _requirements.Clear();
             foreach (var requirement in requirements.Distinct(StringComparer.OrdinalIgnoreCase))
@@ -314,10 +314,10 @@ namespace MasarHub.Domain.Modules.Courses
             }
 
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result SetLearningObjective(IEnumerable<string> learningObjectives)
+        public DomainResult SetLearningObjective(IEnumerable<string> learningObjectives)
         {
             _learningObjectives.Clear();
             foreach (var learningObjective in learningObjectives.Distinct(StringComparer.OrdinalIgnoreCase))
@@ -330,15 +330,15 @@ namespace MasarHub.Domain.Modules.Courses
             }
 
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
         #endregion
 
-        private Result EnsurePendingApproval()
+        private DomainResult EnsurePendingApproval()
         {
             return Status == CourseStatus.PendingApproval
-                ? Result.Success()
+                ? DomainResult.Success()
                 : CourseErrors.NotPendingApproval;
         }
     }

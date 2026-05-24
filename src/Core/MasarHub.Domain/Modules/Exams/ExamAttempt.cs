@@ -26,7 +26,7 @@ namespace MasarHub.Domain.Modules.Exams
             StartedAt = DateTimeOffset.UtcNow;
         }
 
-        public static Result<ExamAttempt> Create(Guid examId, Guid userId)
+        public static DomainResult<ExamAttempt> Create(Guid examId, Guid userId)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(examId, nameof(examId)),
@@ -39,7 +39,7 @@ namespace MasarHub.Domain.Modules.Exams
             return new ExamAttempt(examId, userId);
         }
 
-        public Result Submit(IEnumerable<Question> questions, IEnumerable<ExamAnswer> answers)
+        public DomainResult Submit(IEnumerable<Question> questions, IEnumerable<ExamAnswer> answers)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstNull(questions, nameof(questions)),
@@ -59,10 +59,10 @@ namespace MasarHub.Domain.Modules.Exams
             SubmittedAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
 
         private decimal CalculateScore(IEnumerable<Question> questions)
         {

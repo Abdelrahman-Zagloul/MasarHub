@@ -22,7 +22,7 @@ namespace MasarHub.Domain.Modules.Courses
             ReviewContent = reviewContent;
         }
 
-        public static Result<CourseReview> Create(
+        public static DomainResult<CourseReview> Create(
             Guid userId,
             Guid courseId,
             double rating,
@@ -41,24 +41,24 @@ namespace MasarHub.Domain.Modules.Courses
             return new CourseReview(userId, courseId, rating, reviewContent);
         }
 
-        public Result UpdateRating(double rating)
+        public DomainResult UpdateRating(double rating)
         {
             if (!IsValidRating(rating))
                 return CourseErrors.InvalidRating;
 
             Rating = rating;
             MarkAsEdited();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateContent(string? content)
+        public DomainResult UpdateContent(string? content)
         {
             ReviewContent = content;
             MarkAsEdited();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
 
         private static bool IsValidRating(double rating) => rating is >= 1 and <= 5;
 

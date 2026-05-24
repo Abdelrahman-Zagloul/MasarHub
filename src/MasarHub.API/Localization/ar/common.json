@@ -16,5 +16,19 @@
   "validation.invalid_guid": "{PropertyName} غير صالح",
   "validation.invalid_url": "صيغة الرابط غير صحيحة.",
 
-  "TooManyRequests": "عدد الطلبات كبير جدًا، يرجى المحاولة مرة أخرى بعد قليل."
+  "TooManyRequests": "عدد الطلبات كبير جدًا، يرجى المحاولة مرة أخرى بعد قليل.",
+
+  "domain_error.null": "{PropertyName} فارغ",
+  "domain_error.empty": "{PropertyName} مطلوب",
+  "domain_error.null_or_empty": "{PropertyName} مطلوب",
+  "domain_error.invalid": "{PropertyName} غير صالح",
+  "domain_error.negative": "{PropertyName} لا يمكن أن يكون سالبًا",
+  "domain_error.negative_or_zero": "{PropertyName} يجب أن يكون أكبر من صفر",
+  "domain_error.empty_guid": "{PropertyName} غير صالح",
+  "domain_error.invalid_enum": "{PropertyName} غير صالح",
+  "domain_error.already_deleted": "{PropertyName} محذوف بالفعل",
+  "domain_error.not_deleted": "{PropertyName} غير محذوف",
+  "domain_error.invalid_url": "صيغة الرابط غير صحيحة",
+  "domain_error.too_many_items": "عدد العناصر كبير جدًا",
+  "domain_error.duplicate": "{PropertyName} موجود بالفعل"
 }

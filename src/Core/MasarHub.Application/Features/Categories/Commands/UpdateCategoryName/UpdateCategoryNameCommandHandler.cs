@@ -25,7 +25,7 @@ namespace MasarHub.Application.Features.Categories.Commands.UpdateCategoryName
 
             var result = category.Rename(request.Name);
             if (result.IsFailure)
-                return Error.BadRequest(result.Error.Code, result.Error.PropertyName);
+                return result.Error;
 
             _categoryRepository.Update(category);
             await _unitOfWork.SaveChangesAsync(cancellationToken);

@@ -3,9 +3,9 @@ using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Common.Utilities;
+using MasarHub.Domain.Common.Results;
 using MasarHub.Domain.Modules.Categories;
 using MediatR;
-using CategoryResult = MasarHub.Domain.Common.Results.Result<MasarHub.Domain.Modules.Categories.Category>;
 
 namespace MasarHub.Application.Features.Categories.Commands.CreateCategory
 {
@@ -31,7 +31,7 @@ namespace MasarHub.Application.Features.Categories.Commands.CreateCategory
             if (slugExist)
                 return Error.Conflict("category.slug_already_exists", "Name");
 
-            CategoryResult categoryResult;
+            DomainResult<Category> categoryResult;
             if (request.ParentCategoryId.HasValue)
             {
                 var parentCategory = await _categoryQuery.GetByIdAsync(request.ParentCategoryId.Value, cancellationToken);
@@ -43,7 +43,7 @@ namespace MasarHub.Application.Features.Categories.Commands.CreateCategory
                 categoryResult = Category.CreateRoot(request.Name, slug, displayOrder);
 
             if (categoryResult.IsFailure)
-                return Error.BadRequest(categoryResult.Error.Code, categoryResult.Error.PropertyName);
+                return categoryResult.Error;
 
             var category = categoryResult.Value;
             await _categoryRepository.AddAsync(category, cancellationToken);

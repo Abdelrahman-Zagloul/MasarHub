@@ -25,7 +25,7 @@ namespace MasarHub.Domain.Modules.Payments
             Status = PaymentStatus.Pending;
         }
 
-        public static Result<Payment> Create(Guid orderId, decimal amount, PaymentProvider provider, string idempotencyKey)
+        public static DomainResult<Payment> Create(Guid orderId, decimal amount, PaymentProvider provider, string idempotencyKey)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(orderId, nameof(orderId)),
@@ -40,7 +40,7 @@ namespace MasarHub.Domain.Modules.Payments
             return new Payment(orderId, amount, provider, idempotencyKey);
         }
 
-        public Result MarkSucceeded(string externalId)
+        public DomainResult MarkSucceeded(string externalId)
         {
             var pendingResult = EnsurePending();
             if (pendingResult.IsFailure)
@@ -55,10 +55,10 @@ namespace MasarHub.Domain.Modules.Payments
             PaidAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result MarkFailed()
+        public DomainResult MarkFailed()
         {
             var pendingResult = EnsurePending();
             if (pendingResult.IsFailure)
@@ -66,10 +66,10 @@ namespace MasarHub.Domain.Modules.Payments
 
             Status = PaymentStatus.Failed;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result MarkCancelled()
+        public DomainResult MarkCancelled()
         {
             var pendingResult = EnsurePending();
             if (pendingResult.IsFailure)
@@ -77,13 +77,13 @@ namespace MasarHub.Domain.Modules.Payments
 
             Status = PaymentStatus.Cancelled;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        private Result EnsurePending()
+        private DomainResult EnsurePending()
         {
             return Status == PaymentStatus.Pending
-                ? Result.Success()
+                ? DomainResult.Success()
                 : PaymentErrors.InvalidStatusTransition;
         }
     }

@@ -24,7 +24,7 @@ namespace MasarHub.Domain.Modules.Categories
             DisplayOrder = displayOrder;
             ParentCategoryId = parentCategoryId;
         }
-        public static Result<Category> CreateRoot(string name, string slug, int displayOrder)
+        public static DomainResult<Category> CreateRoot(string name, string slug, int displayOrder)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstNullOrWhiteSpace(name, nameof(name)),
@@ -37,7 +37,7 @@ namespace MasarHub.Domain.Modules.Categories
             return new Category(name, slug, 1, displayOrder, null);
         }
 
-        public static Result<Category> CreateSubCategory(string name, string slug, int displayOrder, Category parent)
+        public static DomainResult<Category> CreateSubCategory(string name, string slug, int displayOrder, Category parent)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstNull(parent, nameof(parent)),
@@ -55,7 +55,7 @@ namespace MasarHub.Domain.Modules.Categories
             return new Category(name, slug, parent.Level + 1, displayOrder, parent.Id);
         }
 
-        public Result Rename(string name)
+        public DomainResult Rename(string name)
         {
             var error = Guard.AgainstNullOrWhiteSpace(name, nameof(name));
             if (error is not null)
@@ -63,10 +63,10 @@ namespace MasarHub.Domain.Modules.Categories
 
             Name = name;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result ChangeDisplayOrder(int displayOrder)
+        public DomainResult ChangeDisplayOrder(int displayOrder)
         {
             var error = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
             if (error is not null)
@@ -74,7 +74,7 @@ namespace MasarHub.Domain.Modules.Categories
 
             DisplayOrder = displayOrder;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
     }

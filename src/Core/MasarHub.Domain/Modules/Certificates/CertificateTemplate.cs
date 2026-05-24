@@ -22,7 +22,7 @@ namespace MasarHub.Domain.Modules.Certificates
             RaiseDomainEvent(new CertificateTemplateCreatedEvent(Id));
         }
 
-        public static Result<CertificateTemplate> Create(string name, string htmlContent, string previewImageUrl)
+        public static DomainResult<CertificateTemplate> Create(string name, string htmlContent, string previewImageUrl)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstNullOrWhiteSpace(name, nameof(name)),
@@ -31,12 +31,12 @@ namespace MasarHub.Domain.Modules.Certificates
             );
 
             if (error is not null)
-                return Result<CertificateTemplate>.Failure(error);
+                return DomainResult<CertificateTemplate>.Failure(error);
 
             return new CertificateTemplate(name, htmlContent, previewImageUrl);
         }
 
-        public Result UpdateContent(string htmlContent)
+        public DomainResult UpdateContent(string htmlContent)
         {
             var error = Guard.AgainstNullOrWhiteSpace(htmlContent, nameof(htmlContent));
             if (error is not null)
@@ -45,10 +45,10 @@ namespace MasarHub.Domain.Modules.Certificates
             HtmlContent = htmlContent;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdatePreview(string previewImageUrl)
+        public DomainResult UpdatePreview(string previewImageUrl)
         {
             var error = Guard.AgainstNullOrWhiteSpace(previewImageUrl, nameof(previewImageUrl));
             if (error is not null)
@@ -57,7 +57,7 @@ namespace MasarHub.Domain.Modules.Certificates
             PreviewImageUrl = previewImageUrl;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
     }
 }

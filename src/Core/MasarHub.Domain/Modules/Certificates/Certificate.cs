@@ -35,7 +35,7 @@ namespace MasarHub.Domain.Modules.Certificates
             RaiseDomainEvent(new CertificateIssuedEvent(Id, userId, courseId));
         }
 
-        public static Result<Certificate> Issue(Guid userId, Guid courseId, Guid enrollmentId, Guid templateId, string certificateNumber, string verificationCode)
+        public static DomainResult<Certificate> Issue(Guid userId, Guid courseId, Guid enrollmentId, Guid templateId, string certificateNumber, string verificationCode)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(userId, nameof(userId)),

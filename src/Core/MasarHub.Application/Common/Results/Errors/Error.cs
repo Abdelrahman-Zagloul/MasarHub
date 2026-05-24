@@ -1,4 +1,6 @@
 ﻿
+using MasarHub.Domain.Common.Errors;
+
 namespace MasarHub.Application.Common.Results.Errors
 {
     public sealed record Error(string Code, ErrorType Type, Dictionary<string, object?>? Metadata = null)
@@ -23,6 +25,10 @@ namespace MasarHub.Application.Common.Results.Errors
 
         public static Error Failure(string code)
             => new(code, ErrorType.Failure);
+
+        // to convert DomainError to Error implicitly
+        public static implicit operator Error(DomainError domainError)
+            => BadRequest(domainError.Code, domainError.PropertyName);
 
         private static Dictionary<string, object?> BuildMetadata(string? propertyName, Dictionary<string, object?>? metadata)
         {

@@ -19,7 +19,7 @@ namespace MasarHub.Domain.Modules.Exams
             IsCorrect = isCorrect;
         }
 
-        public static Result<Option> Create(Guid questionId, string text, bool isCorrect = false)
+        public static DomainResult<Option> Create(Guid questionId, string text, bool isCorrect = false)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(questionId, nameof(questionId)),
@@ -32,7 +32,7 @@ namespace MasarHub.Domain.Modules.Exams
             return new Option(questionId, text, isCorrect);
         }
 
-        public Result UpdateOptionText(string optiontext)
+        public DomainResult UpdateOptionText(string optiontext)
         {
             var error = Guard.AgainstNullOrWhiteSpace(optiontext, nameof(optiontext));
             if (error is not null)
@@ -40,7 +40,7 @@ namespace MasarHub.Domain.Modules.Exams
 
             Text = optiontext;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
     }
 }

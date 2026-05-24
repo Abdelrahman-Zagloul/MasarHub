@@ -32,7 +32,7 @@ namespace MasarHub.Domain.Modules.Payments
             ExpirationDate = expirationDate;
         }
 
-        public static Result<Coupon> Create(
+        public static DomainResult<Coupon> Create(
             string code,
             decimal value,
             DiscountType type,
@@ -60,7 +60,7 @@ namespace MasarHub.Domain.Modules.Payments
             return new Coupon(code, value, type, expirationDate, usageLimit, courseId);
         }
 
-        public Result<decimal> ApplyCoupon(decimal price, Guid courseId)
+        public DomainResult<decimal> ApplyCoupon(decimal price, Guid courseId)
         {
             var error = Guard.AgainstNegative(price, nameof(price));
             if (error is not null)
@@ -77,7 +77,7 @@ namespace MasarHub.Domain.Modules.Payments
             return discounted < 0 ? 0 : discounted;
         }
 
-        public Result EnsureApplicableToCourse(Guid courseId)
+        public DomainResult EnsureApplicableToCourse(Guid courseId)
         {
             var error = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
             if (error is not null)
@@ -92,17 +92,17 @@ namespace MasarHub.Domain.Modules.Payments
             if (CourseId != courseId)
                 return CouponErrors.NotApplicableToCourse;
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result MarkUsed()
+        public DomainResult MarkUsed()
         {
             if (IsExhausted())
                 return CouponErrors.Exhausted;
 
             UsedCount++;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
         private bool IsExpired() => DateTimeOffset.UtcNow > ExpirationDate;

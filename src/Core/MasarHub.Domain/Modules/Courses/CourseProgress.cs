@@ -23,7 +23,7 @@ namespace MasarHub.Domain.Modules.Courses
             TotalLessons = totalLessons;
         }
 
-        public static Result<CourseProgress> Create(Guid userId, Guid courseId, int totalLessons)
+        public static DomainResult<CourseProgress> Create(Guid userId, Guid courseId, int totalLessons)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(userId, nameof(userId)),
@@ -37,7 +37,7 @@ namespace MasarHub.Domain.Modules.Courses
             return new CourseProgress(userId, courseId, totalLessons);
         }
 
-        public Result UpdateTotalLessons(int totalLessons)
+        public DomainResult UpdateTotalLessons(int totalLessons)
         {
             var error = Guard.AgainstNegativeOrZero(totalLessons, nameof(totalLessons));
             if (error is not null)
@@ -49,10 +49,10 @@ namespace MasarHub.Domain.Modules.Courses
 
             Recalculate();
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateProgress(int completedLessons)
+        public DomainResult UpdateProgress(int completedLessons)
         {
             var error = Guard.AgainstNegative(completedLessons, nameof(completedLessons));
             if (error is not null)
@@ -64,20 +64,20 @@ namespace MasarHub.Domain.Modules.Courses
 
             Recalculate();
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Reset()
+        public DomainResult Reset()
         {
             CompletedLessons = 0;
             ProgressPercentage = 0;
             IsCompleted = false;
             CompletedAt = null;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
 
         private void Recalculate()
         {

@@ -21,7 +21,7 @@ namespace MasarHub.Domain.Modules.Courses
             Description = description;
         }
 
-        public static Result<CourseModule> Create(
+        public static DomainResult<CourseModule> Create(
             Guid courseId,
             string title,
             int displayOrder,
@@ -39,7 +39,7 @@ namespace MasarHub.Domain.Modules.Courses
             return new CourseModule(courseId, title, displayOrder, description);
         }
 
-        public Result UpdateTitle(string title)
+        public DomainResult UpdateTitle(string title)
         {
             var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
             if (error is not null)
@@ -47,16 +47,16 @@ namespace MasarHub.Domain.Modules.Courses
 
             Title = title;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateDescription(string? description)
+        public DomainResult UpdateDescription(string? description)
         {
             Description = description;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
     }
 }

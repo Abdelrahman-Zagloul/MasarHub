@@ -21,7 +21,7 @@ namespace MasarHub.Domain.Modules.Certificates
             RaiseDomainEvent(new CertificateDownloadedEvent(certificateId));
         }
 
-        public static Result<CertificateDownload> Create(Guid certificateId, Guid templateId)
+        public static DomainResult<CertificateDownload> Create(Guid certificateId, Guid templateId)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(certificateId, nameof(certificateId)),

@@ -23,7 +23,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             Description = description;
         }
 
-        public Result UpdateTitle(string title)
+        public DomainResult UpdateTitle(string title)
         {
             var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
             if (error is not null)
@@ -31,17 +31,17 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
             Title = title;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result UpdateDescription(string? description)
+        public DomainResult UpdateDescription(string? description)
         {
             Description = description;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result ChangeOrder(int order)
+        public DomainResult ChangeOrder(int order)
         {
             var error = Guard.AgainstNegativeOrZero(order, nameof(order));
             if (error is not null)
@@ -49,24 +49,24 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
             DisplayOrder = order;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result EnablePreview()
+        public DomainResult EnablePreview()
         {
             IsPreviewable = true;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result DisablePreview()
+        public DomainResult DisablePreview()
         {
             IsPreviewable = false;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
 
         protected static DomainError? ValidateLesson(Guid moduleId, string title, int order)
         {

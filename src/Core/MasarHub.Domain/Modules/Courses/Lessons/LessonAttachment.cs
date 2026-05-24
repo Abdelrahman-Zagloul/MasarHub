@@ -23,7 +23,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             FileSizeInBytes = fileSizeInBytes;
         }
 
-        public static Result<LessonAttachment> Create(
+        public static DomainResult<LessonAttachment> Create(
             Guid lessonId,
             string publicId,
             string fileName,
@@ -44,7 +44,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             return new LessonAttachment(lessonId, publicId, fileName, fileType, fileSizeInBytes);
         }
 
-        public Result UpdateFileName(string fileName)
+        public DomainResult UpdateFileName(string fileName)
         {
             var error = Guard.AgainstNullOrWhiteSpace(fileName, nameof(fileName));
             if (error is not null)
@@ -52,9 +52,9 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
             FileName = fileName;
             MarkAsUpdated();
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
     }
 }

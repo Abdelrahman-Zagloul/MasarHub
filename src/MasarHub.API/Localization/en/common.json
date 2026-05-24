@@ -16,5 +16,19 @@
   "validation.invalid_guid": "{PropertyName} is invalid",
   "validation.invalid_url": "The URL format is invalid.",
 
-  "TooManyRequests": "Too many requests. Please try again in a few minutes."
+  "TooManyRequests": "Too many requests. Please try again in a few minutes.",
+
+  "domain_error.null": "{PropertyName} is null",
+  "domain_error.empty": "{PropertyName} is required",
+  "domain_error.null_or_empty": "{PropertyName} is required",
+  "domain_error.invalid": "{PropertyName} is invalid",
+  "domain_error.negative": "{PropertyName} cannot be negative",
+  "domain_error.negative_or_zero": "{PropertyName} must be greater than zero",
+  "domain_error.empty_guid": "{PropertyName} is invalid",
+  "domain_error.invalid_enum": "{PropertyName} is invalid",
+  "domain_error.already_deleted": "{PropertyName} is already deleted",
+  "domain_error.not_deleted": "{PropertyName} is not deleted",
+  "domain_error.invalid_url": "Invalid URL format",
+  "domain_error.too_many_items": "Too many items",
+  "domain_error.duplicate": "{PropertyName} already exists"
 }

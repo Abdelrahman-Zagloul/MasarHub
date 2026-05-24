@@ -26,7 +26,7 @@ namespace MasarHub.Domain.Modules.Courses
             EnrolledAt = DateTimeOffset.UtcNow;
         }
 
-        public static Result<CourseEnrollment> Create(Guid userId, Guid courseId, Guid orderId, decimal paidAmount)
+        public static DomainResult<CourseEnrollment> Create(Guid userId, Guid courseId, Guid orderId, decimal paidAmount)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(userId, nameof(userId)),
@@ -41,7 +41,7 @@ namespace MasarHub.Domain.Modules.Courses
             return new CourseEnrollment(userId, courseId, orderId, paidAmount);
         }
 
-        public Result MarkCompleted()
+        public DomainResult MarkCompleted()
         {
             if (Status != EnrollmentStatus.Active)
                 return CourseEnrollmentErrors.InvalidStatusTransition;
@@ -50,10 +50,10 @@ namespace MasarHub.Domain.Modules.Courses
             CompletedAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Cancel()
+        public DomainResult Cancel()
         {
             if (Status != EnrollmentStatus.Active)
                 return CourseEnrollmentErrors.InvalidStatusTransition;
@@ -61,9 +61,9 @@ namespace MasarHub.Domain.Modules.Courses
             Status = EnrollmentStatus.Cancelled;
             MarkAsUpdated();
 
-            return Result.Success();
+            return DomainResult.Success();
         }
 
-        public Result Delete() => MarkAsDeleted();
+        public DomainResult Delete() => MarkAsDeleted();
     }
 }

@@ -15,7 +15,7 @@ namespace MasarHub.Domain.Modules.Courses
             Value = value;
         }
 
-        public static Result<CoursePrerequisite> Create(string value)
+        public static DomainResult<CoursePrerequisite> Create(string value)
         {
             var error = Guard.AgainstNullOrWhiteSpace(value, nameof(value));
             if (error is not null)
