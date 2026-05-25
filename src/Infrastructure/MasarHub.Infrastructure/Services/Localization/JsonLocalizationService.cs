@@ -38,8 +38,12 @@ public sealed class JsonLocalizationService : ILocalizationService
         {
             if (metadata.TryGetValue("PropertyName", out var propertyName))
             {
-                var localizedPropertyName = await FindValueAsync(culture, propertyName?.ToString()!, ct);
-                metadata["PropertyName"] = localizedPropertyName ?? propertyName;
+                var propertyKey = propertyName?.ToString();
+                if (!string.IsNullOrWhiteSpace(propertyKey))
+                {
+                    var localizedPropertyName = await FindValueAsync(culture, propertyKey, ct);
+                    metadata["PropertyName"] = localizedPropertyName ?? propertyName;
+                }
             }
             final = ReplaceTokens(final, metadata);
         }

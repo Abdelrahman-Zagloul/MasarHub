@@ -7,6 +7,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
     public interface ICategoryQuery : IScopedService
     {
         Task<bool> CategoryExistsAsync(Guid id, CancellationToken ct = default);
+        Task<bool> HasChildrenAsync(Guid id, CancellationToken ct = default);
         Task<Category?> GetByIdAsync(Guid id, CancellationToken ct = default);
         Task<CategoryWithChildrenResponse?> GetWithChildrenByIdAsync(Guid id, CancellationToken ct = default);
         Task<(int DisplayOrder, bool SlugExists)> GetCreationDataAsync(string slug, Guid? parentCategoryId, CancellationToken ct = default);

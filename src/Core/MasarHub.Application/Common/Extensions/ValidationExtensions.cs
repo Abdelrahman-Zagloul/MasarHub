@@ -14,35 +14,35 @@ public static class ValidationExtensions
             .WithName(propertyName);
     }
 
-    public static IRuleBuilderOptions<T, string> MaxLengthValidation<T>(
-        this IRuleBuilder<T, string> ruleBuilder,
+    public static IRuleBuilderOptions<T, string?> MaxLengthValidation<T>(
+        this IRuleBuilder<T, string?> ruleBuilder,
         int maxLength,
         string propertyName)
     {
         return ruleBuilder
-            .MaximumLength(maxLength)
+            .Must(value => value == null || value.Length <= maxLength)
             .WithErrorCode("validation.max_length")
             .WithName(propertyName);
     }
 
-    public static IRuleBuilderOptions<T, string> MinLengthValidation<T>(
-        this IRuleBuilder<T, string> ruleBuilder,
+    public static IRuleBuilderOptions<T, string?> MinLengthValidation<T>(
+        this IRuleBuilder<T, string?> ruleBuilder,
         int minLength,
         string propertyName)
     {
         return ruleBuilder
-            .MinimumLength(minLength)
+            .Must(value => value == null || value.Length >= minLength)
             .WithErrorCode("validation.min_length")
             .WithName(propertyName);
     }
 
-    public static IRuleBuilderOptions<T, string> LengthValidation<T>(
-        this IRuleBuilder<T, string> ruleBuilder,
+    public static IRuleBuilderOptions<T, string?> LengthValidation<T>(
+        this IRuleBuilder<T, string?> ruleBuilder,
         int length,
         string propertyName)
     {
         return ruleBuilder
-            .Length(length)
+            .Must(value => value == null || value.Length == length)
             .WithErrorCode("validation.length")
             .WithName(propertyName);
     }
@@ -106,6 +106,17 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_guid")
             .WithName(propertyName);
     }
+
+    public static IRuleBuilderOptions<T, Guid?> ValidNullableGuid<T>(
+    this IRuleBuilder<T, Guid?> ruleBuilder,
+    string propertyName)
+    {
+        return ruleBuilder
+            .Must(guid => guid == null || guid != Guid.Empty)
+            .WithErrorCode("validation.invalid_guid")
+            .WithName(propertyName);
+    }
+
     public static IRuleBuilderOptions<T, string> ValidOtpCode<T>(
         this IRuleBuilder<T, string> ruleBuilder,
         string propertyName)

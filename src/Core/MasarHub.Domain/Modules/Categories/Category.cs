@@ -65,7 +65,24 @@ namespace MasarHub.Domain.Modules.Categories
             MarkAsUpdated();
             return DomainResult.Success();
         }
+        public DomainResult ChangeParentCategory(Category parent)
+        {
+            var error = Guard.AgainstNull(parent, nameof(parent));
+            if (error is not null)
+                return error;
 
+            if (parent.Id == Id)
+                return new DomainError("category.cannot_be_own_parent", "ParentCategoryId");
+
+            if (parent.Level >= 3)
+                return new DomainError("category.max_depth", "Level");
+
+            ParentCategoryId = parent.Id;
+            Level = parent.Level + 1;
+
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
         public DomainResult ChangeDisplayOrder(int displayOrder)
         {
             var error = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));

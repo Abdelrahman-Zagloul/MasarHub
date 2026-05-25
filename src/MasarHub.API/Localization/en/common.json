@@ -18,6 +18,7 @@
   "validation.page_number_invalid": "Page number must be greater than 0.",
   "validation.page_size_invalid": "Page size must be greater than 0.",
   "validation.page_size_too_large": "Page size must be less than 50",
+  "validation.at_least_one_field_required": "At least one of the fields must be provided to update.",
 
   "TooManyRequests": "Too many requests. Please try again in a few minutes.",
 

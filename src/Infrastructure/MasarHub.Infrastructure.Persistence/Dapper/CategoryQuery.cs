@@ -32,12 +32,29 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: ct);
             return await connection.ExecuteScalarAsync<bool>(command);
         }
+        public async Task<bool> HasChildrenAsync(Guid id, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT CASE
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM categories.Categories
+                        WHERE ParentCategoryId = @Id
+                    )
+                    THEN CAST(1 AS BIT)
+                    ELSE CAST(0 AS BIT)
+                END;";
+
+            var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: ct);
+            return await connection.ExecuteScalarAsync<bool>(command);
+        }
         public async Task<Category?> GetByIdAsync(Guid id, CancellationToken ct)
         {
             const string sql = @"
-                SELECT *
+                SELECT*
                 FROM categories.Categories
-                WHERE Id = @Id;";
+                WHERE Id = @Id; ";
 
             using var connection = _connectionFactory.CreateConnection();
 
@@ -187,5 +204,6 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var categories = (await multi.ReadAsync<CategoryResponse>()).ToList();
             return (totalCount, categories);
         }
+
     }
 }

@@ -13,5 +13,7 @@
   "category.invalid_level": "Category level must be between 1 and 3.",
   "category.slug_already_exists": "A category with the same name already exists here. Try a different name.",
   "category.parent_not_found": "Parent category was not found.",
+  "category.cannot_change_parent_with_children": "Cannot change parent category because it has sub categories.",
+  "category.cannot_be_own_parent": "Category cannot be its own parent.",
   "category.max_depth": "Category depth cannot be greater than 3 levels."
 }

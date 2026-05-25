@@ -4,7 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Categories.Commands.CreateCategory;
 using MasarHub.Application.Features.Categories.Commands.DeleteCategory;
-using MasarHub.Application.Features.Categories.Commands.UpdateCategoryName;
+using MasarHub.Application.Features.Categories.Commands.UpdateCategory;
 using MasarHub.Application.Features.Categories.Queries.GetCategories;
 using MasarHub.Application.Features.Categories.Queries.GetCategoryById;
 using MediatR;
@@ -63,9 +63,9 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPut("{id:guid}")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> UpdateName(Guid id, UpdateCategoryNameRequest request)
+        public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryRequest request)
         {
-            var result = await _mediator.Send(new UpdateCategoryNameCommand(id, request.Name));
+            var result = await _mediator.Send(new UpdateCategoryCommand(id, request.Name, request.ParentCategoryId));
             if (result.IsFailure)
                 return await HandleError(result);
 
