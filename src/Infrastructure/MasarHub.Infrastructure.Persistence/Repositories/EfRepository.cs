@@ -31,6 +31,7 @@ namespace MasarHub.Infrastructure.Persistence.Repositories
         public void Remove(TEntity entity)
             => _dbSet.Remove(entity);
 
-
+        public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+            => await _dbSet.Where(predicate).ToListAsync(ct);
     }
 }

@@ -7,6 +7,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Repositories
     {
         Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default);
         Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default);
+        Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default);
         Task AddAsync(TEntity entity, CancellationToken ct = default);
         void Update(TEntity entity);
         void Remove(TEntity entity);

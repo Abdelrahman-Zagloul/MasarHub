@@ -18,5 +18,10 @@
   "category.cannot_move_parent_with_children": "Cannot change parent category because it has sub categories.",
   "category.cannot_be_own_parent": "Category cannot be its own parent.",
   "category.already_root": "Category is already at the root level.",
+
+  "category.empty_reorder_list": "The reorder category list cannot be empty.",
+  "category.duplicate_reorder_category_ids": "Duplicate category IDs were found in the reorder request.",
+  "category.reorder_items_mismatch": "The provided category reorder list is incomplete or invalid.",
+  "category.reorder_category_not_found": "One or more categories do not belong to this reorder group.",
   "category.max_depth": "Category depth cannot be greater than 3 levels."
 }

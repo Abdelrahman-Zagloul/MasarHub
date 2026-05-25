@@ -18,5 +18,12 @@
   "category.cannot_move_parent_with_children": "لا يمكن تغيير القسم الأب لأنه يحتوي على أقسام فرعية.",
   "category.cannot_be_own_parent": "لا يمكن أن يكون القسم الأب نفسه.",
   "category.already_root": "القسم بالفعل في الجذر.",
+
+  "category.empty_reorder_list": "قائمة إعادة ترتيب التصنيفات لا يمكن أن تكون فارغة.",
+  "category.duplicate_reorder_category_ids": "تم العثور على معرفات تصنيفات مكررة في طلب إعادة الترتيب.",
+  "category.invalid_category_ids": "واحد أو أكثر من معرفات التصنيفات غير صالح.",
+  "category.reorder_items_mismatch": "قائمة إعادة ترتيب التصنيفات غير مكتملة أو غير صالحة.",
+  "category.reorder_category_not_found": "واحد أو أكثر من التصنيفات لا ينتمي إلى مجموعة إعادة الترتيب.",
+
   "category.max_depth": "لا يمكن أن يتجاوز عمق الأقسام 3 مستويات."
 }
