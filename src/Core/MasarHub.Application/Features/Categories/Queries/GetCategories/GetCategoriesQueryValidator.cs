@@ -10,7 +10,7 @@ namespace MasarHub.Application.Features.Categories.Queries.GetCategories
             RuleFor(x => x.Level)
                 .InclusiveBetween(1, 3)
                 .When(x => x.Level.HasValue)
-                .WithMessage("category.invalid_level");
+                .WithErrorCode("category.invalid_level");
         }
     }
 }

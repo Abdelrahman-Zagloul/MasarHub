@@ -4,6 +4,8 @@
   "DisplayOrder": "ترتيب العرض",
   "ParentCategoryId": "القسم الأب",
 
+  "validation.cannot_use_parent_and_move_to_root": "لا يمكن تحديد تصنيف ونقل التصنيف إلى الجذر في نفس الوقت.",
+
   "category.created": "تم إنشاء القسم بنجاح.",
   "category.updated": "تم تحديث القسم بنجاح.",
   "category.deleted": "تم حذف القسم بنجاح.",
@@ -13,8 +15,8 @@
   "category.invalid_level": "يجب أن يكون مستوى القسم بين 1 و 3.",
   "category.slug_already_exists": "يوجد تصنيف بنفس الاسم هنا بالفعل. حاول اختيار اسم مختلف.",
   "category.parent_not_found": "القسم الأب غير موجود.",
-  "category.cannot_change_parent_with_children": "لا يمكن تغيير القسم الأب لأنه يحتوي على أقسام فرعية.",
+  "category.cannot_move_parent_with_children": "لا يمكن تغيير القسم الأب لأنه يحتوي على أقسام فرعية.",
   "category.cannot_be_own_parent": "لا يمكن أن يكون القسم الأب نفسه.",
-
+  "category.already_root": "القسم بالفعل في الجذر.",
   "category.max_depth": "لا يمكن أن يتجاوز عمق الأقسام 3 مستويات."
 }

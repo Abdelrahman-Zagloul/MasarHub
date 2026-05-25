@@ -2,6 +2,7 @@ using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
+using MasarHub.Domain.Common.Results;
 using MasarHub.Domain.Modules.Categories;
 using MediatR;
 
@@ -32,19 +33,28 @@ namespace MasarHub.Application.Features.Categories.Commands.UpdateCategory
                     return result.Error;
             }
 
-            if (request.ParentCategoryId.HasValue)
+            if (request.MoveToRoot || request.ParentCategoryId.HasValue)
             {
                 var hasChildren = await _categoryQuery.HasChildrenAsync(category.Id, cancellationToken);
                 if (hasChildren)
-                    return Error.BadRequest("category.cannot_change_parent_with_children");
+                    return Error.Conflict("category.cannot_move_parent_with_children");
 
-                var parentCategory = await _categoryQuery.GetByIdAsync(request.ParentCategoryId.Value, cancellationToken);
-                if (parentCategory is null)
-                    return Error.NotFound("category.parent_not_found");
+                DomainResult result;
+                if (request.MoveToRoot)
+                {
+                    result = category.MoveToRoot();
+                }
+                else
+                {
+                    var parentCategory = await _categoryQuery.GetByIdAsync(request.ParentCategoryId!.Value, cancellationToken);
+                    if (parentCategory is null)
+                        return Error.NotFound("category.parent_not_found");
 
-                var result = category.ChangeParentCategory(parentCategory);
+                    result = category.ChangeParentCategory(parentCategory);
+                }
+
                 if (result.IsFailure)
-                    return result.Error;
+                    return Error.Conflict(result.Error.Code, result.Error.PropertyName);
             }
 
             _categoryRepository.Update(category);

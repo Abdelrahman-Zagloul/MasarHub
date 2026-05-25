@@ -65,7 +65,7 @@ namespace MasarHub.API.Controllers.V1
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryRequest request)
         {
-            var result = await _mediator.Send(new UpdateCategoryCommand(id, request.Name, request.ParentCategoryId));
+            var result = await _mediator.Send(new UpdateCategoryCommand(id, request.Name, request.ParentCategoryId, request.MoveToRoot));
             if (result.IsFailure)
                 return await HandleError(result);
 

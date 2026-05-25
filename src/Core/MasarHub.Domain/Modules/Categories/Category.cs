@@ -83,6 +83,16 @@ namespace MasarHub.Domain.Modules.Categories
             MarkAsUpdated();
             return DomainResult.Success();
         }
+        public DomainResult MoveToRoot()
+        {
+            if (ParentCategoryId == null)
+                return new DomainError("category.already_root", "ParentCategoryId");
+
+            ParentCategoryId = null;
+            Level = 1;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
         public DomainResult ChangeDisplayOrder(int displayOrder)
         {
             var error = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
