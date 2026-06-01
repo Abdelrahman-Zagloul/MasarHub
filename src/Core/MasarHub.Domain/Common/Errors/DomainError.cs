@@ -2,7 +2,7 @@
 {
     public sealed record DomainError(string Code, string? PropertyName = null)
     {
-        public static DomainError None => new("");
+        public static DomainError None => new(string.Empty);
 
         public static DomainError Null(string? propertyName = null) => new("domain_error.null", propertyName);
         public static DomainError Empty(string? propertyName = null) => new("domain_error.empty", propertyName);
