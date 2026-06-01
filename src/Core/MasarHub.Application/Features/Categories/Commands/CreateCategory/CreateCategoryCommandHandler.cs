@@ -37,10 +37,10 @@ namespace MasarHub.Application.Features.Categories.Commands.CreateCategory
                 var parentCategory = await _categoryQuery.GetByIdAsync(request.ParentCategoryId.Value, cancellationToken);
                 if (parentCategory is null)
                     return Error.NotFound("category.not_found");
-                categoryResult = Category.CreateSubCategory(request.Name, slug, displayOrder, parentCategory);
+                categoryResult = Category.CreateSubCategory(request.Name, request.Description, slug, displayOrder, parentCategory);
             }
             else
-                categoryResult = Category.CreateRoot(request.Name, slug, displayOrder);
+                categoryResult = Category.CreateRoot(request.Name, request.Description, slug, displayOrder);
 
             if (categoryResult.IsFailure)
                 return categoryResult.Error;

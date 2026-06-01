@@ -31,6 +31,10 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar");
+
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");
 

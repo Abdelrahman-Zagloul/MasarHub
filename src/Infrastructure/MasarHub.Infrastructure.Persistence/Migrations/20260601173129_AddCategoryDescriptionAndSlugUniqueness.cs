@@ -5,15 +5,18 @@
 namespace MasarHub.Infrastructure.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class FixCategorySlugUniqueness : Migration
+    public partial class AddCategoryDescriptionAndSlugUniqueness : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_Categories_ParentCategoryId_Slug",
+            migrationBuilder.AddColumn<string>(
+                name: "Description",
                 schema: "categories",
-                table: "Categories");
+                table: "Categories",
+                type: "nvarchar(2000)",
+                maxLength: 2000,
+                nullable: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Categories_Slug",
@@ -22,14 +25,6 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
                 column: "Slug",
                 unique: true,
                 filter: "[ParentCategoryId] IS NULL");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Categories_ParentCategoryId_Slug",
-                schema: "categories",
-                table: "Categories",
-                columns: new[] { "ParentCategoryId", "Slug" },
-                unique: true,
-                filter: "[ParentCategoryId] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -40,17 +35,10 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
                 schema: "categories",
                 table: "Categories");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Categories_ParentCategoryId_Slug",
+            migrationBuilder.DropColumn(
+                name: "Description",
                 schema: "categories",
                 table: "Categories");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Categories_ParentCategoryId_Slug",
-                schema: "categories",
-                table: "Categories",
-                columns: new[] { "ParentCategoryId", "Slug" },
-                unique: true);
         }
     }
 }

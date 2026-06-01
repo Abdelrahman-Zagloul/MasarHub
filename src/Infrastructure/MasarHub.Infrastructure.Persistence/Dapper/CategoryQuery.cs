@@ -137,12 +137,12 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
         {
             const string sql = @"
                 -- Get the category
-                SELECT Id, Name, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
+                SELECT Id, Name, Description, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
                 FROM categories.Categories
                 WHERE Id = @Id;
 
                 -- Get child categories
-                SELECT Id, Name, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
+                SELECT Id, Name, Description, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
                 FROM categories.Categories
                 WHERE ParentCategoryId = @Id
                 ORDER BY DisplayOrder;";
@@ -176,7 +176,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                     );
 
                 -- Get paginated results
-                SELECT Id, Name, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
+                SELECT Id, Name, Description, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
                 FROM categories.Categories
                 WHERE (@Level IS NULL OR Level = @Level)
                     AND (

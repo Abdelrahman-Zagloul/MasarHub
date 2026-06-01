@@ -10,6 +10,7 @@ namespace MasarHub.Application.Features.Categories.Queries.GetCategoryById
     (
         Guid Id,
         string Name,
+        string? Description,
         string Slug,
         int Level,
         int DisplayOrder,

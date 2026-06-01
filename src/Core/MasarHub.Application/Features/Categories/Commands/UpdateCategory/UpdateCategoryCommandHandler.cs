@@ -33,6 +33,9 @@ namespace MasarHub.Application.Features.Categories.Commands.UpdateCategory
                     return result.Error;
             }
 
+            if (!string.IsNullOrWhiteSpace(request.Description))
+                category.UpdateDescription(request.Description);
+
             if (request.MoveToRoot || request.ParentCategoryId.HasValue)
             {
                 var hasChildren = await _categoryQuery.HasChildrenAsync(category.Id, cancellationToken);

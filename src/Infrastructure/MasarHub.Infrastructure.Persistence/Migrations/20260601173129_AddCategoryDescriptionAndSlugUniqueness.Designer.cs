@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasarHub.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MasarHubDbContext))]
-    [Migration("20260524082247_FixCategorySlugUniqueness")]
-    partial class FixCategorySlugUniqueness
+    [Migration("20260601173129_AddCategoryDescriptionAndSlugUniqueness")]
+    partial class AddCategoryDescriptionAndSlugUniqueness
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,6 +33,10 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar");
 
                     b.Property<int>("DisplayOrder")
                         .HasColumnType("int");

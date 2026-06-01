@@ -23,6 +23,11 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Categories
                    .HasMaxLength(200)
                    .IsRequired();
 
+            builder.Property(c => c.Description)
+                   .HasColumnType("nvarchar")
+                   .HasMaxLength(2000)
+                   .IsRequired(false);
+
             builder.Property(c => c.Slug)
                    .HasColumnType("nvarchar")
                    .HasMaxLength(200)
