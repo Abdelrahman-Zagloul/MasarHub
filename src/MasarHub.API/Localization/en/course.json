@@ -7,6 +7,10 @@
   "Level": "Level",
   "Prerequisites": "Prerequisites",
   "Prerequisite": "Prerequisite",
+  "Requirements": "Requirements",
+  "Requirement": "Requirement",
+  "LearningObjectives": "Learning Objectives",
+  "LearningObjective": "Learning Objective",
   "CourseId": "Course ID",
 
   "course.created": "Course created successfully.",

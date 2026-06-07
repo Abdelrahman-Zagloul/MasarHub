@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Courses.Commands.CreateCourse;
 using MasarHub.Application.Features.Courses.Commands.UpdateCoursePrerequisites;
+using MasarHub.Application.Features.Courses.Commands.UpdateCourseRequirements;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> UpdateCoursePrerequisites(Guid id, UpdateCoursePrerequisitesRequest request)
         {
             var result = await _mediator.Send(new UpdateCoursePrerequisitesCommand(id, request.Prerequisites));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id:guid}/requirements")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> UpdateCourseRequirements(Guid id, UpdateCourseRequirementsRequest request)
+        {
+            var result = await _mediator.Send(new UpdateCourseRequirementsCommand(id, request.Requirements));
             if (result.IsFailure)
                 return await HandleError(result);
 
