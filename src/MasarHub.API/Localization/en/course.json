@@ -5,6 +5,11 @@
   "CategoryId": "Category ID",
   "Language": "Language",
   "Level": "Level",
+  "Prerequisites": "Prerequisites",
+  "Prerequisite": "Prerequisite",
+  "CourseId": "Course ID",
 
-  "course.created": "Course created successfully."
+  "course.created": "Course created successfully.",
+  "course.notFound": "Course not found.",
+  "course.access_denied": "You do not have permission to access this course."
 }

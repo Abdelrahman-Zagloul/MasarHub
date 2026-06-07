@@ -5,7 +5,11 @@
   "CategoryId": "معرف الفئة",
   "Language": "اللغة",
   "Level": "المستوى",
+  "Prerequisites": "المتطلبات",
+  "Prerequisite": "المتطلب",
+  "CourseId": "معرف الكورس",
 
-
-  "course.created": "تم إنشاء الكورس بنجاح."
+  "course.created": "تم إنشاء الكورس بنجاح.",
+  "course.notFound": "الكورس غير موجود.",
+  "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس."
 }
