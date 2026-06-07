@@ -18,7 +18,7 @@
   "validation.page_number_invalid": "رقم الصفحة يجب أن يكون أكبر من 0",
   "validation.page_size_invalid": "حجم الصفحة يجب أن يكون أكبر من 0",
   "validation.page_size_too_large": "حجم الصفحة يجب أن يكون أقل من 50",
-  "validation.at_least_one_field_required":"يجب تقديم أحد الحقول لإجراء التحديث.",
+  "validation.at_least_one_field_required": "يجب تقديم أحد الحقول لإجراء التحديث.",
 
   "TooManyRequests": "عدد الطلبات كبير جدًا، يرجى المحاولة مرة أخرى بعد قليل.",
 
@@ -34,5 +34,19 @@
   "domain_error.not_deleted": "{PropertyName} غير محذوف",
   "domain_error.invalid_url": "صيغة الرابط غير صحيحة",
   "domain_error.too_many_items": "عدد العناصر كبير جدًا",
-  "domain_error.duplicate": "{PropertyName} موجود بالفعل"
+  "domain_error.duplicate": "{PropertyName} موجود بالفعل",
+
+
+  // file resource
+  "validation.invalid_file": "الملف غير صالح",
+  "validation.invalid_file_name": "اسم الملف غير صالح",
+  "validation.invalid_content_type": "نوع محتوى الملف غير صالح",
+  "validation.invalid_file_content": "محتوى الملف غير صالح",
+  "validation.invalid_file_type": "نوع الملف غير مدعوم",
+  "validation.invalid_file_extension": "الامتداد '{CurrentExtension}' غير مدعوم. الامتدادات المسموح بها: {SupportedExtensions}",
+  "validation.file_size_exceeded": "حجم الملف ({FileSizeInMB} ميجابايت) تجاوز الحد المسموح به ({MaxSizeInMB} ميجابايت)",
+  "storage.file_upload_failed": "فشل رفع الملف",
+  "storage.file_not_found": "الملف غير موجود"
+
+
 }

@@ -17,7 +17,9 @@ namespace MasarHub.Infrastructure.Extensions
                 .AddAndValidateSettings<FrontendURLsSettings>(configuration, nameof(FrontendURLsSettings))
                 .AddAndValidateSettings<RefreshTokenSettings>(configuration, nameof(RefreshTokenSettings))
                 .AddAndValidateSettings<CorsSettings>(configuration, nameof(CorsSettings))
-                .AddAndValidateSettings<ExternalAuthSettings>(configuration, nameof(ExternalAuthSettings));
+                .AddAndValidateSettings<ExternalAuthSettings>(configuration, nameof(ExternalAuthSettings))
+                .AddAndValidateSettings<FileStorageSettings>(configuration, nameof(FileStorageSettings))
+                .AddAndValidateSettings<CloudinarySettings>(configuration, nameof(CloudinarySettings));
 
 
             return services;

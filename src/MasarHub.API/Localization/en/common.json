@@ -34,5 +34,16 @@
   "domain_error.not_deleted": "{PropertyName} is not deleted",
   "domain_error.invalid_url": "Invalid URL format",
   "domain_error.too_many_items": "Too many items",
-  "domain_error.duplicate": "{PropertyName} already exists"
+  "domain_error.duplicate": "{PropertyName} already exists",
+
+  // file resource
+  "validation.invalid_file": "Invalid file",
+  "validation.invalid_file_name": "Invalid file name",
+  "validation.invalid_content_type": "Invalid content type",
+  "validation.invalid_file_content": "Invalid file content",
+  "validation.invalid_file_type": "Invalid file type",
+  "validation.invalid_file_extension": "Extension '{CurrentExtension}' is not supported. Allowed extensions: {SupportedExtensions}",
+  "validation.file_size_exceeded": "File size ({FileSizeInMB} MB) exceeds the maximum allowed size ({MaxSizeInMB} MB)",
+  "storage.file_upload_failed": "Failed to upload file",
+  "storage.file_not_found": "File not found"
 }
