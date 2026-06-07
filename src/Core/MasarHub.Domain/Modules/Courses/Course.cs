@@ -18,7 +18,7 @@ namespace MasarHub.Domain.Modules.Courses
         public CourseLanguage Language { get; private set; }
         public CourseStatus Status { get; private set; }
         public CourseLevel Level { get; private set; }
-        public string? ThumbnailUrl { get; private set; }
+        public string? ThumbnailPublicId { get; private set; }
         public DateTimeOffset? PublishedAt { get; private set; }
         public Guid? ApprovedBy { get; private set; }
         public Guid? RejectedBy { get; private set; }
@@ -51,7 +51,7 @@ namespace MasarHub.Domain.Modules.Courses
             Level = level;
             InstructorId = instructorId;
             CategoryId = categoryId;
-            ThumbnailUrl = thumbnailUrl;
+            ThumbnailPublicId = thumbnailUrl;
             Status = CourseStatus.Draft;
         }
 
@@ -111,9 +111,9 @@ namespace MasarHub.Domain.Modules.Courses
             return DomainResult.Success();
         }
 
-        public DomainResult UpdateThumbnailUrl(string? thumbnailUrl)
+        public DomainResult UpdateThumbnailPublicId(string? thumbnailPublicId)
         {
-            ThumbnailUrl = thumbnailUrl;
+            ThumbnailPublicId = thumbnailPublicId;
             MarkAsUpdated();
             return DomainResult.Success();
         }

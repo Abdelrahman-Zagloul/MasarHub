@@ -6,6 +6,7 @@ using MasarHub.Application.Features.Courses.Commands.CreateCourse;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseLearningObjective;
 using MasarHub.Application.Features.Courses.Commands.UpdateCoursePrerequisites;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseRequirements;
+using MasarHub.Application.Features.Courses.Commands.UpdateCourseThumbnail;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -76,6 +77,20 @@ namespace MasarHub.API.Controllers.V1
                 return await HandleError(result);
 
             return NoContent();
+        }
+
+
+        [HttpPut("{id:guid}/thumbnail")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> UpdateThumbnail(Guid id, IFormFile file)
+        {
+            var fileResource = new FileResource(file.FileName, file.ContentType, file.OpenReadStream(), file.Length);
+
+            var result = await _mediator.Send(new UpdateCourseThumbnailCommand(id, fileResource));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(new { ThumbnailUrl = result.Value });
         }
     }
 }

@@ -2,7 +2,6 @@
 {
     public sealed record FileResource
     (
-        FileType FileType,
         string FileName,
         string ContentType,
         Stream Content,
