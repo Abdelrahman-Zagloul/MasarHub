@@ -1,0 +1,10 @@
+{
+  "Title": "Title",
+  "Description": "Description",
+  "Price": "Price",
+  "CategoryId": "Category ID",
+  "Language": "Language",
+  "Level": "Level",
+
+  "course.created": "Course created successfully."
+}

@@ -1,6 +1,7 @@
 using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -82,7 +83,10 @@ namespace MasarHub.Domain.Modules.Courses
             if (error is not null)
                 return error;
 
-            return new Course(title, slug, description, price, language, level, instructorId, categoryId, thumbnailUrl);
+            var course = new Course(title, slug, description, price, language, level, instructorId, categoryId, thumbnailUrl);
+
+            course.RaiseDomainEvent(new CourseCreatedDomainEvent(course.Id, instructorId, title));
+            return course;
         }
 
         public DomainResult UpdateTitle(string title)

@@ -1,0 +1,11 @@
+{
+  "Title": "العنوان",
+  "Description": "الوصف",
+  "Price": "السعر",
+  "CategoryId": "معرف الفئة",
+  "Language": "اللغة",
+  "Level": "المستوى",
+
+
+  "course.created": "تم إنشاء الكورس بنجاح."
+}
