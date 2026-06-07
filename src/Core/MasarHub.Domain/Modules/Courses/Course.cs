@@ -160,7 +160,6 @@ namespace MasarHub.Domain.Modules.Courses
         #endregion
 
         #region Course Submiting & Publication
-
         public DomainResult SubmitForApproval()
         {
             if (Status != CourseStatus.Draft && Status != CourseStatus.Rejected)
@@ -172,7 +171,6 @@ namespace MasarHub.Domain.Modules.Courses
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult ApprovePublication(Guid adminId)
         {
             var pendingResult = EnsurePendingApproval();
@@ -190,9 +188,9 @@ namespace MasarHub.Domain.Modules.Courses
             RejectionReason = null;
             MarkAsUpdated();
 
+            RaiseDomainEvent(new CourseApprovedDomainEvent(Id, InstructorId, Title));
             return DomainResult.Success();
         }
-
         public DomainResult RejectPublication(string reason, Guid adminId)
         {
             var error = GuardExtensions.FirstError(

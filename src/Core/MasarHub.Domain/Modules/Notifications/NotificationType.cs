@@ -10,7 +10,7 @@
         RecoveryCodeUsed,
         CourseCreated,
         CourseSubmittedForApproval,
-        CourseApproval,
+        CourseApproved,
         OrderCreated,
         PaymentReceived
     }

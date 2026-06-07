@@ -2,6 +2,7 @@
 using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
+using MasarHub.Application.Features.Courses.Commands.ApproveCourse;
 using MasarHub.Application.Features.Courses.Commands.CreateCourse;
 using MasarHub.Application.Features.Courses.Commands.SubmitCourseForApproval;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourse;
@@ -110,6 +111,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> SubmitCourseForApproval(Guid id)
         {
             var result = await _mediator.Send(new SubmitCourseForApprovalCommand(id, GetUserId()));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id:guid}/approve")]
+        [Authorize(Roles = Roles.Admin)]
+        public async Task<IActionResult> ApproveCourse(Guid id)
+        {
+            var result = await _mediator.Send(new ApproveCourseCommand(id, GetUserId()));
             if (result.IsFailure)
                 return await HandleError(result);
 
