@@ -14,6 +14,6 @@
   "CourseId": "معرف الكورس",
 
   "course.created": "تم إنشاء الكورس بنجاح.",
-  "course.notFound": "الكورس غير موجود.",
+  "course.not_found": "الكورس غير موجود.",
   "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس."
 }

@@ -243,7 +243,7 @@ namespace MasarHub.Domain.Modules.Courses
             return DomainResult.Success();
         }
 
-        public DomainResult SetLearningObjective(IEnumerable<string> learningObjectives)
+        public DomainResult SetLearningObjectives(IEnumerable<string> learningObjectives)
         {
             _learningObjectives.Clear();
             foreach (var learningObjective in learningObjectives.Distinct(StringComparer.OrdinalIgnoreCase))

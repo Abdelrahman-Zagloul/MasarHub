@@ -14,6 +14,6 @@
   "CourseId": "Course ID",
 
   "course.created": "Course created successfully.",
-  "course.notFound": "Course not found.",
+  "course.not_found": "Course not found.",
   "course.access_denied": "You do not have permission to access this course."
 }
