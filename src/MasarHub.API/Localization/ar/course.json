@@ -1,0 +1,19 @@
+{
+  "Title": "العنوان",
+  "Description": "الوصف",
+  "Price": "السعر",
+  "CategoryId": "معرف الفئة",
+  "Language": "اللغة",
+  "Level": "المستوى",
+  "Prerequisites": "المتطلبات المسبقة",
+  "Prerequisite": "متطلب مسبق",
+  "Requirements": "المتطلبات",
+  "Requirement": "متطلب",
+  "LearningObjectives": "أهداف التعلم",
+  "LearningObjective": "هدف التعلم",
+  "CourseId": "معرف الكورس",
+
+  "course.created": "تم إنشاء الكورس بنجاح.",
+  "course.not_found": "الكورس غير موجود.",
+  "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس."
+}

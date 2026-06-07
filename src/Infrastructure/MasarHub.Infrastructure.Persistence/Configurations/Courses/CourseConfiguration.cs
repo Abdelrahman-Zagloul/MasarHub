@@ -54,7 +54,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses
                    .HasMaxLength(50)
                    .IsRequired();
 
-            builder.Property(c => c.ThumbnailUrl)
+            builder.Property(c => c.ThumbnailPublicId)
                    .HasColumnType("nvarchar")
                    .HasMaxLength(2000)
                    .IsRequired(false);

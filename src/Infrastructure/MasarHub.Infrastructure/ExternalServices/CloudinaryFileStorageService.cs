@@ -23,15 +23,15 @@ namespace MasarHub.Infrastructure.ExternalServices
             _logger = logger;
         }
 
-        public async Task<Result<StoredFile>> UploadAsync(FileResource file, string? folder = null, CancellationToken cancellationToken = default)
+        public async Task<Result<StoredFile>> UploadAsync(FileResource file, FileType fileType, string? folder = null, CancellationToken cancellationToken = default)
         {
-            var validationResult = ValidateFileUpload(file);
+            var validationResult = ValidateFileUpload(file, fileType);
             if (validationResult.IsFailure)
                 return validationResult.Errors[0];
 
             try
             {
-                var result = await UploadToCloudinaryAsync(file, folder, cancellationToken);
+                var result = await UploadToCloudinaryAsync(file, fileType, folder, cancellationToken);
                 if (result.Error != null)
                 {
                     _logger.LogError("Failed to upload file '{FileName}' to Cloudinary. Error: {ErrorMessage}", file.FileName, result.Error.Message);
@@ -72,8 +72,7 @@ namespace MasarHub.Infrastructure.ExternalServices
             .Type(StorageType)
             .BuildUrl(fileKey);
         }
-
-        private Result ValidateFileUpload(FileResource file)
+        private Result ValidateFileUpload(FileResource file, FileType fileType)
         {
             if (file is null || file.Length <= 0)
                 return ApplicationError.Failure("validation.invalid_file");
@@ -82,7 +81,7 @@ namespace MasarHub.Infrastructure.ExternalServices
                 return ApplicationError.BadRequest("validation.invalid_file_name");
 
             var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
-            var (maxSizeInMb, allowedExtensions) = file.FileType switch
+            var (maxSizeInMb, allowedExtensions) = fileType switch
             {
                 FileType.Image => (_fileStorageSettings.MaxImageSizeInMB, _fileStorageSettings.AllowedImageExtensions),
                 FileType.Video => (_fileStorageSettings.MaxVideoSizeInMB, _fileStorageSettings.AllowedVideoExtensions),
@@ -106,10 +105,10 @@ namespace MasarHub.Infrastructure.ExternalServices
 
             return Result.Success();
         }
-        private async Task<UploadResult> UploadToCloudinaryAsync(FileResource file, string? folder, CancellationToken cancellationToken)
+        private async Task<UploadResult> UploadToCloudinaryAsync(FileResource file, FileType fileType, string? folder, CancellationToken cancellationToken)
         {
             var fileDescription = new FileDescription(file.FileName, file.Content);
-            UploadResult result = file.FileType switch
+            UploadResult result = fileType switch
             {
                 FileType.Image => await _cloudinary.UploadAsync(new ImageUploadParams
                 {
@@ -138,7 +137,7 @@ namespace MasarHub.Infrastructure.ExternalServices
                     Type = StorageType
                 }, cancellationToken: cancellationToken),
 
-                _ => throw new NotSupportedException($"File type '{file.FileType}' is not supported.")
+                _ => throw new NotSupportedException($"File type '{fileType}' is not supported.")
             };
 
 

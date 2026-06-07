@@ -1,3 +1,4 @@
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 using MasarHub.Domain.Common.ValueObjects;
@@ -18,7 +19,7 @@ namespace MasarHub.Domain.Modules.Courses
         public static DomainResult<CourseRequirement> Create(string value)
         {
             var error = Guard.AgainstNullOrWhiteSpace(value, nameof(value));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             return new CourseRequirement(value);

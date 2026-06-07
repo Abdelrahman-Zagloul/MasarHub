@@ -14,6 +14,7 @@
   "validation.length": "{PropertyName} يجب أن يتكون من {MaxLength} رقم",
   "validation.invalid_enum": "{PropertyName} غير صالح",
   "validation.invalid_guid": "{PropertyName} غير صالح",
+  "validation.invalid_price": "{PropertyName} لازم أن يكون أكبر من {ComparisonValue}",
   "validation.invalid_url": "صيغة الرابط غير صحيحة.",
   "validation.page_number_invalid": "رقم الصفحة يجب أن يكون أكبر من 0",
   "validation.page_size_invalid": "حجم الصفحة يجب أن يكون أكبر من 0",

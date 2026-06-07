@@ -14,6 +14,7 @@
   "validation.length": "{PropertyName} must contain {MaxLength} digits",
   "validation.invalid_enum": "{PropertyName} is invalid",
   "validation.invalid_guid": "{PropertyName} is invalid",
+  "validation.invalid_price": "{PropertyName} must be greater than {ComparisonValue}",
   "validation.invalid_url": "The URL format is invalid.",
   "validation.page_number_invalid": "Page number must be greater than 0.",
   "validation.page_size_invalid": "Page size must be greater than 0.",

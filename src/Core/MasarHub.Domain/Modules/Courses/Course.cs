@@ -1,6 +1,7 @@
 using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -17,7 +18,7 @@ namespace MasarHub.Domain.Modules.Courses
         public CourseLanguage Language { get; private set; }
         public CourseStatus Status { get; private set; }
         public CourseLevel Level { get; private set; }
-        public string? ThumbnailUrl { get; private set; }
+        public string? ThumbnailPublicId { get; private set; }
         public DateTimeOffset? PublishedAt { get; private set; }
         public Guid? ApprovedBy { get; private set; }
         public Guid? RejectedBy { get; private set; }
@@ -50,7 +51,7 @@ namespace MasarHub.Domain.Modules.Courses
             Level = level;
             InstructorId = instructorId;
             CategoryId = categoryId;
-            ThumbnailUrl = thumbnailUrl;
+            ThumbnailPublicId = thumbnailUrl;
             Status = CourseStatus.Draft;
         }
 
@@ -82,7 +83,10 @@ namespace MasarHub.Domain.Modules.Courses
             if (error is not null)
                 return error;
 
-            return new Course(title, slug, description, price, language, level, instructorId, categoryId, thumbnailUrl);
+            var course = new Course(title, slug, description, price, language, level, instructorId, categoryId, thumbnailUrl);
+
+            course.RaiseDomainEvent(new CourseCreatedDomainEvent(course.Id, instructorId, title));
+            return course;
         }
 
         public DomainResult UpdateTitle(string title)
@@ -107,9 +111,9 @@ namespace MasarHub.Domain.Modules.Courses
             return DomainResult.Success();
         }
 
-        public DomainResult UpdateThumbnailUrl(string? thumbnailUrl)
+        public DomainResult UpdateThumbnailPublicId(string? thumbnailPublicId)
         {
-            ThumbnailUrl = thumbnailUrl;
+            ThumbnailPublicId = thumbnailPublicId;
             MarkAsUpdated();
             return DomainResult.Success();
         }
@@ -207,84 +211,6 @@ namespace MasarHub.Domain.Modules.Courses
 
         #region CoursePrerequisite & CourseRequirement & CourseLearningObjective Management
 
-        public DomainResult AddPrerequisite(string value)
-        {
-            var result = CoursePrerequisite.Create(value);
-            if (result.IsFailure)
-                return result.Error;
-
-            var item = result.Value!;
-            if (_prerequisites.Any(p => p.Value.Equals(item.Value, StringComparison.OrdinalIgnoreCase)))
-                return DomainResult.Success();
-
-            _prerequisites.Add(item);
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public DomainResult AddRequirement(string value)
-        {
-            var result = CourseRequirement.Create(value);
-            if (result.IsFailure)
-                return result.Error;
-
-            var item = result.Value!;
-            if (_requirements.Any(r => r.Value.Equals(item.Value, StringComparison.OrdinalIgnoreCase)))
-                return DomainResult.Success();
-
-            _requirements.Add(item);
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public DomainResult AddLearningObjective(string value)
-        {
-            var result = CourseLearningObjective.Create(value);
-            if (result.IsFailure)
-                return result.Error;
-
-            var item = result.Value!;
-            if (_learningObjectives.Any(l => l.Value.Equals(item.Value, StringComparison.OrdinalIgnoreCase)))
-                return DomainResult.Success();
-
-            _learningObjectives.Add(item);
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public DomainResult RemoveRequirement(string value)
-        {
-            var item = _requirements.FirstOrDefault(r => r.Value.Equals(value, StringComparison.OrdinalIgnoreCase));
-            if (item is null)
-                return DomainResult.Success();
-
-            _requirements.Remove(item);
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public DomainResult RemovePrerequisite(string value)
-        {
-            var item = _prerequisites.FirstOrDefault(p => p.Value.Equals(value, StringComparison.OrdinalIgnoreCase));
-            if (item is null)
-                return DomainResult.Success();
-
-            _prerequisites.Remove(item);
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public DomainResult RemoveLearningObjective(string value)
-        {
-            var item = _learningObjectives.FirstOrDefault(l => l.Value.Equals(value, StringComparison.OrdinalIgnoreCase));
-            if (item is null)
-                return DomainResult.Success();
-
-            _learningObjectives.Remove(item);
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
         public DomainResult SetPrerequisites(IEnumerable<string> prerequisites)
         {
             _prerequisites.Clear();
@@ -317,7 +243,7 @@ namespace MasarHub.Domain.Modules.Courses
             return DomainResult.Success();
         }
 
-        public DomainResult SetLearningObjective(IEnumerable<string> learningObjectives)
+        public DomainResult SetLearningObjectives(IEnumerable<string> learningObjectives)
         {
             _learningObjectives.Clear();
             foreach (var learningObjective in learningObjectives.Distinct(StringComparer.OrdinalIgnoreCase))
