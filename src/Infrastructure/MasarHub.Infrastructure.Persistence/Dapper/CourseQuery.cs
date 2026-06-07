@@ -43,5 +43,22 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             using var multi = await connection.QueryMultipleAsync(command);
             return (await multi.ReadFirstAsync<bool>(), await multi.ReadFirstAsync<int>());
         }
+        public async Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT CASE
+                    WHEN EXISTS (
+                        SELECT 1
+                        FROM categories.Categories
+                        WHERE Id = @CategoryId
+                    )
+                    THEN CAST(1 AS BIT)
+                    ELSE CAST(0 AS BIT)
+                END;
+            ";
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CategoryId = categoryId, }, cancellationToken: ct);
+            return await connection.ExecuteScalarAsync<bool>(command);
+        }
     }
 }

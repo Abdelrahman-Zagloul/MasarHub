@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Courses.Commands.CreateCourse;
+using MasarHub.Application.Features.Courses.Commands.UpdateCourse;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseLearningObjective;
 using MasarHub.Application.Features.Courses.Commands.UpdateCoursePrerequisites;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseRequirements;
@@ -45,6 +46,17 @@ namespace MasarHub.API.Controllers.V1
             return Ok();
         }
 
+        [HttpPut("{id:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> UpdateCourse(Guid id, UpdateCourseRequest request)
+        {
+            var result = await _mediator.Send(
+                new UpdateCourseCommand(id, request.Title, request.Description, request.Price, request.Language, request.Level, request.CategoryId));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return NoContent();
+        }
 
         [HttpPut("{id:guid}/prerequisites")]
         [Authorize(Roles = Roles.Instructor)]

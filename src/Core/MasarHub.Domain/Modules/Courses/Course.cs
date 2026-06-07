@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 using MasarHub.Domain.Modules.Courses.Events;
@@ -92,61 +93,66 @@ namespace MasarHub.Domain.Modules.Courses
         public DomainResult UpdateTitle(string title)
         {
             var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Title = title;
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult UpdateDescription(string description)
         {
             var error = Guard.AgainstNullOrWhiteSpace(description, nameof(description));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Description = description;
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult UpdateThumbnailPublicId(string? thumbnailPublicId)
         {
             ThumbnailPublicId = thumbnailPublicId;
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult UpdatePrice(decimal price)
         {
             var error = Guard.AgainstNegative(price, nameof(price));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Price = price;
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult UpdateLanguage(CourseLanguage language)
         {
             var error = Guard.AgainstEnumOutOfRange(language, nameof(language));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Language = language;
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult UpdateLevel(CourseLevel level)
         {
             var error = Guard.AgainstEnumOutOfRange(level, nameof(level));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Level = level;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult UpdateCategory(Guid categoryId)
+        {
+            var error = Guard.AgainstEmptyGuid(categoryId, nameof(categoryId));
+            if (error != DomainError.None)
+                return error;
+
+            CategoryId = categoryId;
             MarkAsUpdated();
             return DomainResult.Success();
         }
@@ -172,7 +178,7 @@ namespace MasarHub.Domain.Modules.Courses
                 return pendingResult;
 
             var error = Guard.AgainstEmptyGuid(adminId, nameof(adminId));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Status = CourseStatus.Published;
@@ -191,7 +197,7 @@ namespace MasarHub.Domain.Modules.Courses
                 Guard.AgainstNullOrWhiteSpace(reason, nameof(reason)),
                 Guard.AgainstEmptyGuid(adminId, nameof(adminId))
             );
-            if (error is not null)
+            if (error != null)
                 return error;
 
             var pendingResult = EnsurePendingApproval();
@@ -220,7 +226,7 @@ namespace MasarHub.Domain.Modules.Courses
                 if (result.IsFailure)
                     return result.Error;
 
-                _prerequisites.Add(result.Value!);
+                _prerequisites.Add(result.Value);
             }
 
             MarkAsUpdated();
@@ -236,7 +242,7 @@ namespace MasarHub.Domain.Modules.Courses
                 if (result.IsFailure)
                     return result.Error;
 
-                _requirements.Add(result.Value!);
+                _requirements.Add(result.Value);
             }
 
             MarkAsUpdated();
@@ -252,7 +258,7 @@ namespace MasarHub.Domain.Modules.Courses
                 if (result.IsFailure)
                     return result.Error;
 
-                _learningObjectives.Add(result.Value!);
+                _learningObjectives.Add(result.Value);
             }
 
             MarkAsUpdated();

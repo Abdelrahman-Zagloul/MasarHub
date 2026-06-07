@@ -67,6 +67,17 @@ public static class ValidationExtensions
             .WithName(propertyName);
     }
 
+    public static IRuleBuilderOptions<T, TProperty?> ValidEnum<T, TProperty>(
+     this IRuleBuilder<T, TProperty?> ruleBuilder,
+     string propertyName) where TProperty : struct, Enum
+    {
+        return ruleBuilder
+            .IsInEnum()
+            .WithErrorCode("validation.invalid_enum")
+            .WithName(propertyName)
+            .When(x => x != null);
+    }
+
     public static IRuleBuilderOptions<T, string> ValidPassword<T>(
         this IRuleBuilder<T, string> ruleBuilder,
         string propertyName)
