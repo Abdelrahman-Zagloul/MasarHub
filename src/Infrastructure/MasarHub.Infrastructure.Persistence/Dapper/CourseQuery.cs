@@ -60,5 +60,25 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { CategoryId = categoryId, }, cancellationToken: ct);
             return await connection.ExecuteScalarAsync<bool>(command);
         }
+        public async Task<bool> HasLecturesAsync(Guid courseId, CancellationToken cancellationToken)
+        {
+            const string sql = @"
+                SELECT CASE 
+                    WHEN EXISTS (
+                        SELECT 1 
+                        FROM courses.CourseModules m
+                        INNER JOIN courses.Lessons l ON m.Id = l.ModuleId
+                        WHERE m.CourseId = @CourseId 
+                          AND m.IsDeleted = 0 
+                          AND l.IsDeleted = 0
+                    ) THEN CAST(1 AS BIT)
+                    ELSE CAST(0 AS BIT)
+                END;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: cancellationToken);
+            return await connection.ExecuteScalarAsync<bool>(command);
+        }
     }
 }

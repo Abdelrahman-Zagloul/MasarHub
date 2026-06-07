@@ -167,6 +167,8 @@ namespace MasarHub.Domain.Modules.Courses
                 return CourseErrors.InvalidStatusTransition;
 
             Status = CourseStatus.PendingApproval;
+            RaiseDomainEvent(new CourseSubmittedForApprovalDomainEvent(Id, InstructorId));
+
             MarkAsUpdated();
             return DomainResult.Success();
         }

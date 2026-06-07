@@ -15,5 +15,6 @@
 
   "course.created": "Course created successfully.",
   "course.not_found": "Course not found.",
-  "course.access_denied": "You do not have permission to access this course."
+  "course.access_denied": "You do not have permission to access this course.",
+  "course.cannot_submit_empty_course": "Cannot submit an empty course. Please add lessons before submitting."
 }

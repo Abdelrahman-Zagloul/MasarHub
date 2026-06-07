@@ -15,5 +15,6 @@
 
   "course.created": "تم إنشاء الكورس بنجاح.",
   "course.not_found": "الكورس غير موجود.",
-  "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس."
+  "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس.",
+  "course.cannot_submit_empty_course": "لا يمكن تقديم كورس فارغ. يرجى إضافة دروس قبل التقديم."
 }
