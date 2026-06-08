@@ -160,37 +160,46 @@ namespace MasarHub.Domain.Modules.Courses
         #endregion
 
         #region Course Submiting & Publication
-
         public DomainResult SubmitForApproval()
         {
-            if (Status != CourseStatus.Draft && Status != CourseStatus.Rejected)
-                return CourseErrors.InvalidStatusTransition;
+            if (Status == CourseStatus.PendingApproval)
+                return CourseErrors.AlreadySubmitted;
+
+            if (Status == CourseStatus.Published)
+                return CourseErrors.AlreadyPublished;
+
 
             Status = CourseStatus.PendingApproval;
+            RejectionReason = null;
+            RejectedBy = null;
+
             MarkAsUpdated();
+            RaiseDomainEvent(new CourseSubmittedForApprovalDomainEvent(Id, InstructorId));
             return DomainResult.Success();
         }
-
         public DomainResult ApprovePublication(Guid adminId)
         {
-            var pendingResult = EnsurePendingApproval();
-            if (pendingResult.IsFailure)
-                return pendingResult;
-
             var error = Guard.AgainstEmptyGuid(adminId, nameof(adminId));
             if (error != DomainError.None)
                 return error;
+
+            if (Status == CourseStatus.Published)
+                return CourseErrors.AlreadyPublished;
+
+            if (Status != CourseStatus.PendingApproval)
+                return CourseErrors.NotPendingApproval;
+
 
             Status = CourseStatus.Published;
             PublishedAt = DateTimeOffset.UtcNow;
             ApprovedBy = adminId;
             RejectedBy = null;
             RejectionReason = null;
-            MarkAsUpdated();
 
+            MarkAsUpdated();
+            RaiseDomainEvent(new CourseApprovedDomainEvent(Id, InstructorId, Title));
             return DomainResult.Success();
         }
-
         public DomainResult RejectPublication(string reason, Guid adminId)
         {
             var error = GuardExtensions.FirstError(
@@ -200,16 +209,21 @@ namespace MasarHub.Domain.Modules.Courses
             if (error != null)
                 return error;
 
-            var pendingResult = EnsurePendingApproval();
-            if (pendingResult.IsFailure)
-                return pendingResult;
+            if (Status == CourseStatus.Rejected)
+                return CourseErrors.AlreadyRejected;
+
+            if (Status == CourseStatus.Draft)
+                return CourseErrors.NotPendingApproval;
+
 
             Status = CourseStatus.Rejected;
             RejectionReason = reason;
-            PublishedAt = null;
             RejectedBy = adminId;
-            MarkAsUpdated();
+            ApprovedBy = null;
+            PublishedAt = null;
 
+            MarkAsUpdated();
+            RaiseDomainEvent(new CourseRejectedDomainEvent(Id, InstructorId, Title, reason));
             return DomainResult.Success();
         }
 
@@ -266,12 +280,5 @@ namespace MasarHub.Domain.Modules.Courses
         }
 
         #endregion
-
-        private DomainResult EnsurePendingApproval()
-        {
-            return Status == CourseStatus.PendingApproval
-                ? DomainResult.Success()
-                : CourseErrors.NotPendingApproval;
-        }
     }
 }

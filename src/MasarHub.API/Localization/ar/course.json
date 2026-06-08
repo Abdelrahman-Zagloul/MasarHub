@@ -12,8 +12,14 @@
   "LearningObjectives": "أهداف التعلم",
   "LearningObjective": "هدف التعلم",
   "CourseId": "معرف الكورس",
+  "Reason": "السبب",
 
   "course.created": "تم إنشاء الكورس بنجاح.",
   "course.not_found": "الكورس غير موجود.",
-  "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس."
+  "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس.",
+  "course.cannot_submit_empty_course": "لا يمكن تقديم كورس فارغ. يرجى إضافة دروس قبل التقديم.",
+  "course.not_pending_approval": "الكورس ليس في انتظار الموافقة.",
+  "course.already_submitted": "الكورس قيد المراجعة بالفعل.",
+  "course.already_published": "الكورس منشور بالفعل.",
+  "course.already_rejected": "الكورس مرفوض بالفعل."
 }

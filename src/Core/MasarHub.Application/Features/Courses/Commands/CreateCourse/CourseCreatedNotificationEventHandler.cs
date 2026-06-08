@@ -9,12 +9,12 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Courses.Commands.CreateCourse
 {
-    public sealed class CourseCreatedNotificationHandler : INotificationHandler<DomainEventNotification<CourseCreatedDomainEvent>>
+    public sealed class CourseCreatedNotificationEventHandler : INotificationHandler<DomainEventNotification<CourseCreatedDomainEvent>>
     {
         private readonly INotificationRealtimeService _notificationRealtimeService;
         private readonly IBackgroundJobService _backgroundJobService;
 
-        public CourseCreatedNotificationHandler(INotificationRealtimeService notificationRealtimeService, IBackgroundJobService backgroundJobService)
+        public CourseCreatedNotificationEventHandler(INotificationRealtimeService notificationRealtimeService, IBackgroundJobService backgroundJobService)
         {
             _notificationRealtimeService = notificationRealtimeService;
             _backgroundJobService = backgroundJobService;

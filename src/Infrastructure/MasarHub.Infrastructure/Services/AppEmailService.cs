@@ -123,5 +123,32 @@ namespace MasarHub.Infrastructure.Services
 
             await _mailService.SendEmailAsync(email, "Recovery Code Used", emailBody, null);
         }
+
+        public async Task SendCourseApprovedEmailAsync(string fullName, string email, string courseTitle, string actionUrl)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "CourseApproved.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{CourseTitle}", courseTitle)
+                .Replace("{ActionUrl}", _settings.BaseURL + actionUrl);
+
+            await _mailService.SendEmailAsync(email, "Course Approved", emailBody, null);
+        }
+
+        public async Task SendCourseRejectedEmailAsync(string fullName, string email, string courseTitle, string reason, string actionUrl)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "CourseRejected.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{CourseTitle}", courseTitle)
+                .Replace("{RejectionReason}", reason)
+                .Replace("{ActionUrl}", _settings.BaseURL + actionUrl);
+
+            await _mailService.SendEmailAsync(email, "Course Rejected", emailBody, null);
+        }
     }
 }

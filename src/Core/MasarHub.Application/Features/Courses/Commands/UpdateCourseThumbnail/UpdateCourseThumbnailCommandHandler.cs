@@ -33,12 +33,16 @@ namespace MasarHub.Application.Features.Courses.Commands.UpdateCourseThumbnail
             if (course.InstructorId != _currentUserService.UserId)
                 return Error.Forbidden("course.access_denied");
 
+            var oldThumbnailPublicId = course.ThumbnailPublicId;
             var storedFileResult = await _fileStorageService.UploadAsync(request.File, FileType.Image, StorageFolders.Courses.Thumbnails, cancellationToken);
             if (storedFileResult.IsFailure)
                 return storedFileResult.Errors[0];
 
             course.UpdateThumbnailPublicId(storedFileResult.Value.FileKey);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            if (!string.IsNullOrWhiteSpace(oldThumbnailPublicId))
+                await _fileStorageService.DeleteAsync(oldThumbnailPublicId, FileType.Image, cancellationToken);
 
             return storedFileResult.Value.Url;
         }

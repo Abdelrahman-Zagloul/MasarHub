@@ -9,7 +9,9 @@
         TwoFactorDisabled,
         RecoveryCodeUsed,
         CourseCreated,
-        CourseApproval,
+        CourseSubmittedForApproval,
+        CourseApproved,
+        CourseRejected,
         OrderCreated,
         PaymentReceived
     }
