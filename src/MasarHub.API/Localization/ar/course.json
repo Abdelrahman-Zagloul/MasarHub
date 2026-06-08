@@ -13,6 +13,9 @@
   "LearningObjective": "هدف التعلم",
   "CourseId": "معرف الكورس",
   "Reason": "السبب",
+  "InstructorId": "معرف المدرب",
+  "MinPrice": "أدنى سعر",
+  "MaxPrice": "أعلى سعر",
 
   "course.created": "تم إنشاء الكورس بنجاح.",
   "course.not_found": "الكورس غير موجود.",

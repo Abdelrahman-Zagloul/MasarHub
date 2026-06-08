@@ -1,5 +1,7 @@
 ﻿using MasarHub.Application.Common.DependencyInjection;
 using MasarHub.Application.Features.Courses.Queries.GetCourseById;
+using MasarHub.Application.Features.Courses.Queries.GetCourses;
+using MasarHub.Domain.Modules.Courses;
 
 namespace MasarHub.Application.Abstractions.Persistence.Queries
 {
@@ -11,5 +13,6 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<bool> HasLecturesAsync(Guid courseId, CancellationToken cancellationToken);
         Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken cancellationToken);
         Task<(bool CourseExists, string? ThumbnailPublicId)> GetThumbnailDetailsAsync(Guid courseId, CancellationToken cancellationToken);
+        Task<(int TotalCount, List<CourseResponse> Courses)> GetAllAsync(GetCoursesQuery query, CourseStatus status, CancellationToken cancellationToken);
     }
 }

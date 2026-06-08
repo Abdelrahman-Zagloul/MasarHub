@@ -13,6 +13,9 @@
   "LearningObjective": "Learning Objective",
   "CourseId": "Course ID",
   "Reason": "Reason",
+  "InstructorId": "Instructor ID",
+  "MinPrice": "Minimum Price",
+  "MaxPrice": "Maximum Price",
 
   "course.created": "Course created successfully.",
   "course.not_found": "Course not found.",
