@@ -6,9 +6,6 @@
 
   "validation.cannot_use_parent_and_move_to_root": "لا يمكن تحديد تصنيف ونقل التصنيف إلى الجذر في نفس الوقت.",
 
-  "category.created": "تم إنشاء القسم بنجاح.",
-  "category.updated": "تم تحديث القسم بنجاح.",
-  "category.deleted": "تم حذف القسم بنجاح.",
   "category.not_found": "القسم غير موجود.",
   "category.has_children": "لا يمكن حذف القسم لأنه يحتوي على أقسام فرعية.",
   "category.has_courses": "لا يمكن حذف القسم لأنه يحتوي على دورات.",
