@@ -11,6 +11,10 @@ using MasarHub.Application.Features.Courses.Commands.UpdateCourseLearningObjecti
 using MasarHub.Application.Features.Courses.Commands.UpdateCoursePrerequisites;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseRequirements;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseThumbnail;
+using MasarHub.Application.Features.Courses.Queries.GetCourseById;
+using MasarHub.Application.Features.Courses.Queries.GetCourses;
+using MasarHub.Application.Features.Courses.Queries.GetCourseThumbnail;
+using MasarHub.Application.Features.Courses.Queries.GetInstructorCourses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +50,42 @@ namespace MasarHub.API.Controllers.V1
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            return Ok();
+            var result = await _mediator.Send(new GetCourseByIdQuery(id));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCourses([FromQuery] GetCoursesQuery query, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("instructor/me")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> GetInstructorCourses([FromQuery] GetInstructorCoursesQuery query)
+        {
+            var result = await _mediator.Send(query);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("{id:guid}/thumbnail")]
+        public async Task<IActionResult> GetThumbnail(Guid id)
+        {
+            var result = await _mediator.Send(new GetCourseThumbnailQuery(id));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
         }
 
         [HttpPut("{id:guid}")]
@@ -139,5 +178,6 @@ namespace MasarHub.API.Controllers.V1
 
             return NoContent();
         }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Features.Categories.Queries.GetCategories;
 using MasarHub.Application.Features.Categories.Queries.GetCategoryById;
 using MasarHub.Domain.Modules.Categories;
 
@@ -158,50 +159,51 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var children = (await multi.ReadAsync<CategoryResponse>()).ToList();
             return new CategoryWithChildrenResponse(category, children);
         }
-        public async Task<(int TotalCount, List<CategoryResponse> Categories)> GetAllAsync(
-            int pageNumber,
-            int pageSize,
-            string? categoryName,
-            int? level,
-            CancellationToken ct = default)
+        public async Task<(int TotalCount, List<CategoryResponse> Categories)> GetAllAsync(GetCategoriesQuery query, CancellationToken ct = default)
         {
-            const string sql = @"
-                -- Get total count for pagination
-                SELECT COUNT(*)
-                FROM categories.Categories
-                WHERE (@Level IS NULL OR Level = @Level)
-                    AND (
-                        @CategoryName  IS NULL
-                        OR Name LIKE '%' + @CategoryName  + '%'
-                    );
+            var conditions = new List<string>();
+            var parameters = new DynamicParameters();
 
-                -- Get paginated results
+            if (!string.IsNullOrWhiteSpace(query.CategoryName))
+            {
+                conditions.Add("Name LIKE @CategoryName");
+                parameters.Add("CategoryName", $"%{query.CategoryName}%");
+            }
+
+            if (query.Level.HasValue)
+            {
+                conditions.Add("Level = @Level");
+                parameters.Add("Level", query.Level.Value);
+            }
+
+            string whereConditions = conditions.Count > 0
+                ? "WHERE " + string.Join(" AND ", conditions)
+                : string.Empty;
+
+            string sql = $@"
+                -- Get total count for pagination        
+                SELECT COUNT(1) 
+                FROM categories.Categories
+                {whereConditions};
+
+                -- Get paginated results        
                 SELECT Id, Name, Description, Slug, Level, DisplayOrder, ParentCategoryId, CreatedAt
                 FROM categories.Categories
-                WHERE (@Level IS NULL OR Level = @Level)
-                    AND (
-                        @CategoryName  IS NULL
-                        OR Name LIKE '%' + @CategoryName  + '%'
-                    )
+                {whereConditions}
                 ORDER BY Level, DisplayOrder
                 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 
-            var offset = (pageNumber - 1) * pageSize;
+            int offset = (query.PageNumber - 1) * query.PageSize;
+            parameters.Add("Offset", offset);
+            parameters.Add("PageSize", query.PageSize);
+
             using var connection = _connectionFactory.CreateConnection();
-            var command = new CommandDefinition(
-                sql,
-                new
-                {
-                    CategoryName = categoryName,
-                    Level = level,
-                    Offset = offset,
-                    PageSize = pageSize
-                },
-                cancellationToken: ct);
+            var command = new CommandDefinition(sql, parameters, cancellationToken: ct);
 
             using var multi = await connection.QueryMultipleAsync(command);
             var totalCount = await multi.ReadFirstAsync<int>();
             var categories = (await multi.ReadAsync<CategoryResponse>()).ToList();
+
             return (totalCount, categories);
         }
 

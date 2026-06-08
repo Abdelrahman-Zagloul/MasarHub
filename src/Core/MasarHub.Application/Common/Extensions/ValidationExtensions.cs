@@ -127,7 +127,6 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_guid")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, string> ValidOtpCode<T>(
         this IRuleBuilder<T, string> ruleBuilder,
         string propertyName)
@@ -137,7 +136,6 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_otp")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, decimal> ValidPrice<T>(
         this IRuleBuilder<T, decimal> ruleBuilder,
         string propertyName, decimal minValue)
@@ -147,7 +145,15 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_price")
             .WithName(propertyName);
     }
-
+    public static IRuleBuilderOptions<T, decimal?> ValidPrice<T>(
+        this IRuleBuilder<T, decimal?> ruleBuilder,
+        string propertyName, decimal minValue)
+    {
+        return ruleBuilder
+            .GreaterThanOrEqualTo(minValue)
+            .WithErrorCode("validation.invalid_price")
+            .WithName(propertyName);
+    }
     public static IRuleBuilderOptions<T, IEnumerable<TElement>> RequiredCollection<T, TElement>(
         this IRuleBuilder<T, IEnumerable<TElement>> ruleBuilder,
         string propertyName)
@@ -157,7 +163,6 @@ public static class ValidationExtensions
             .WithErrorCode("validation.required")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, IEnumerable<TElement>> RequiredNonEmptyCollection<T, TElement>(
         this IRuleBuilder<T, IEnumerable<TElement>> ruleBuilder,
         string propertyName)

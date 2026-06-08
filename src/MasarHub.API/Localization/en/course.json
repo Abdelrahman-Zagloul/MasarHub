@@ -13,6 +13,9 @@
   "LearningObjective": "Learning Objective",
   "CourseId": "Course ID",
   "Reason": "Reason",
+  "InstructorId": "Instructor ID",
+  "MinPrice": "Minimum Price",
+  "MaxPrice": "Maximum Price",
 
   "course.created": "Course created successfully.",
   "course.not_found": "Course not found.",
@@ -21,5 +24,6 @@
   "course.not_pending_approval": "Course is not pending approval.",
   "course.already_submitted": "Course is already pending approval.",
   "course.already_published": "Course is already published.",
-  "course.already_rejected": "Course is already rejected."
+  "course.already_rejected": "Course is already rejected.",
+  "course.thumbnail_not_found": "No thumbnail found for this course."
 }

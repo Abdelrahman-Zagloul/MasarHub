@@ -17,14 +17,7 @@ namespace MasarHub.Application.Features.Categories.Queries.GetCategories
 
         public async Task<Result<PaginatedResult<CategoryResponse>>> Handle(GetCategoriesQuery request, CancellationToken cancellationToken)
         {
-            var (totalCount, categories) =
-                await _categoryQuery.GetAllAsync(
-                    request.PageNumber,
-                    request.PageSize,
-                    request.CategoryName,
-                    request.Level,
-                    cancellationToken
-                );
+            var (totalCount, categories) = await _categoryQuery.GetAllAsync(request, cancellationToken);
 
             return PaginatedResult<CategoryResponse>.Create(categories, totalCount, request.PageNumber, request.PageSize);
         }

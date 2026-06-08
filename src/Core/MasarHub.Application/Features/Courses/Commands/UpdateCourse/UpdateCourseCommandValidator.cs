@@ -30,6 +30,19 @@ namespace MasarHub.Application.Features.Courses.Commands.UpdateCourse
 
             RuleFor(x => x.CategoryId)
                 .ValidNullableGuid("CategoryId");
+
+            RuleFor(x => x)
+            .Must(HaveAtLeastOneUpdate)
+            .WithErrorCode("validation.at_least_one_field_required");
+        }
+        private bool HaveAtLeastOneUpdate(UpdateCourseCommand command)
+        {
+            return command.Title != null ||
+                   command.Description != null ||
+                   command.Price.HasValue ||
+                   command.Language.HasValue ||
+                   command.Level.HasValue ||
+                   command.CategoryId.HasValue;
         }
     }
 }
