@@ -14,6 +14,7 @@ using MasarHub.Application.Features.Courses.Commands.UpdateCourseThumbnail;
 using MasarHub.Application.Features.Courses.Queries.GetCourseById;
 using MasarHub.Application.Features.Courses.Queries.GetCourses;
 using MasarHub.Application.Features.Courses.Queries.GetCourseThumbnail;
+using MasarHub.Application.Features.Courses.Queries.GetInstructorCourses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -60,6 +61,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> GetCourses([FromQuery] GetCoursesQuery query, CancellationToken cancellationToken)
         {
             var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("instructor/me")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> GetInstructorCourses([FromQuery] GetInstructorCoursesQuery query)
+        {
+            var result = await _mediator.Send(query);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -166,5 +178,6 @@ namespace MasarHub.API.Controllers.V1
 
             return NoContent();
         }
+
     }
 }

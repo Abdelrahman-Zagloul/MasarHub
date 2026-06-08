@@ -155,13 +155,17 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return await connection.QueryFirstOrDefaultAsync<(bool CourseExists, string? ThumbnailPublicId)>(command);
         }
-        public async Task<(int TotalCount, List<CourseResponse> Courses)> GetAllAsync(GetCoursesQuery query, CourseStatus status, CancellationToken cancellationToken)
+        public async Task<(int TotalCount, List<CourseResponse> Courses)> GetAllAsync(GetCoursesQuery query, CourseStatus? status, CancellationToken cancellationToken)
         {
-            var conditions = new List<string> { "c.IsDeleted = 0", "c.Status = @Status" };
+            var conditions = new List<string> { "c.IsDeleted = 0", };
             var parameters = new DynamicParameters();
 
+            if (status.HasValue)
+            {
+                parameters.Add("Status", status.ToString());
+                conditions.Add("c.Status = @Status");
+            }
 
-            parameters.Add("Status", status.ToString());
             if (!string.IsNullOrWhiteSpace(query.Title))
             {
                 conditions.Add("c.Title LIKE @Title");

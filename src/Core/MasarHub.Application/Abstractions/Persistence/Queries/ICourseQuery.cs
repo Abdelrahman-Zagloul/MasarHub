@@ -13,6 +13,6 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<bool> HasLecturesAsync(Guid courseId, CancellationToken cancellationToken);
         Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken cancellationToken);
         Task<(bool CourseExists, string? ThumbnailPublicId)> GetThumbnailDetailsAsync(Guid courseId, CancellationToken cancellationToken);
-        Task<(int TotalCount, List<CourseResponse> Courses)> GetAllAsync(GetCoursesQuery query, CourseStatus status, CancellationToken cancellationToken);
+        Task<(int TotalCount, List<CourseResponse> Courses)> GetAllAsync(GetCoursesQuery query, CourseStatus? status, CancellationToken cancellationToken);
     }
 }
