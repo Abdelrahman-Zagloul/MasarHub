@@ -12,11 +12,14 @@
   "LearningObjectives": "Learning Objectives",
   "LearningObjective": "Learning Objective",
   "CourseId": "Course ID",
+  "Reason": "Reason",
 
   "course.created": "Course created successfully.",
   "course.not_found": "Course not found.",
   "course.access_denied": "You do not have permission to access this course.",
   "course.cannot_submit_empty_course": "Cannot submit an empty course. Please add lessons before submitting.",
   "course.not_pending_approval": "Course is not pending approval.",
-  "course.invalid_status_transition": "Invalid course status transition."
+  "course.already_submitted": "Course is already pending approval.",
+  "course.already_published": "Course is already published.",
+  "course.already_rejected": "Course is already rejected."
 }

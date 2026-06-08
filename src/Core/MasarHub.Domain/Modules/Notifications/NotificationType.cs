@@ -11,6 +11,7 @@
         CourseCreated,
         CourseSubmittedForApproval,
         CourseApproved,
+        CourseRejected,
         OrderCreated,
         PaymentReceived
     }

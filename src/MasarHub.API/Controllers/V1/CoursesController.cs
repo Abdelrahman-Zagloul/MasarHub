@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Courses.Commands.ApproveCourse;
 using MasarHub.Application.Features.Courses.Commands.CreateCourse;
+using MasarHub.Application.Features.Courses.Commands.RejectCourse;
 using MasarHub.Application.Features.Courses.Commands.SubmitCourseForApproval;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourse;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseLearningObjective;
@@ -122,6 +123,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> ApproveCourse(Guid id)
         {
             var result = await _mediator.Send(new ApproveCourseCommand(id, GetUserId()));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id:guid}/reject")]
+        [Authorize(Roles = Roles.Admin)]
+        public async Task<IActionResult> RejectCourse(Guid id, RejectCourseRequest request, CancellationToken cancellationToken)
+        {
+            var result = await _mediator.Send(new RejectCourseCommand(id, GetUserId(), request.Reason), cancellationToken);
             if (result.IsFailure)
                 return await HandleError(result);
 

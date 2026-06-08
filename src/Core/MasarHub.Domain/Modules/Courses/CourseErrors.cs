@@ -5,7 +5,9 @@ namespace MasarHub.Domain.Modules.Courses
     public static class CourseErrors
     {
         public static readonly DomainError NotPendingApproval = new("course.not_pending_approval");
-        public static readonly DomainError InvalidStatusTransition = new("course.invalid_status_transition");
+        public static readonly DomainError AlreadySubmitted = new("course.already_submitted");
+        public static readonly DomainError AlreadyPublished = new("course.already_published");
+        public static readonly DomainError AlreadyRejected = new("course.already_rejected");
         public static readonly DomainError InvalidRating = new("course_review.invalid_rating", "Rating");
     }
 
