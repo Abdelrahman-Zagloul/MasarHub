@@ -204,12 +204,15 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 parameters.Add("MaxPrice", query.MaxPrice.Value);
             }
 
-            string whereConditions = string.Join(" AND ", conditions);
+            string whereConditions = conditions.Count > 0
+                ? "WHERE " + string.Join(" AND ", conditions)
+                : string.Empty;
+
             string sql = $@"
                 -- Get total count for pagination
                 SELECT COUNT(1) 
                 FROM courses.Courses c 
-                WHERE {whereConditions};
+                {whereConditions};
 
                 -- Get paginated results
                 SELECT 
@@ -228,7 +231,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 FROM courses.Courses c
                 LEFT JOIN [identity].Users u ON c.InstructorId = u.Id
                 LEFT JOIN categories.Categories cat ON c.CategoryId = cat.Id
-                WHERE {whereConditions}
+                {whereConditions}
                 ORDER BY c.PublishedAt DESC, c.Id
                 OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
 

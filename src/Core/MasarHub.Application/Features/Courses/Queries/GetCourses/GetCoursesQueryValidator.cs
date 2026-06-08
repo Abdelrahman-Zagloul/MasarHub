@@ -4,12 +4,10 @@ using MasarHub.Application.Common.Pagination;
 
 namespace MasarHub.Application.Features.Courses.Queries.GetCourses
 {
-    public sealed class GetCoursesQueryValidator : AbstractValidator<GetCoursesQuery>
+    public sealed class GetCoursesQueryValidator : PaginationValidator<GetCoursesQuery>
     {
         public GetCoursesQueryValidator()
         {
-            Include(new PaginationValidator<GetCoursesQuery>());
-
             RuleFor(x => x.CategoryId)
                 .ValidNullableGuid("CategoryId");
 

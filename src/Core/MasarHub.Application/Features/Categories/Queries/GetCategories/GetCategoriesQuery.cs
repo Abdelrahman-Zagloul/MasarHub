@@ -7,10 +7,10 @@ namespace MasarHub.Application.Features.Categories.Queries.GetCategories
 {
     public sealed record GetCategoriesQuery
     (
-        int PageNumber,
-        int PageSize,
         string? CategoryName,
-        int? Level
+        int? Level,
+        int PageNumber = 1,
+        int PageSize = 10
     ) : IPaginatedQuery,
         IRequest<Result<PaginatedResult<CategoryResponse>>>;
 }

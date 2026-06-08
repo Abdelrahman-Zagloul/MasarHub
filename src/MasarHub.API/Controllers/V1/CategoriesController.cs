@@ -43,9 +43,9 @@ namespace MasarHub.API.Controllers.V1
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, string? categoryName = null, int? level = null)
+        public async Task<IActionResult> GetAll([FromQuery] GetCategoriesQuery query)
         {
-            var result = await _mediator.Send(new GetCategoriesQuery(pageNumber, pageSize, categoryName, level));
+            var result = await _mediator.Send(query);
             if (result.IsFailure)
                 return await HandleError(result);
 
