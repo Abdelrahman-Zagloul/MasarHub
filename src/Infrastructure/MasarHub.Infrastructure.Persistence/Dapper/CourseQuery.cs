@@ -138,5 +138,20 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             course.LearningObjectives = (await multi.ReadAsync<string>()).ToList();
             return course;
         }
+        public async Task<(bool CourseExists, string? ThumbnailPublicId)> GetThumbnailDetailsAsync(Guid courseId, CancellationToken cancellationToken)
+        {
+            var sql = @"
+                SELECT 
+                    CAST(1 AS BIT) AS CourseExists,
+                    ThumbnailPublicId
+                FROM courses.Courses
+                WHERE Id = @CourseId AND IsDeleted = 0;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: cancellationToken);
+
+            return await connection.QueryFirstOrDefaultAsync<(bool CourseExists, string? ThumbnailPublicId)>(command);
+        }
     }
 }

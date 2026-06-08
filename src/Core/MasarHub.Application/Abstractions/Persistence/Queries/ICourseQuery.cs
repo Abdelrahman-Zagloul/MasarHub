@@ -10,5 +10,6 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken ct = default);
         Task<bool> HasLecturesAsync(Guid courseId, CancellationToken cancellationToken);
         Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken cancellationToken);
+        Task<(bool CourseExists, string? ThumbnailPublicId)> GetThumbnailDetailsAsync(Guid courseId, CancellationToken cancellationToken);
     }
 }

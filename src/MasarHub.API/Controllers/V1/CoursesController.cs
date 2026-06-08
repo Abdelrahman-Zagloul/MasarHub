@@ -12,6 +12,7 @@ using MasarHub.Application.Features.Courses.Commands.UpdateCoursePrerequisites;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseRequirements;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseThumbnail;
 using MasarHub.Application.Features.Courses.Queries.GetCourseById;
+using MasarHub.Application.Features.Courses.Queries.GetCourseThumbnail;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +49,16 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> GetById(Guid id)
         {
             var result = await _mediator.Send(new GetCourseByIdQuery(id));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("{id:guid}/thumbnail")]
+        public async Task<IActionResult> GetThumbnail(Guid id)
+        {
+            var result = await _mediator.Send(new GetCourseThumbnailQuery(id));
             if (result.IsFailure)
                 return await HandleError(result);
 
