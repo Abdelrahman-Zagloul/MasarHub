@@ -1,4 +1,6 @@
 ﻿using Hangfire;
+using MasarHub.Application.Abstractions.ExternalServices;
+using MasarHub.Infrastructure.ExternalServices;
 using MasarHub.Infrastructure.Services.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,6 +56,9 @@ namespace MasarHub.Infrastructure.Extensions
                 return multiplexer;
             });
 
+            services.AddMemoryCache();
+            services.AddKeyedScoped<ICacheService, RedisCacheService>("redis");
+            services.AddScoped<ICacheService, HybridCacheService>();
             return services;
         }
     }
