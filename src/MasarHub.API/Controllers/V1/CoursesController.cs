@@ -11,6 +11,7 @@ using MasarHub.Application.Features.Courses.Commands.UpdateCourseLearningObjecti
 using MasarHub.Application.Features.Courses.Commands.UpdateCoursePrerequisites;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseRequirements;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseThumbnail;
+using MasarHub.Application.Features.Courses.Queries.GetCourseById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +47,11 @@ namespace MasarHub.API.Controllers.V1
         [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetById(Guid id)
         {
-            return Ok();
+            var result = await _mediator.Send(new GetCourseByIdQuery(id));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return Ok(result.Value);
         }
 
         [HttpPut("{id:guid}")]

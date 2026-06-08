@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Features.Courses.Queries.GetCourseById;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -95,6 +96,47 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: cancellationToken);
             return await connection.ExecuteScalarAsync<bool>(command);
         }
+        public async Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken cancellationToken)
+        {
+            const string sql = @"
+                SELECT 
+                    c.Id, 
+                    c.Title, 
+                    c.Slug, 
+                    c.Description, 
+                    c.Price, 
+                    c.Language, 
+                    c.Status, 
+                    c.Level, 
+                    c.PublishedAt, 
+                    c.InstructorId, 
+                    u.FullName AS InstructorName, 
+                    c.CategoryId, 
+                    cat.Name AS CategoryName,
+                    c.RejectionReason
+                FROM courses.Courses c
+                LEFT JOIN [identity].[Users] u ON c.InstructorId = u.Id
+                LEFT JOIN categories.Categories cat ON c.CategoryId = cat.Id
+                WHERE c.Id = @CourseId AND c.IsDeleted = 0;
 
+                SELECT Value FROM courses.CoursePrerequisites WHERE CourseId = @CourseId;
+                SELECT Value FROM courses.CourseRequirements WHERE CourseId = @CourseId;
+                SELECT Value FROM courses.CourseLearningObjectives WHERE CourseId = @CourseId;
+            ";
+
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: cancellationToken);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var course = await multi.ReadFirstOrDefaultAsync<CourseDetailsResponse>();
+            if (course is null)
+                return null;
+
+            course.Prerequisites = (await multi.ReadAsync<string>()).ToList();
+            course.Requirements = (await multi.ReadAsync<string>()).ToList();
+            course.LearningObjectives = (await multi.ReadAsync<string>()).ToList();
+            return course;
+        }
     }
 }
