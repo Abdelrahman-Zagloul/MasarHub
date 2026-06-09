@@ -11,14 +11,14 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
         private VideoLesson() { }
 
-        private VideoLesson(Guid moduleId, string title, int order, string? description, string videoPublicId, int duration)
-            : base(moduleId, title, order, description)
+        private VideoLesson(Guid moduleId, bool isPreviewable, string title, int order, string? description, string videoPublicId, int duration)
+            : base(moduleId, isPreviewable, title, order, description)
         {
             VideoPublicId = videoPublicId;
             DurationInSeconds = duration;
         }
 
-        public static DomainResult<VideoLesson> Create(Guid moduleId, string title, int order, string? description, string videoPublicId, int duration)
+        public static DomainResult<VideoLesson> Create(Guid moduleId, bool isPreviewable, string title, int order, string? description, string videoPublicId, int duration)
         {
             var error = GuardExtensions.FirstError(
                 ValidateLesson(moduleId, title, order),
@@ -29,7 +29,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             if (error is not null)
                 return error;
 
-            return new VideoLesson(moduleId, title, order, description, videoPublicId, duration);
+            return new VideoLesson(moduleId, isPreviewable, title, order, description, videoPublicId, duration);
         }
 
         public DomainResult UpdateThumbnail(string? thumbnailPublicId)

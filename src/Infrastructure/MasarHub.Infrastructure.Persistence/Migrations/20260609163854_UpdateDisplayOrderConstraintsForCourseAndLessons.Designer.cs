@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MasarHub.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(MasarHubDbContext))]
-    [Migration("20260609114453_AddModuleDisplayOrderUniqueIndexToSupportSoftDelete")]
-    partial class AddModuleDisplayOrderUniqueIndexToSupportSoftDelete
+    [Migration("20260609163854_UpdateDisplayOrderConstraintsForCourseAndLessons")]
+    partial class UpdateDisplayOrderConstraintsForCourseAndLessons
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -633,7 +633,9 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
                         .HasDefaultValue(false);
 
                     b.Property<bool>("IsPreviewable")
-                        .HasColumnType("bit");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<string>("LessonType")
                         .IsRequired()
@@ -658,11 +660,12 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
                     b.HasIndex("ModuleId");
 
                     b.HasIndex("ModuleId", "DisplayOrder")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsDeleted] = 0");
 
                     b.ToTable("Lessons", "courses", t =>
                         {
-                            t.HasCheckConstraint("CK_Lessons_DisplayOrder_Positive", "[DisplayOrder] > 0");
+                            t.HasCheckConstraint("CK_Lessons_DisplayOrder_Positive", "([IsDeleted] = 0 AND [DisplayOrder] > 0) OR ([IsDeleted] = 1 AND [DisplayOrder] = 0)");
                         });
 
                     b.HasDiscriminator<string>("LessonType").HasValue("Lesson");
@@ -1627,7 +1630,7 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
 
                     b.ToTable(t =>
                         {
-                            t.HasCheckConstraint("CK_Lessons_DisplayOrder_Positive", "[DisplayOrder] > 0");
+                            t.HasCheckConstraint("CK_Lessons_DisplayOrder_Positive", "([IsDeleted] = 0 AND [DisplayOrder] > 0) OR ([IsDeleted] = 1 AND [DisplayOrder] = 0)");
                         });
 
                     b.HasDiscriminator().HasValue("article");
@@ -1657,7 +1660,7 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
 
                     b.ToTable("Lessons", "courses", t =>
                         {
-                            t.HasCheckConstraint("CK_Lessons_DisplayOrder_Positive", "[DisplayOrder] > 0");
+                            t.HasCheckConstraint("CK_Lessons_DisplayOrder_Positive", "([IsDeleted] = 0 AND [DisplayOrder] > 0) OR ([IsDeleted] = 1 AND [DisplayOrder] = 0)");
 
                             t.HasCheckConstraint("CK_ResourceLesson_FileSize_NonNegative", "[FileSizeInBytes] >= 0");
                         });
@@ -1683,7 +1686,7 @@ namespace MasarHub.Infrastructure.Persistence.Migrations
 
                     b.ToTable("Lessons", "courses", t =>
                         {
-                            t.HasCheckConstraint("CK_Lessons_DisplayOrder_Positive", "[DisplayOrder] > 0");
+                            t.HasCheckConstraint("CK_Lessons_DisplayOrder_Positive", "([IsDeleted] = 0 AND [DisplayOrder] > 0) OR ([IsDeleted] = 1 AND [DisplayOrder] = 0)");
 
                             t.HasCheckConstraint("CK_VideoLesson_Duration_Positive", "[DurationInSeconds] > 0");
                         });

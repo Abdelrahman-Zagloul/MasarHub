@@ -14,6 +14,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
         private ResourceLesson(
             Guid moduleId,
+            bool isPreviewable,
             string title,
             int order,
             string? description,
@@ -21,7 +22,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             string fileName,
             string fileType,
             long fileSize)
-            : base(moduleId, title, order, description)
+            : base(moduleId, isPreviewable, title, order, description)
         {
             ResourcePublicId = resourcePublicId;
             FileName = fileName;
@@ -31,6 +32,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
         public static DomainResult<ResourceLesson> Create(
             Guid moduleId,
+            bool isPreviewable,
             string title,
             int order,
             string? description,
@@ -50,7 +52,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             if (error is not null)
                 return error;
 
-            return new ResourceLesson(moduleId, title, order, description, publicId, fileName, fileType, fileSize);
+            return new ResourceLesson(moduleId, isPreviewable, title, order, description, publicId, fileName, fileType, fileSize);
         }
 
         public DomainResult UpdateFileName(string fileName)

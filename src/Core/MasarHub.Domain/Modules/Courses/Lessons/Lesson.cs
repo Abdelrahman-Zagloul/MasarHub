@@ -15,9 +15,10 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
         protected Lesson() { }
 
-        protected Lesson(Guid moduleId, string title, int order, string? description)
+        protected Lesson(Guid moduleId, bool isPreviewable, string title, int order, string? description)
         {
             ModuleId = moduleId;
+            IsPreviewable = isPreviewable;
             Title = title;
             DisplayOrder = order;
             Description = description;
@@ -26,7 +27,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
         public DomainResult UpdateTitle(string title)
         {
             var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Title = title;
@@ -44,7 +45,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
         public DomainResult ChangeOrder(int order)
         {
             var error = Guard.AgainstNegativeOrZero(order, nameof(order));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             DisplayOrder = order;
@@ -68,13 +69,13 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
         public DomainResult Delete() => MarkAsDeleted();
 
-        protected static DomainError? ValidateLesson(Guid moduleId, string title, int order)
+        protected static DomainError ValidateLesson(Guid moduleId, string title, int order)
         {
             return GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(moduleId, nameof(moduleId)),
                 Guard.AgainstNullOrWhiteSpace(title, nameof(title)),
                 Guard.AgainstNegativeOrZero(order, nameof(order))
-            );
+            ) ?? DomainError.None;
         }
     }
 }

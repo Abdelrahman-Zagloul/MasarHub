@@ -1,3 +1,4 @@
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -9,13 +10,13 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
         private ArticleLesson() { }
 
-        private ArticleLesson(Guid moduleId, string title, int order, string? description, string content)
-            : base(moduleId, title, order, description)
+        private ArticleLesson(Guid moduleId, bool isPreviewable, string title, int order, string? description, string content)
+            : base(moduleId, isPreviewable, title, order, description)
         {
             Content = content;
         }
 
-        public static DomainResult<ArticleLesson> Create(Guid moduleId, string title, int order, string? description, string content)
+        public static DomainResult<ArticleLesson> Create(Guid moduleId, bool isPreviewable, string title, int order, string? description, string content)
         {
             var error = GuardExtensions.FirstError(
                 ValidateLesson(moduleId, title, order),
@@ -25,13 +26,13 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             if (error is not null)
                 return error;
 
-            return new ArticleLesson(moduleId, title, order, description, content);
+            return new ArticleLesson(moduleId, isPreviewable, title, order, description, content);
         }
 
         public DomainResult UpdateContent(string content)
         {
             var error = Guard.AgainstNullOrWhiteSpace(content, nameof(content));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Content = content;
