@@ -7,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace MasarHub.Infrastructure.Persistence.Contexts
 {
@@ -23,6 +24,7 @@ namespace MasarHub.Infrastructure.Persistence.Contexts
             base.OnModelCreating(builder);
             builder.ApplyConfigurationsFromAssembly(typeof(IPersistenceAssemblyMarker).Assembly);
             builder.ApplyIdentitySchema();
+            ApplySoftDeleteQueryFilter(builder);
         }
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -74,6 +76,25 @@ namespace MasarHub.Infrastructure.Persistence.Contexts
             //    return _publisher.Publish(notification, ct);
             //}));
             #endregion
+        }
+
+        private static void ApplySoftDeleteQueryFilter(ModelBuilder builder)
+        {
+            foreach (var entityType in builder.Model.GetEntityTypes())
+            {
+                if (typeof(SoftDeletableEntity).IsAssignableFrom(entityType.ClrType) && entityType.BaseType is null)
+                {
+                    var method = typeof(MasarHubDbContext)
+                        .GetMethod(nameof(SetSoftDeleteFilter), BindingFlags.NonPublic | BindingFlags.Static)!
+                        .MakeGenericMethod(entityType.ClrType);
+
+                    method.Invoke(null, new object[] { builder });
+                }
+            }
+        }
+        private static void SetSoftDeleteFilter<TEntity>(ModelBuilder builder) where TEntity : SoftDeletableEntity
+        {
+            builder.Entity<TEntity>().HasQueryFilter(e => !e.IsDeleted);
         }
     }
 }
