@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Modules.Commands.CreateModule;
+using MasarHub.Application.Features.Modules.Commands.DeleteModule;
 using MasarHub.Application.Features.Modules.Commands.UpdateModule;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -40,9 +41,20 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPut("{moduleId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
-        public async Task<IActionResult> Update(Guid courseId, Guid moduleId, UpdateModuleRequest request)
+        public async Task<IActionResult> UpdateModule(Guid courseId, Guid moduleId, UpdateModuleRequest request)
         {
             var result = await _mediator.Send(new UpdateModuleCommand(courseId, moduleId, GetUserId(), request.Title, request.Description));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return NoContent();
+        }
+
+        [HttpDelete("{moduleId:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> DeleteModule(Guid courseId, Guid moduleId)
+        {
+            var result = await _mediator.Send(new DeleteModuleCommand(courseId, moduleId, GetUserId()));
             if (result.IsFailure)
                 return await HandleError(result);
 
