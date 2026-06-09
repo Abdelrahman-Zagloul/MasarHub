@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -63,7 +64,7 @@ namespace MasarHub.Domain.Modules.Courses
                 return editable;
 
             var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Title = title;
@@ -78,7 +79,7 @@ namespace MasarHub.Domain.Modules.Courses
                 return editable;
 
             var error = Guard.AgainstNullOrWhiteSpace(content, nameof(content));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Content = content;
@@ -126,7 +127,7 @@ namespace MasarHub.Domain.Modules.Courses
         public DomainResult SetImportance(AnnouncementImportance importance)
         {
             var error = Guard.AgainstEnumOutOfRange(importance, nameof(importance));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Importance = importance;

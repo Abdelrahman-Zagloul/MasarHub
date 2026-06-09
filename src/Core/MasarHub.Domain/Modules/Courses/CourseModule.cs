@@ -2,6 +2,7 @@ using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -33,11 +34,12 @@ namespace MasarHub.Domain.Modules.Courses
                 Guard.AgainstNullOrWhiteSpace(title, nameof(title)),
                 Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder))
             );
-
             if (error is not null)
                 return error;
 
-            return new CourseModule(courseId, title, displayOrder, description);
+            var courseModule = new CourseModule(courseId, title, displayOrder, description);
+            courseModule.RaiseDomainEvent(new ModuleCreatedDomainEvent(courseId, title));
+            return courseModule;
         }
 
         public DomainResult UpdateTitle(string title)
