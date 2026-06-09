@@ -8,7 +8,7 @@ namespace MasarHub.Application.Features.Modules.Commands.CreateModule
         Guid CourseId,
         Guid InstructorId,
         string Title,
-        string? Description = null
+        string? Description
     ) : IRequest<Result<CreateModuleResponse>>;
 
 }

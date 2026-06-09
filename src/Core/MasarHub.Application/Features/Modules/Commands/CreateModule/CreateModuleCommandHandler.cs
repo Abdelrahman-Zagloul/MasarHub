@@ -11,10 +11,10 @@ namespace MasarHub.Application.Features.Modules.Commands.CreateModule
          : IRequestHandler<CreateModuleCommand, Result<CreateModuleResponse>>
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IModuleQuery _moduleQuery;
+        private readonly ICourseModuleQuery _moduleQuery;
         private readonly IRepository<CourseModule> _moduleRepository;
 
-        public CreateModuleCommandHandler(IUnitOfWork unitOfWork, IModuleQuery moduleQuery, IRepository<CourseModule> moduleRepository)
+        public CreateModuleCommandHandler(IUnitOfWork unitOfWork, ICourseModuleQuery moduleQuery, IRepository<CourseModule> moduleRepository)
         {
             _unitOfWork = unitOfWork;
             _moduleQuery = moduleQuery;

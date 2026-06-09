@@ -24,5 +24,8 @@
   "course.already_submitted": "Course is already pending approval.",
   "course.already_published": "Course is already published.",
   "course.already_rejected": "Course is already rejected.",
-  "course.thumbnail_not_found": "No thumbnail found for this course."
+  "course.thumbnail_not_found": "No thumbnail found for this course.",
+
+  "module.not_found": "The module was not found",
+  "module.course_mismatch": "The specified module does not belong to this course."
 }

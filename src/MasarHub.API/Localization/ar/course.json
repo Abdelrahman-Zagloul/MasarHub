@@ -24,5 +24,9 @@
   "course.already_submitted": "الكورس قيد المراجعة بالفعل.",
   "course.already_published": "الكورس منشور بالفعل.",
   "course.already_rejected": "الكورس مرفوض بالفعل.",
-  "course.thumbnail_not_found": "لم يتم العثور على غلاف لهذا الكورس."
+  "course.thumbnail_not_found": "لم يتم العثور على غلاف لهذا الكورس.",
+
+  "module.not_found": "الموديول المطلوب غير موجود.",
+  "module.course_mismatch": "الموديول المحدد لا ينتمي إلى هذا الكورس."
+
 }

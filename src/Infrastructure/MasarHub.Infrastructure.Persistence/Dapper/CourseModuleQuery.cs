@@ -3,10 +3,10 @@ using MasarHub.Application.Abstractions.Persistence.Queries;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
-    public sealed class ModuleQuery : IModuleQuery
+    public sealed class CourseModuleQuery : ICourseModuleQuery
     {
         private readonly IDbConnectionFactory _connectionFactory;
-        public ModuleQuery(IDbConnectionFactory connectionFactory)
+        public CourseModuleQuery(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
         }
@@ -44,6 +44,27 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var courseData = await multi.ReadFirstAsync<(bool CourseExists, bool IsOwner)>();
             var nextDisplayOrder = await multi.ReadFirstAsync<int>();
             return (courseData.CourseExists, courseData.IsOwner, nextDisplayOrder);
+        }
+
+        public async Task<(bool ModuleExists, bool IsOwner, Guid CourseId)> GetUpdateDataAsync(
+            Guid moduleId, Guid instructorId, CancellationToken cancellationToken)
+        {
+            const string sql = @"
+                SELECT 
+                    CAST(CASE WHEN m.Id IS NOT NULL THEN 1 ELSE 0 END AS BIT) AS ModuleExists,
+                    CAST(CASE WHEN c.InstructorId = @InstructorId THEN 1 ELSE 0 END AS BIT) AS IsOwner,
+                    m.CourseId AS CourseId
+                FROM courses.CourseModules m
+                INNER JOIN courses.Courses c ON m.CourseId = c.Id AND c.IsDeleted = 0
+                WHERE m.Id = @ModuleId AND m.IsDeleted = 0;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+
+            var command = new CommandDefinition(sql, new { ModuleId = moduleId, InstructorId = instructorId }, cancellationToken: cancellationToken);
+
+            var result = await connection.QueryFirstOrDefaultAsync<(bool ModuleExists, bool IsOwner, Guid CourseId)>(command);
+            return result;
         }
     }
 }
