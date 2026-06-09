@@ -16,8 +16,8 @@
   "InstructorId": "معرف المدرب",
   "MinPrice": "أدنى سعر",
   "MaxPrice": "أعلى سعر",
+  "OrderedModuleIds": "معرفات الموديلات",
 
-  "course.created": "تم إنشاء الكورس بنجاح.",
   "course.not_found": "الكورس غير موجود.",
   "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس.",
   "course.cannot_submit_empty_course": "لا يمكن تقديم كورس فارغ. يرجى إضافة دروس قبل التقديم.",
@@ -25,5 +25,13 @@
   "course.already_submitted": "الكورس قيد المراجعة بالفعل.",
   "course.already_published": "الكورس منشور بالفعل.",
   "course.already_rejected": "الكورس مرفوض بالفعل.",
-  "course.thumbnail_not_found": "لم يتم العثور على غلاف لهذا الكورس."
+  "course.thumbnail_not_found": "لم يتم العثور على غلاف لهذا الكورس.",
+
+  "module.not_found": "الموديول المطلوب غير موجود.",
+  "module.course_mismatch": "الموديول المحدد لا ينتمي إلى هذا الكورس.",
+  "module.duplicate_reorder_module_ids": "تكرار معرفات الموديول في إعادة الترتيب.",
+  "module.invalid_module_ids": "تحتوي قائمة معرفات الموديول على معرفات غير صالحة.",
+  "module.reorder_items_mismatch": "قائمة معرفات الموديول لا تطابق عدد الموديولات في هذا الكورس.",
+  "module.reorder_module_not_found": "واحد أو أكثر من الموديولات المحددة لإعادة الترتيب غير موجود في هذا الكورس."
+
 }

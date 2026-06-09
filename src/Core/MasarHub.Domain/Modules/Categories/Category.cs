@@ -61,7 +61,7 @@ namespace MasarHub.Domain.Modules.Categories
         public DomainResult Rename(string name)
         {
             var error = Guard.AgainstNullOrWhiteSpace(name, nameof(name));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Name = name;
@@ -76,7 +76,7 @@ namespace MasarHub.Domain.Modules.Categories
         public DomainResult ChangeParentCategory(Category parent)
         {
             var error = Guard.AgainstNull(parent, nameof(parent));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             if (parent.Id == Id)
@@ -104,7 +104,7 @@ namespace MasarHub.Domain.Modules.Categories
         public DomainResult ChangeDisplayOrder(int displayOrder)
         {
             var error = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             DisplayOrder = displayOrder;

@@ -154,8 +154,9 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_price")
             .WithName(propertyName);
     }
-    public static IRuleBuilderOptions<T, IEnumerable<TElement>> RequiredCollection<T, TElement>(
-        this IRuleBuilder<T, IEnumerable<TElement>> ruleBuilder,
+
+    public static IRuleBuilderOptions<T, TProperty> RequiredCollection<T, TProperty>(
+        this IRuleBuilder<T, TProperty> ruleBuilder,
         string propertyName)
     {
         return ruleBuilder
@@ -163,8 +164,8 @@ public static class ValidationExtensions
             .WithErrorCode("validation.required")
             .WithName(propertyName);
     }
-    public static IRuleBuilderOptions<T, IEnumerable<TElement>> RequiredNonEmptyCollection<T, TElement>(
-        this IRuleBuilder<T, IEnumerable<TElement>> ruleBuilder,
+    public static IRuleBuilderOptions<T, TProperty> RequiredNonEmptyCollection<T, TProperty>(
+        this IRuleBuilder<T, TProperty> ruleBuilder,
         string propertyName)
     {
         return ruleBuilder

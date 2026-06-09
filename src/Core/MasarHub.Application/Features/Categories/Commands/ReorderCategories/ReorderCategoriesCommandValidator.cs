@@ -12,9 +12,7 @@ namespace MasarHub.Application.Features.Categories.Commands.ReorderCategories
 
             RuleFor(x => x.OrderedCategoryIds)
                 .Cascade(CascadeMode.Stop)
-
-                .NotEmpty()
-                .WithErrorCode("category.empty_reorder_list")
+                .RequiredNonEmptyCollection("OrderedCategoryIds")
 
                 .Must(ids => ids.Count == ids.ToHashSet().Count)
                 .WithErrorCode("category.duplicate_reorder_category_ids")

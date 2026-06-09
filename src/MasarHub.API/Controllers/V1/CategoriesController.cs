@@ -35,11 +35,7 @@ namespace MasarHub.API.Controllers.V1
             if (result.IsFailure)
                 return await HandleError(result);
 
-            return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, new
-            {
-                Message = await _localizationService.GetAsync("category.created"),
-                Category = result.Value
-            });
+            return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
         }
 
         [HttpGet]

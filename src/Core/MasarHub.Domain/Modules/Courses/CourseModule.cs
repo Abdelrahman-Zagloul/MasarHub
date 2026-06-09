@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -42,7 +43,7 @@ namespace MasarHub.Domain.Modules.Courses
         public DomainResult UpdateTitle(string title)
         {
             var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Title = title;
@@ -56,7 +57,21 @@ namespace MasarHub.Domain.Modules.Courses
             MarkAsUpdated();
             return DomainResult.Success();
         }
+        public DomainResult ChangeDisplayOrder(int displayOrder)
+        {
+            var error = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
+            if (error != DomainError.None)
+                return error;
 
-        public DomainResult Delete() => MarkAsDeleted();
+            DisplayOrder = displayOrder;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult Delete()
+        {
+            DisplayOrder = 0;
+            MarkAsDeleted();
+            return DomainResult.Success();
+        }
     }
 }
