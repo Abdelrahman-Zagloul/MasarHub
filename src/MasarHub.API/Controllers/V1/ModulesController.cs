@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Modules.Commands.CreateModule;
 using MasarHub.Application.Features.Modules.Commands.DeleteModule;
+using MasarHub.Application.Features.Modules.Commands.ReorderModules;
 using MasarHub.Application.Features.Modules.Commands.UpdateModule;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -55,6 +56,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> DeleteModule(Guid courseId, Guid moduleId)
         {
             var result = await _mediator.Send(new DeleteModuleCommand(courseId, moduleId, GetUserId()));
+            if (result.IsFailure)
+                return await HandleError(result);
+
+            return NoContent();
+        }
+
+        [HttpPatch("reorder")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> ReorderModules(Guid courseId, ReorderModulesRequest request)
+        {
+            var result = await _mediator.Send(new ReorderModulesCommand(courseId, GetUserId(), request.OrderedModuleIds));
             if (result.IsFailure)
                 return await HandleError(result);
 

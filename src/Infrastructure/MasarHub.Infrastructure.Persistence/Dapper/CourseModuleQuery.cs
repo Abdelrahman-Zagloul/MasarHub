@@ -16,34 +16,23 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
         {
             const string sql = @"
                 SELECT 
-                    CASE 
-                        WHEN EXISTS (
-                            SELECT 1 FROM courses.Courses WHERE Id = @CourseId AND IsDeleted = 0
-                        ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) 
-                    END AS CourseExists,
-            
-                    CASE 
-                        WHEN EXISTS (
-                            SELECT 1 FROM courses.Courses WHERE Id = @CourseId AND InstructorId = @InstructorId AND IsDeleted = 0
-                        ) THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) 
-                    END AS IsOwner;
+                    CAST(CASE WHEN EXISTS (
+                        SELECT 1 FROM courses.Courses WHERE Id = @CourseId AND IsDeleted = 0
+                    ) THEN 1 ELSE 0 END AS BIT) AS CourseExists,
 
-                SELECT COALESCE(
-                    (SELECT MAX(DisplayOrder) + 1 FROM courses.CourseModules WHERE CourseId = @CourseId AND IsDeleted = 0),
-                    1
-                ) AS NextDisplayOrder;
+                    CAST(CASE WHEN EXISTS (
+                        SELECT 1 FROM courses.Courses WHERE Id = @CourseId AND InstructorId = @InstructorId AND IsDeleted = 0
+                    ) THEN 1 ELSE 0 END AS BIT) AS IsOwner,
+
+                    COALESCE((SELECT MAX(DisplayOrder) + 1 FROM courses.CourseModules WHERE CourseId = @CourseId), 1) AS NextDisplayOrder;
             ";
-
             using var connection = _connectionFactory.CreateConnection();
             var command = new CommandDefinition(
                 sql,
                 new { CourseId = courseId, InstructorId = instructorId },
                 cancellationToken: cancellationToken);
 
-            using var multi = await connection.QueryMultipleAsync(command);
-            var courseData = await multi.ReadFirstAsync<(bool CourseExists, bool IsOwner)>();
-            var nextDisplayOrder = await multi.ReadFirstAsync<int>();
-            return (courseData.CourseExists, courseData.IsOwner, nextDisplayOrder);
+            return await connection.QueryFirstAsync<(bool CourseExists, bool IsOwner, int NextDisplayOrder)>(command);
         }
 
         public async Task<(bool ModuleExists, bool IsOwner, Guid CourseId)> GetUpdateDataAsync(
@@ -65,6 +54,24 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             var result = await connection.QueryFirstOrDefaultAsync<(bool ModuleExists, bool IsOwner, Guid CourseId)>(command);
             return result;
+        }
+
+        public async Task<bool> IsCourseOwnerAsync(Guid courseId, Guid instructorId, CancellationToken cancellationToken)
+        {
+            const string sql = @"
+                SELECT CAST(
+                    CASE 
+                        WHEN EXISTS (
+                            SELECT 1 
+                            FROM courses.Courses 
+                            WHERE Id = @CourseId AND InstructorId = @InstructorId AND IsDeleted = 0
+                        ) THEN 1 
+                        ELSE 0 
+                    END AS BIT);
+            ";
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CourseId = courseId, InstructorId = instructorId }, cancellationToken: cancellationToken);
+            return await connection.ExecuteScalarAsync<bool>(command);
         }
     }
 }

@@ -38,7 +38,9 @@ namespace MasarHub.Application.Features.Modules.Commands.DeleteModule
             if (courseModule == null)
                 return Error.NotFound("module.not_found");
 
-            courseModule.Delete();
+            var delateResult = courseModule.Delete();
+            if (delateResult.IsFailure)
+                return delateResult.Error;
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();

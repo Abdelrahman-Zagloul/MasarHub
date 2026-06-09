@@ -13,7 +13,8 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses
 
             builder.ToTable("CourseModules", "courses", tb =>
             {
-                tb.HasCheckConstraint("CK_CourseModules_DisplayOrder_Positive", "[DisplayOrder] > 0");
+                tb.HasCheckConstraint("CK_CourseModules_DisplayOrder_Positive",
+                    "([IsDeleted] = 0 AND [DisplayOrder] > 0) OR ([IsDeleted] = 1 AND [DisplayOrder] = 0)");
             });
 
 
@@ -41,6 +42,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses
 
             builder.HasIndex(m => m.CourseId);
             builder.HasIndex(m => new { m.CourseId, m.DisplayOrder })
+                   .HasFilter("[IsDeleted] = 0")
                    .IsUnique();
 
         }

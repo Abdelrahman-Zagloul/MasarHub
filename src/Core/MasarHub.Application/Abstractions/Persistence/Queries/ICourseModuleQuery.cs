@@ -9,5 +9,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
 
         Task<(bool ModuleExists, bool IsOwner, Guid CourseId)> GetUpdateDataAsync(
            Guid moduleId, Guid instructorId, CancellationToken cancellationToken);
+
+        Task<bool> IsCourseOwnerAsync(Guid courseId, Guid instructorId, CancellationToken cancellationToken);
     }
 }
