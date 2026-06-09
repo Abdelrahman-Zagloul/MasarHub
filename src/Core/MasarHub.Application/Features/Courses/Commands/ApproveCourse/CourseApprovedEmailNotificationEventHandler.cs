@@ -23,17 +23,19 @@ namespace MasarHub.Application.Features.Courses.Commands.ApproveCourse
         public async Task Handle(DomainEventNotification<CourseApprovedDomainEvent> notification, CancellationToken cancellationToken)
         {
             var domainEvent = notification.DomainEvent;
-            (string fullName, string email) = await _courseQuery.GetInstructorInfoAsync(domainEvent.InstructorId, cancellationToken);
+
+            var instructorInfo = await _courseQuery.GetInstructorInfoAsync(domainEvent.InstructorId, cancellationToken);
+            if (instructorInfo == null)
+                return;
 
             _backgroundJobService.Enqueue(() =>
                 _appEmailService.SendCourseApprovedEmailAsync(
-                    fullName,
-                    email,
+                    instructorInfo.FullName,
+                    instructorInfo.Email,
                     domainEvent.CourseTitle,
                     $"/courses/{domainEvent.CourseId}"
                 )
             );
-
         }
     }
 }

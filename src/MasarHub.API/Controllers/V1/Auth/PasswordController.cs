@@ -14,15 +14,15 @@ namespace MasarHub.API.Controllers.V1.Auth
     [Tags("Authentication")]
     public sealed class PasswordController : AuthBaseController
     {
-        public PasswordController(ILocalizationService localizationService, IMediator mediator)
-            : base(localizationService, mediator) { }
+        public PasswordController(ILocalizationService localizationService, ISender sender)
+            : base(localizationService, sender) { }
 
         [Authorize]
         [HttpPost("password/change")]
         [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
-            var result = await _mediator.Send(new ChangePasswordCommand(GetUserId(), request.CurrentPassword, request.NewPassword));
+            var result = await _sender.Send(new ChangePasswordCommand(GetUserId(), request.CurrentPassword, request.NewPassword));
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -33,7 +33,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Otp)]
         public async Task<IActionResult> ForgetPasswordAsync(ForgetPasswordCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -44,7 +44,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -56,7 +56,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
         public async Task<IActionResult> VerifyPassword(VerifyPasswordCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 

@@ -26,12 +26,12 @@ namespace MasarHub.Application.Features.Categories.Commands.DeleteCategory
             if (category is null)
                 return Error.NotFound("category.not_found");
 
-            var (hasChildren, hasCourses) = await _categoryQuery.CanDeleteAsync(request.Id, cancellationToken);
+            var deletionCheckData = await _categoryQuery.CanDeleteAsync(request.Id, cancellationToken);
 
-            if (hasChildren)
+            if (deletionCheckData.HasChildren)
                 return Error.Conflict("category.has_children");
 
-            if (hasCourses)
+            if (deletionCheckData.HasCourses)
                 return Error.Conflict("category.has_courses");
 
             _categoryRepository.Remove(category);

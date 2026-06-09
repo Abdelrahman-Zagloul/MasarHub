@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Courses.Queries.GetCourseById;
 using MasarHub.Application.Features.Courses.Queries.GetCourses;
 using MasarHub.Domain.Modules.Courses;
@@ -16,7 +17,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<(bool CategoryExists, int SlugCount)> GetCreationDataAsync(string slug, Guid categoryId, CancellationToken ct = default)
+        public async Task<CourseCreationData> GetCreationDataAsync(string slug, Guid categoryId, CancellationToken ct)
         {
             const string sql = @"
                 -- Check if the category exists
@@ -44,9 +45,10 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { Slug = slug, CategoryId = categoryId, }, cancellationToken: ct);
 
             using var multi = await connection.QueryMultipleAsync(command);
-            return (await multi.ReadFirstAsync<bool>(), await multi.ReadFirstAsync<int>());
+
+            return new CourseCreationData(await multi.ReadFirstAsync<bool>(), await multi.ReadFirstAsync<int>());
         }
-        public async Task<(string FullName, string Email)> GetInstructorInfoAsync(Guid instructorId, CancellationToken ct = default)
+        public async Task<InstructorInfo?> GetInstructorInfoAsync(Guid instructorId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT 
@@ -59,9 +61,9 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             using var connection = _connectionFactory.CreateConnection();
             var command = new CommandDefinition(sql, new { Id = instructorId }, cancellationToken: ct);
 
-            return await connection.QueryFirstOrDefaultAsync<(string FullName, string Email)>(command);
+            return await connection.QueryFirstOrDefaultAsync<InstructorInfo>(command);
         }
-        public async Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken ct = default)
+        public async Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT CASE
@@ -78,7 +80,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { CategoryId = categoryId, }, cancellationToken: ct);
             return await connection.ExecuteScalarAsync<bool>(command);
         }
-        public async Task<bool> HasLecturesAsync(Guid courseId, CancellationToken cancellationToken)
+        public async Task<bool> HasLecturesAsync(Guid courseId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT CASE 
@@ -95,10 +97,10 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             ";
 
             using var connection = _connectionFactory.CreateConnection();
-            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: cancellationToken);
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: ct);
             return await connection.ExecuteScalarAsync<bool>(command);
         }
-        public async Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken cancellationToken)
+        public async Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT 
@@ -128,7 +130,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
 
             using var connection = _connectionFactory.CreateConnection();
-            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: cancellationToken);
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: ct);
             using var multi = await connection.QueryMultipleAsync(command);
 
             var course = await multi.ReadFirstOrDefaultAsync<CourseDetailsResponse>();
@@ -140,7 +142,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             course.LearningObjectives = (await multi.ReadAsync<string>()).ToList();
             return course;
         }
-        public async Task<(bool CourseExists, string? ThumbnailPublicId)> GetThumbnailDetailsAsync(Guid courseId, CancellationToken cancellationToken)
+        public async Task<CourseThumbnailDetails> GetThumbnailDetailsAsync(Guid courseId, CancellationToken ct)
         {
             var sql = @"
                 SELECT 
@@ -151,11 +153,12 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             ";
 
             using var connection = _connectionFactory.CreateConnection();
-            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: cancellationToken);
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: ct);
 
-            return await connection.QueryFirstOrDefaultAsync<(bool CourseExists, string? ThumbnailPublicId)>(command);
+            var result = await connection.QueryFirstOrDefaultAsync<CourseThumbnailDetails>(command);
+            return result ?? new CourseThumbnailDetails(false, null);
         }
-        public async Task<(int TotalCount, List<CourseResponse> Courses)> GetAllAsync(GetCoursesQuery query, CourseStatus? status, CancellationToken cancellationToken)
+        public async Task<PagedResult<CourseResponse>> GetAllAsync(GetCoursesQuery query, CourseStatus? status, CancellationToken ct)
         {
             var conditions = new List<string> { "c.IsDeleted = 0", };
             var parameters = new DynamicParameters();
@@ -244,10 +247,10 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             parameters.Add("PageSize", query.PageSize);
 
             using var connection = _connectionFactory.CreateConnection();
-            var command = new CommandDefinition(sql, parameters, cancellationToken: cancellationToken);
+            var command = new CommandDefinition(sql, parameters, cancellationToken: ct);
             var multi = await connection.QueryMultipleAsync(command);
 
-            return (await multi.ReadFirstAsync<int>(), (await multi.ReadAsync<CourseResponse>()).ToList());
+            return new PagedResult<CourseResponse>((await multi.ReadAsync<CourseResponse>()).ToList(), await multi.ReadFirstAsync<int>());
         }
     }
 }

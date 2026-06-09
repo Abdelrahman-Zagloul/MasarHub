@@ -12,15 +12,15 @@ namespace MasarHub.API.Controllers.V1.Auth
     [Route("api/auth")]
     public abstract class AuthBaseController : ApiBaseController
     {
-        protected readonly IMediator _mediator;
+        protected readonly ISender _sender;
         protected string? IpAddress => HttpContext.Connection.RemoteIpAddress?.ToString();
 
         protected const string RefreshTokenCookieName = "refreshToken";
 
-        protected AuthBaseController(ILocalizationService localizationService, IMediator mediator)
+        protected AuthBaseController(ILocalizationService localizationService, ISender sender)
             : base(localizationService)
         {
-            _mediator = mediator;
+            _sender = sender;
         }
 
         protected void AddRefreshTokenToCookie(RefreshTokenResult refreshTokenResult)

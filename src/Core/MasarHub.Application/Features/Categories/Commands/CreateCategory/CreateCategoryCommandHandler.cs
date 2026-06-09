@@ -27,8 +27,8 @@ namespace MasarHub.Application.Features.Categories.Commands.CreateCategory
         {
             var slug = SlugGenerator.GenerateSlug(request.Name);
 
-            var (displayOrder, slugExist) = await _categoryQuery.GetCreationDataAsync(slug, request.ParentCategoryId, cancellationToken);
-            if (slugExist)
+            var creationData = await _categoryQuery.GetCreationDataAsync(slug, request.ParentCategoryId, cancellationToken);
+            if (creationData.SlugExists)
                 return Error.Conflict("category.slug_already_exists", "Name");
 
             DomainResult<Category> categoryResult;
@@ -37,10 +37,10 @@ namespace MasarHub.Application.Features.Categories.Commands.CreateCategory
                 var parentCategory = await _categoryQuery.GetByIdAsync(request.ParentCategoryId.Value, cancellationToken);
                 if (parentCategory is null)
                     return Error.NotFound("category.not_found");
-                categoryResult = Category.CreateSubCategory(request.Name, request.Description, slug, displayOrder, parentCategory);
+                categoryResult = Category.CreateSubCategory(request.Name, request.Description, slug, creationData.NextDisplayOrder, parentCategory);
             }
             else
-                categoryResult = Category.CreateRoot(request.Name, request.Description, slug, displayOrder);
+                categoryResult = Category.CreateRoot(request.Name, request.Description, slug, creationData.NextDisplayOrder);
 
             if (categoryResult.IsFailure)
                 return categoryResult.Error;

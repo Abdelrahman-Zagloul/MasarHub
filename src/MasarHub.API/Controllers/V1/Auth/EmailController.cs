@@ -12,13 +12,13 @@ namespace MasarHub.API.Controllers.V1.Auth
     [EnableRateLimiting(RateLimitingPolicies.Otp)]
     public sealed class EmailController : AuthBaseController
     {
-        public EmailController(ILocalizationService localizationService, IMediator mediator)
-            : base(localizationService, mediator) { }
+        public EmailController(ILocalizationService localizationService, ISender sender)
+            : base(localizationService, sender) { }
 
         [HttpPost("email/confirm")]
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -33,7 +33,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [HttpPost("email/resend-confirmation")]
         public async Task<IActionResult> ResendConfirmEmailAsync(ResendConfirmEmailCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 

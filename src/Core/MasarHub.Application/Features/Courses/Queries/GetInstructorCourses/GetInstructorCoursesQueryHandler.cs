@@ -34,8 +34,8 @@ namespace MasarHub.Application.Features.Courses.Queries.GetInstructorCourses
                 request.PageSize
             );
 
-            var (totalCount, courses) = await _courseQuery.GetAllAsync(getCoursesQuery, request.Status, cancellationToken);
-            return PaginatedResult<CourseResponse>.Create(courses, totalCount, request.PageNumber, request.PageSize);
+            var pagedResult = await _courseQuery.GetAllAsync(getCoursesQuery, request.Status, cancellationToken);
+            return PaginatedResult<CourseResponse>.Create(pagedResult.Items, pagedResult.TotalCount, request.PageNumber, request.PageSize);
         }
     }
 }

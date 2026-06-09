@@ -1,4 +1,5 @@
 ﻿using MasarHub.Application.Common.DependencyInjection;
+using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Courses.Queries.GetCourseById;
 using MasarHub.Application.Features.Courses.Queries.GetCourses;
 using MasarHub.Domain.Modules.Courses;
@@ -7,12 +8,15 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
 {
     public interface ICourseQuery : IScopedService
     {
-        Task<(bool CategoryExists, int SlugCount)> GetCreationDataAsync(string slug, Guid categoryId, CancellationToken ct = default);
-        Task<(string FullName, string Email)> GetInstructorInfoAsync(Guid instructorId, CancellationToken ct = default);
+        Task<CourseCreationData> GetCreationDataAsync(string slug, Guid categoryId, CancellationToken ct = default);
+        Task<InstructorInfo?> GetInstructorInfoAsync(Guid instructorId, CancellationToken ct = default);
         Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken ct = default);
-        Task<bool> HasLecturesAsync(Guid courseId, CancellationToken cancellationToken);
-        Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken cancellationToken);
-        Task<(bool CourseExists, string? ThumbnailPublicId)> GetThumbnailDetailsAsync(Guid courseId, CancellationToken cancellationToken);
-        Task<(int TotalCount, List<CourseResponse> Courses)> GetAllAsync(GetCoursesQuery query, CourseStatus? status, CancellationToken cancellationToken);
+        Task<bool> HasLecturesAsync(Guid courseId, CancellationToken ct = default);
+        Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken ct = default);
+        Task<CourseThumbnailDetails> GetThumbnailDetailsAsync(Guid courseId, CancellationToken ct = default);
+        Task<PagedResult<CourseResponse>> GetAllAsync(GetCoursesQuery query, CourseStatus? status, CancellationToken ct = default);
     }
+    public sealed record CourseCreationData(bool CategoryExists, int SlugCount);
+    public sealed record InstructorInfo(string FullName, string Email);
+    public sealed record CourseThumbnailDetails(bool CourseExists, string? ThumbnailPublicId);
 }

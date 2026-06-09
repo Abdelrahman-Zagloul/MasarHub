@@ -17,60 +17,54 @@ namespace MasarHub.API.Controllers.V1
     [Route("api/courses/{courseId:guid}/modules")]
     public sealed class ModulesController : ApiBaseController
     {
-        private readonly IMediator _mediator;
-        public ModulesController(ILocalizationService localizationService, IMediator mediator) : base(localizationService)
+        private readonly ISender _sender;
+        public ModulesController(ILocalizationService localizationService, ISender sender) : base(localizationService)
         {
-            _mediator = mediator;
+            _sender = sender;
         }
+
 
         [HttpPost]
         [Authorize(Roles = Roles.Instructor)]
         public async Task<IActionResult> Create(Guid courseId, CreateModuleRequest request)
         {
-            var result = await _mediator.Send(new CreateModuleCommand(courseId, GetUserId(), request.Title, request.Description));
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return CreatedAtAction(nameof(GetById), new { courseId, moduleId = result.Value.Id }, result.Value);
+            var result = await _sender.Send(new CreateModuleCommand(courseId, GetUserId(), request.Title, request.Description));
+            return await ToCreatedActionResultAsync(result, nameof(GetModuleById), new { courseId, moduleId = result.Value.Id });
         }
 
+
         [HttpGet("{moduleId:guid}")]
-        public async Task<IActionResult> GetById(Guid courseId, Guid moduleId)
+        public async Task<IActionResult> GetModuleById(Guid courseId, Guid moduleId)
         {
             return Ok();
         }
+
 
         [HttpPut("{moduleId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
         public async Task<IActionResult> UpdateModule(Guid courseId, Guid moduleId, UpdateModuleRequest request)
         {
-            var result = await _mediator.Send(new UpdateModuleCommand(courseId, moduleId, GetUserId(), request.Title, request.Description));
-            if (result.IsFailure)
-                return await HandleError(result);
+            var result = await _sender.Send(new UpdateModuleCommand(courseId, moduleId, GetUserId(), request.Title, request.Description));
+            return await ToNoContentResultAsync(result);
 
-            return NoContent();
         }
+
 
         [HttpDelete("{moduleId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
         public async Task<IActionResult> DeleteModule(Guid courseId, Guid moduleId)
         {
-            var result = await _mediator.Send(new DeleteModuleCommand(courseId, moduleId, GetUserId()));
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return NoContent();
+            var result = await _sender.Send(new DeleteModuleCommand(courseId, moduleId, GetUserId()));
+            return await ToNoContentResultAsync(result);
         }
+
 
         [HttpPatch("reorder")]
         [Authorize(Roles = Roles.Instructor)]
         public async Task<IActionResult> ReorderModules(Guid courseId, ReorderModulesRequest request)
         {
-            var result = await _mediator.Send(new ReorderModulesCommand(courseId, GetUserId(), request.OrderedModuleIds));
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return NoContent();
+            var result = await _sender.Send(new ReorderModulesCommand(courseId, GetUserId(), request.OrderedModuleIds));
+            return await ToNoContentResultAsync(result);
         }
     }
 }

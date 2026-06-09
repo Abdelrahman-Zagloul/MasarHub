@@ -21,16 +21,15 @@ namespace MasarHub.Application.Features.Modules.Commands.UpdateModule
 
         public async Task<Result> Handle(UpdateModuleCommand request, CancellationToken cancellationToken)
         {
-            var (moduleExists, isOwner, courseId) =
-                await _courseModuleQuery.GetUpdateDataAsync(request.ModuleId, request.InstructorId, cancellationToken);
+            var updateData = await _courseModuleQuery.GetUpdateDataAsync(request.ModuleId, request.InstructorId, cancellationToken);
 
-            if (!moduleExists)
+            if (!updateData.ModuleExists)
                 return Error.NotFound("module.not_found");
 
-            if (!isOwner)
+            if (!updateData.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
-            if (request.CourseId != courseId)
+            if (request.CourseId != updateData.CourseId)
                 return Error.BadRequest("module.course_mismatch");
 
             var courseModule = await _courseModuleRepository.GetByIdAsync(request.ModuleId, cancellationToken);

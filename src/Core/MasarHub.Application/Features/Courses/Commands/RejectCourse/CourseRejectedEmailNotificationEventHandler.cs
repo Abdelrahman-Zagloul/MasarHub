@@ -22,12 +22,14 @@ namespace MasarHub.Application.Features.Courses.Commands.RejectCourse
         public async Task Handle(DomainEventNotification<CourseRejectedDomainEvent> notification, CancellationToken cancellationToken)
         {
             var domainEvent = notification.DomainEvent;
-            (string fullName, string email) = await _courseQuery.GetInstructorInfoAsync(domainEvent.InstructorId, cancellationToken);
+            var instructorInfo = await _courseQuery.GetInstructorInfoAsync(domainEvent.InstructorId, cancellationToken);
+            if (instructorInfo == null)
+                return;
 
             _backgroundJobService.Enqueue<IAppEmailService>(x =>
                 x.SendCourseRejectedEmailAsync(
-                    fullName,
-                    email,
+                    instructorInfo.FullName,
+                    instructorInfo.Email,
                     domainEvent.CourseTitle,
                     domainEvent.RejectionReason,
                     $"/courses/{domainEvent.CourseId}"

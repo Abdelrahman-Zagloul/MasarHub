@@ -19,77 +19,58 @@ namespace MasarHub.API.Controllers.V1
     [Route("api/categories")]
     public sealed class CategoriesController : ApiBaseController
     {
-        private readonly IMediator _mediator;
+        private readonly ISender _sender;
 
-        public CategoriesController(ILocalizationService localizationService, IMediator mediator)
+        public CategoriesController(ILocalizationService localizationService, ISender sender)
             : base(localizationService)
         {
-            _mediator = mediator;
+            _sender = sender;
         }
 
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> Create(CreateCategoryCommand command)
+        public async Task<IActionResult> CreateCategory(CreateCategoryCommand command)
         {
-            var result = await _mediator.Send(command);
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value);
+            var result = await _sender.Send(command);
+            return await ToCreatedActionResultAsync(result, nameof(GetCategoryById), new { id = result.Value.Id });
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll([FromQuery] GetCategoriesQuery query)
+        public async Task<IActionResult> GetAllCategorizes([FromQuery] GetCategoriesQuery query)
         {
-            var result = await _mediator.Send(query);
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return Ok(result.Value);
+            var result = await _sender.Send(query);
+            return await ToOkResultAsync(result);
         }
 
         [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetById(Guid id)
+        public async Task<IActionResult> GetCategoryById(Guid id)
         {
-            var result = await _mediator.Send(new GetCategoryByIdQuery(id));
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return Ok(result.Value);
+            var result = await _sender.Send(new GetCategoryByIdQuery(id));
+            return await ToOkResultAsync(result);
         }
 
         [HttpPut("{id:guid}")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryRequest request)
         {
-            var result = await _mediator.Send(new UpdateCategoryCommand(id, request.Name, request.Description, request.ParentCategoryId, request.MoveToRoot));
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return NoContent();
+            var result = await _sender.Send(new UpdateCategoryCommand(id, request.Name, request.Description, request.ParentCategoryId, request.MoveToRoot));
+            return await ToNoContentResultAsync(result);
         }
 
         [HttpPatch("reorder")]
         [Authorize(Roles = Roles.Admin)]
         public async Task<IActionResult> ReorderCategories(ReorderCategoriesCommand command)
         {
-            var result = await _mediator.Send(command);
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return NoContent();
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
         }
 
         [HttpDelete("{id:guid}")]
         [Authorize(Roles = Roles.Admin)]
-        public async Task<IActionResult> Delete(Guid id)
+        public async Task<IActionResult> DeleteCategory(Guid id)
         {
-            var result = await _mediator.Send(new DeleteCategoryCommand(id));
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return await SuccessMessage("category.deleted");
+            var result = await _sender.Send(new DeleteCategoryCommand(id));
+            return await ToNoContentResultAsync(result);
         }
     }
-
 }

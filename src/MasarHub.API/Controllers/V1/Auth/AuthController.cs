@@ -16,13 +16,13 @@ namespace MasarHub.API.Controllers.V1.Auth
     [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
     public class AuthController : AuthBaseController
     {
-        public AuthController(ILocalizationService localizationService, IMediator mediator)
-              : base(localizationService, mediator) { }
+        public AuthController(ILocalizationService localizationService, ISender sender)
+              : base(localizationService, sender) { }
 
         [HttpPost("student/register")]
         public async Task<IActionResult> RegisterStudent(RegisterStudentCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -32,7 +32,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [HttpPost("instructor/register")]
         public async Task<IActionResult> RegisterInstructor(RegisterInstructorCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -42,7 +42,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -68,7 +68,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [HttpPost("external/login")]
         public async Task<IActionResult> ExternalLogin(ExternalLoginCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -80,7 +80,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [HttpPost("logout")]
         public async Task<IActionResult> LogoutAsync()
         {
-            await _mediator.Send(new LogoutCommand(GetUserId(), IpAddress));
+            await _sender.Send(new LogoutCommand(GetUserId(), IpAddress));
             RemoveRefreshTokenFromCookie();
             return await SuccessMessage("auth.logout_success");
         }

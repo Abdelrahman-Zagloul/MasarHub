@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Categories.Queries.GetCategories;
 using MasarHub.Application.Features.Categories.Queries.GetCategoryById;
 using MasarHub.Domain.Modules.Categories;
@@ -64,7 +65,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             return await connection.QueryFirstOrDefaultAsync<Category>(command);
 
         }
-        public async Task<(int DisplayOrder, bool SlugExists)> GetCreationDataAsync(string slug, Guid? parentCategoryId, CancellationToken ct)
+        public async Task<CategoryCreationData> GetCreationDataAsync(string slug, Guid? parentCategoryId, CancellationToken ct)
         {
             const string sql = @"
                 -- DisplayOrder
@@ -100,9 +101,11 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 cancellationToken: ct);
 
             using var multi = await connection.QueryMultipleAsync(command);
-            return (await multi.ReadFirstAsync<int>(), await multi.ReadFirstAsync<bool>());
+            int nextDisplayOrder = await multi.ReadFirstAsync<int>();
+            bool slugExists = await multi.ReadFirstAsync<bool>();
+            return new CategoryCreationData(nextDisplayOrder, slugExists);
         }
-        public async Task<(bool hasChildren, bool hasCourses)> CanDeleteAsync(Guid id, CancellationToken ct = default)
+        public async Task<CategoryDeletionCheckData> CanDeleteAsync(Guid id, CancellationToken ct = default)
         {
             const string sql = @"
                  -- Check for child categories
@@ -131,8 +134,11 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             using var connection = _connectionFactory.CreateConnection();
 
             var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: ct);
+
             using var multi = await connection.QueryMultipleAsync(command);
-            return (await multi.ReadFirstAsync<bool>(), await multi.ReadFirstAsync<bool>());
+            bool hasChildren = await multi.ReadFirstAsync<bool>();
+            bool hasCourses = await multi.ReadFirstAsync<bool>();
+            return new CategoryDeletionCheckData(hasChildren, hasCourses);
         }
         public async Task<CategoryWithChildrenResponse?> GetWithChildrenByIdAsync(Guid id, CancellationToken ct = default)
         {
@@ -159,7 +165,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var children = (await multi.ReadAsync<CategoryResponse>()).ToList();
             return new CategoryWithChildrenResponse(category, children);
         }
-        public async Task<(int TotalCount, List<CategoryResponse> Categories)> GetAllAsync(GetCategoriesQuery query, CancellationToken ct = default)
+        public async Task<PagedResult<CategoryResponse>> GetAllAsync(GetCategoriesQuery query, CancellationToken ct = default)
         {
             var conditions = new List<string>();
             var parameters = new DynamicParameters();
@@ -204,8 +210,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var totalCount = await multi.ReadFirstAsync<int>();
             var categories = (await multi.ReadAsync<CategoryResponse>()).ToList();
 
-            return (totalCount, categories);
+            return new PagedResult<CategoryResponse>(categories, totalCount);
         }
-
     }
 }

@@ -10,15 +10,15 @@ namespace MasarHub.API.Controllers.V1.Auth
     [Tags("Authentication")]
     public sealed class TokenController : AuthBaseController
     {
-        public TokenController(ILocalizationService localizationService, IMediator mediator)
-            : base(localizationService, mediator) { }
+        public TokenController(ILocalizationService localizationService, ISender sender)
+            : base(localizationService, sender) { }
 
         [Authorize]
         [HttpPost("token/revoke")]
         public async Task<IActionResult> RevokeTokenAsync()
         {
             var refreshToken = Request.Cookies[RefreshTokenCookieName];
-            var result = await _mediator.Send(new RevokeTokenCommand(refreshToken, IpAddress));
+            var result = await _sender.Send(new RevokeTokenCommand(refreshToken, IpAddress));
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -30,7 +30,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         public async Task<IActionResult> RefreshTokenAsync()
         {
             var refreshToken = Request.Cookies[RefreshTokenCookieName];
-            var result = await _mediator.Send(new RefreshTokenCommand(refreshToken, IpAddress));
+            var result = await _sender.Send(new RefreshTokenCommand(refreshToken, IpAddress));
             if (result.IsFailure)
                 return await HandleError(result);
 

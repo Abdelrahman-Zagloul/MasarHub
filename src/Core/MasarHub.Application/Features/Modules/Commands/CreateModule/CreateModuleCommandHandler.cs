@@ -23,14 +23,14 @@ namespace MasarHub.Application.Features.Modules.Commands.CreateModule
 
         public async Task<Result<CreateModuleResponse>> Handle(CreateModuleCommand request, CancellationToken cancellationToken)
         {
-            var (courseExists, isOwner, nextDisplayOrder) = await _moduleQuery.GetCreationDataAsync(request.CourseId, request.InstructorId, cancellationToken);
-            if (!courseExists)
+            var creationData = await _moduleQuery.GetCreationDataAsync(request.CourseId, request.InstructorId, cancellationToken);
+            if (!creationData.CourseExists)
                 return Error.NotFound("course.not_found");
 
-            if (!isOwner)
+            if (!creationData.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
-            var moduleResult = CourseModule.Create(request.CourseId, request.Title, nextDisplayOrder, request.Description);
+            var moduleResult = CourseModule.Create(request.CourseId, request.Title, creationData.NextDisplayOrder, request.Description);
             if (moduleResult.IsFailure)
                 return moduleResult.Error;
 

@@ -11,8 +11,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<(bool CourseExists, bool IsOwner, int NextDisplayOrder)> GetCreationDataAsync(
-            Guid courseId, Guid instructorId, CancellationToken cancellationToken)
+        public async Task<ModuleCreationData> GetCreationDataAsync(Guid courseId, Guid instructorId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT 
@@ -30,13 +29,11 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(
                 sql,
                 new { CourseId = courseId, InstructorId = instructorId },
-                cancellationToken: cancellationToken);
+                cancellationToken: ct);
 
-            return await connection.QueryFirstAsync<(bool CourseExists, bool IsOwner, int NextDisplayOrder)>(command);
+            return await connection.QueryFirstAsync<ModuleCreationData>(command);
         }
-
-        public async Task<(bool ModuleExists, bool IsOwner, Guid CourseId)> GetUpdateDataAsync(
-            Guid moduleId, Guid instructorId, CancellationToken cancellationToken)
+        public async Task<ModuleUpdateData> GetUpdateDataAsync(Guid moduleId, Guid instructorId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT 
@@ -50,12 +47,14 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             using var connection = _connectionFactory.CreateConnection();
 
-            var command = new CommandDefinition(sql, new { ModuleId = moduleId, InstructorId = instructorId }, cancellationToken: cancellationToken);
+            var command = new CommandDefinition(
+                sql,
+                new { ModuleId = moduleId, InstructorId = instructorId },
+                cancellationToken: ct);
 
-            var result = await connection.QueryFirstOrDefaultAsync<(bool ModuleExists, bool IsOwner, Guid CourseId)>(command);
-            return result;
+            var result = await connection.QueryFirstOrDefaultAsync<ModuleUpdateData>(command);
+            return result ?? new ModuleUpdateData(false, false, Guid.Empty);
         }
-
         public async Task<bool> IsCourseOwnerAsync(Guid courseId, Guid instructorId, CancellationToken cancellationToken)
         {
             const string sql = @"

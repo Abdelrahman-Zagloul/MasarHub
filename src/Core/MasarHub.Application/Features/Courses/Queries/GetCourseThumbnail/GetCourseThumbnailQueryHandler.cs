@@ -20,15 +20,15 @@ namespace MasarHub.Application.Features.Courses.Queries.GetCourseThumbnail
 
         public async Task<Result<CourseThumbnailResponse>> Handle(GetCourseThumbnailQuery request, CancellationToken cancellationToken)
         {
-            var (courseExists, thumbnailPublicId) = await _courseQuery.GetThumbnailDetailsAsync(request.Id, cancellationToken);
+            var thumbnailDetails = await _courseQuery.GetThumbnailDetailsAsync(request.Id, cancellationToken);
 
-            if (!courseExists)
+            if (!thumbnailDetails.CourseExists)
                 return Error.NotFound("course.not_found");
 
-            if (string.IsNullOrWhiteSpace(thumbnailPublicId))
+            if (string.IsNullOrWhiteSpace(thumbnailDetails.ThumbnailPublicId))
                 return Error.NotFound("course.thumbnail_not_found");
 
-            var url = _fileStorageService.GetUrl(thumbnailPublicId, FileType.Image);
+            var url = _fileStorageService.GetUrl(thumbnailDetails.ThumbnailPublicId, FileType.Image);
             return new CourseThumbnailResponse(url);
         }
     }

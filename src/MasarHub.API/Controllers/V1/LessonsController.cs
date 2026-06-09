@@ -27,15 +27,12 @@ namespace MasarHub.API.Controllers.V1
             var result = await _sender.Send(new CreateArticleLessonCommand(
                 courseId, moduleId, GetUserId(), request.IsPreviewable, request.Title, request.Content, request.Description));
 
-            if (result.IsFailure)
-                return await HandleError(result);
-
-            return CreatedAtAction(nameof(GetById), new { courseId, moduleId, result.Value.Id }, result.Value);
+            return await ToCreatedActionResultAsync(result, nameof(GetLessonById), new { courseId, moduleId, result.Value.Id });
         }
 
 
         [HttpGet]
-        public IActionResult GetById(Guid courseId, Guid moduleId, Guid lessonId)
+        public IActionResult GetLessonById(Guid courseId, Guid moduleId, Guid lessonId)
         {
             return Ok();
         }

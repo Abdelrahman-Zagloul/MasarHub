@@ -17,8 +17,8 @@ namespace MasarHub.Application.Features.Courses.Queries.GetCourses
 
         public async Task<Result<PaginatedResult<CourseResponse>>> Handle(GetCoursesQuery request, CancellationToken cancellationToken)
         {
-            var (totalCount, courses) = await _courseQuery.GetAllAsync(request, CourseStatus.Published, cancellationToken);
-            return PaginatedResult<CourseResponse>.Create(courses, totalCount, request.PageNumber, request.PageSize);
+            var pagedResult = await _courseQuery.GetAllAsync(request, CourseStatus.Published, cancellationToken);
+            return PaginatedResult<CourseResponse>.Create(pagedResult.Items, pagedResult.TotalCount, request.PageNumber, request.PageSize);
         }
     }
 }

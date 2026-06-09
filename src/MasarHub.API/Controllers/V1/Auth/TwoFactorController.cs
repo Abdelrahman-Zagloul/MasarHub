@@ -19,14 +19,14 @@ namespace MasarHub.API.Controllers.V1.Auth
     [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
     public sealed class TwoFactorController : AuthBaseController
     {
-        public TwoFactorController(ILocalizationService localizationService, IMediator mediator)
-            : base(localizationService, mediator) { }
+        public TwoFactorController(ILocalizationService localizationService, ISender sender)
+            : base(localizationService, sender) { }
 
         [Authorize]
         [HttpPost("2fa/enable")]
         public async Task<IActionResult> EnableTwoFactorAuth(EnableTwoFactorCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
             return await SuccessMessage("auth.2fa_enabled");
@@ -36,7 +36,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [HttpPost("2fa/disable")]
         public async Task<IActionResult> Disable()
         {
-            var result = await _mediator.Send(new DisableTwoFactorCommand(GetUserId()));
+            var result = await _sender.Send(new DisableTwoFactorCommand(GetUserId()));
 
             if (result.IsFailure)
                 return await HandleError(result);
@@ -48,7 +48,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Otp)]
         public async Task<IActionResult> SendCode(SendTwoFactorCodeCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -59,7 +59,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> VerifyCode(VerifyTwoFactorCodeCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -73,7 +73,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Otp)]
         public async Task<IActionResult> SetupAuthenticator()
         {
-            var result = await _mediator.Send(new SetupAuthenticatorCommand(GetUserId()));
+            var result = await _sender.Send(new SetupAuthenticatorCommand(GetUserId()));
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -85,7 +85,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> VerifyAuthenticator(VerifyAuthenticatorCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -97,7 +97,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> GenerateRecoveryCodes()
         {
-            var result = await _mediator.Send(new GenerateRecoveryCodesCommand(GetUserId()));
+            var result = await _sender.Send(new GenerateRecoveryCodesCommand(GetUserId()));
             if (result.IsFailure)
                 return await HandleError(result);
 
@@ -112,7 +112,7 @@ namespace MasarHub.API.Controllers.V1.Auth
         [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> VerifyRecoveryCodes(VerifyRecoveryCodeCommand command)
         {
-            var result = await _mediator.Send(command);
+            var result = await _sender.Send(command);
             if (result.IsFailure)
                 return await HandleError(result);
 
