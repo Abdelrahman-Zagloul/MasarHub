@@ -1,7 +1,9 @@
 ﻿using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
+using MasarHub.API.Extensions.Mappers;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
+using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,7 +22,7 @@ namespace MasarHub.API.Controllers.V1
             _sender = sender;
         }
 
-        [HttpPost]
+        [HttpPost("article")]
         [Authorize(Roles = Roles.Instructor)]
         public async Task<IActionResult> CreateArticleLesson(Guid courseId, Guid moduleId, CreateArticleLessonRequest request)
         {
@@ -30,6 +32,21 @@ namespace MasarHub.API.Controllers.V1
             return await ToCreatedActionResultAsync(result, nameof(GetLessonById), new { courseId, moduleId, result.Value.Id });
         }
 
+        [HttpPost("video")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> AddVideoLesson(Guid courseId, Guid moduleId, [FromForm] AddVideoLessonRequest request)
+        {
+            var command = new AddVideoLessonCommand(
+                courseId, moduleId, GetUserId(), request.IsPreviewable,
+                request.Title, request.Description, request.VideoFile.ToResource());
+
+            var result = await _sender.Send(command);
+
+            return result.IsFailure
+                ? await HandleError(result)
+                : CreatedAtAction(nameof(GetLessonById), new { courseId, moduleId, result.Value.Id }, result.Value);
+        }
+
 
         [HttpGet]
         public IActionResult GetLessonById(Guid courseId, Guid moduleId, Guid lessonId)
@@ -37,4 +54,5 @@ namespace MasarHub.API.Controllers.V1
             return Ok();
         }
     }
+    public sealed record AddVideoLessonRequest(bool IsPreviewable, string Title, string? Description, IFormFile VideoFile);
 }

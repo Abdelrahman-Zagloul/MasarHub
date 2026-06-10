@@ -5,7 +5,8 @@
         string FileKey,
         string FileName,
         string ContentType,
-        long Length,
-        string Url
+        long FileSizeInByte,
+        string Url,
+        double DurationInSecond = 0
     );
 }

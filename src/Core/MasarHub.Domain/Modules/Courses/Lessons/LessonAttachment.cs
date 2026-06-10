@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -47,7 +48,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
         public DomainResult UpdateFileName(string fileName)
         {
             var error = Guard.AgainstNullOrWhiteSpace(fileName, nameof(fileName));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             FileName = fileName;

@@ -21,8 +21,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses.Lessons
 
             builder.HasDiscriminator<string>("LessonType")
                    .HasValue<VideoLesson>("video")
-                   .HasValue<ArticleLesson>("article")
-                   .HasValue<ResourceLesson>("resource");
+                   .HasValue<ArticleLesson>("article");
 
             builder.Property(l => l.Title)
                    .HasMaxLength(200)

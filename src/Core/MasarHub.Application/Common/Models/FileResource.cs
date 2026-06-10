@@ -5,7 +5,7 @@
         string FileName,
         string ContentType,
         Stream Content,
-        long Length
+        long FileSizeInByte
     );
     public enum FileType
     {

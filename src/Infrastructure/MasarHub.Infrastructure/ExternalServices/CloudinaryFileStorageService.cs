@@ -39,7 +39,11 @@ namespace MasarHub.Infrastructure.ExternalServices
                 }
 
                 _logger.LogInformation("File '{FileName}' uploaded successfully to Cloudinary with PublicId '{PublicId}'.", file.FileName, result.PublicId);
-                return new StoredFile(result.PublicId, file.FileName, file.ContentType, file.Length, result.SecureUrl.ToString());
+
+                double duration = 0;
+                if (result is VideoUploadResult videoResult)
+                    duration = videoResult.Duration;
+                return new StoredFile(result.PublicId, file.FileName, file.ContentType, file.FileSizeInByte, GetUrl(result.PublicId, fileType), duration);
             }
             catch (Exception ex)
             {
@@ -74,7 +78,7 @@ namespace MasarHub.Infrastructure.ExternalServices
         }
         private Result ValidateFileUpload(FileResource file, FileType fileType)
         {
-            if (file is null || file.Length <= 0)
+            if (file is null || file.FileSizeInByte <= 0)
                 return ApplicationError.Failure("validation.invalid_file");
 
             if (string.IsNullOrWhiteSpace(file.FileName))
@@ -96,10 +100,10 @@ namespace MasarHub.Infrastructure.ExternalServices
                     ["SupportedExtensions"] = string.Join(", ", allowedExtensions)
                 });
 
-            if (file.Length > maxSizeInMb * 1024L * 1024L)
+            if (file.FileSizeInByte > maxSizeInMb * 1024L * 1024L)
                 return ApplicationError.BadRequest("validation.file_size_exceeded", metadata: new()
                 {
-                    ["FileSizeInMB"] = Math.Round(file.Length / 1024d / 1024d, 2),
+                    ["FileSizeInMB"] = Math.Round(file.FileSizeInByte / 1024d / 1024d, 2),
                     ["MaxSizeInMB"] = maxSizeInMb
                 });
 

@@ -250,7 +250,9 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, parameters, cancellationToken: ct);
             var multi = await connection.QueryMultipleAsync(command);
 
-            return new PagedResult<CourseResponse>((await multi.ReadAsync<CourseResponse>()).ToList(), await multi.ReadFirstAsync<int>());
+            var totalCount = await multi.ReadFirstAsync<int>();
+            var courses = (await multi.ReadAsync<CourseResponse>()).ToList();
+            return new PagedResult<CourseResponse>(courses, totalCount);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
+using MasarHub.API.Extensions.Mappers;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Courses.Commands.ApproveCourse;
@@ -118,9 +119,7 @@ namespace MasarHub.API.Controllers.V1
         [Authorize(Roles = Roles.Instructor)]
         public async Task<IActionResult> UpdateThumbnail(Guid id, IFormFile file)
         {
-            var fileResource = new FileResource(file.FileName, file.ContentType, file.OpenReadStream(), file.Length);
-
-            var result = await _sender.Send(new UpdateCourseThumbnailCommand(id, fileResource));
+            var result = await _sender.Send(new UpdateCourseThumbnailCommand(id, file.ToResource()));
             return await ToOkResultAsync(result, new { ThumbnailUrl = result.Value });
         }
 
