@@ -32,7 +32,10 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> CreateCategory(CreateCategoryCommand command)
         {
             var result = await _sender.Send(command);
-            return await ToCreatedActionResultAsync(result, nameof(GetCategoryById), new { id = result.Value.Id });
+
+            return result.IsFailure
+                ? await HandleError(result)
+                : CreatedAtAction(nameof(GetCategoryById), new { id = result.Value.Id }, result.Value);
         }
 
         [HttpGet]

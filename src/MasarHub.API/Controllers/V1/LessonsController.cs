@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.API.Extensions.Mappers;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
+using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MediatR;
@@ -24,12 +25,14 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPost("article")]
         [Authorize(Roles = Roles.Instructor)]
-        public async Task<IActionResult> CreateArticleLesson(Guid courseId, Guid moduleId, CreateArticleLessonRequest request)
+        public async Task<IActionResult> AddArticleLesson(Guid courseId, Guid moduleId, AddArticleLessonRequest request)
         {
-            var result = await _sender.Send(new CreateArticleLessonCommand(
+            var result = await _sender.Send(new AddArticleLessonCommand(
                 courseId, moduleId, GetUserId(), request.IsPreviewable, request.Title, request.Content, request.Description));
 
-            return await ToCreatedActionResultAsync(result, nameof(GetLessonById), new { courseId, moduleId, result.Value.Id });
+            return result.IsFailure
+                ? await HandleError(result)
+                : CreatedAtAction(nameof(GetLessonById), new { courseId, moduleId, result.Value.Id }, result.Value);
         }
 
         [HttpPost("video")]

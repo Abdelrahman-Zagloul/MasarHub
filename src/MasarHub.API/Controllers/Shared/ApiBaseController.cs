@@ -46,11 +46,5 @@ namespace MasarHub.API.Controllers.Shared
                 ? await HandleError(result)
                 : NoContent();
         }
-        protected async Task<IActionResult> ToCreatedActionResultAsync<T>(Result<T> result, string actionName, object? routeValues)
-        {
-            return result.IsFailure
-                ? await HandleError(result)
-                : CreatedAtAction(actionName, routeValues, result.Value);
-        }
     }
 }

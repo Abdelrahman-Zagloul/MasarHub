@@ -29,7 +29,10 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> Create(Guid courseId, CreateModuleRequest request)
         {
             var result = await _sender.Send(new CreateModuleCommand(courseId, GetUserId(), request.Title, request.Description));
-            return await ToCreatedActionResultAsync(result, nameof(GetModuleById), new { courseId, moduleId = result.Value.Id });
+
+            return result.IsFailure
+                ? await HandleError(result)
+                : CreatedAtAction(nameof(GetModuleById), new { courseId, moduleId = result.Value.Id }, result.Value);
         }
 
 

@@ -1,6 +1,6 @@
 ﻿namespace MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson
 {
-    public record CreateArticleLessonResponse
+    public record AddArticleLessonResponse
     (
         Guid Id,
         Guid ModuleId,
