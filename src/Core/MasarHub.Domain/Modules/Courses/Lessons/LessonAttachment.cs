@@ -13,6 +13,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
         public string FileType { get; private set; } = null!;
         public long FileSizeInBytes { get; private set; }
 
+        private const int MaxAttachmentCount = 10;
         private LessonAttachment() { }
 
         private LessonAttachment(Guid lessonId, string publicId, string fileName, string fileType, long fileSizeInBytes)
@@ -45,6 +46,13 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             return new LessonAttachment(lessonId, publicId, fileName, fileType, fileSizeInBytes);
         }
 
+        public static DomainResult CanAddMoreAttachment(int currentAttachmentCount)
+        {
+            if (currentAttachmentCount > MaxAttachmentCount)
+                return new DomainError("lesson.max_attachment_reached");
+
+            return DomainResult.Success();
+        }
         public DomainResult UpdateFileName(string fileName)
         {
             var error = Guard.AgainstNullOrWhiteSpace(fileName, nameof(fileName));

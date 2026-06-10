@@ -90,6 +90,7 @@ namespace MasarHub.Infrastructure.ExternalServices
                 FileType.Image => (_fileStorageSettings.MaxImageSizeInMB, _fileStorageSettings.AllowedImageExtensions),
                 FileType.Video => (_fileStorageSettings.MaxVideoSizeInMB, _fileStorageSettings.AllowedVideoExtensions),
                 FileType.Document => (_fileStorageSettings.MaxDocumentSizeInMB, _fileStorageSettings.AllowedDocumentExtensions),
+                FileType.Attachment => (_fileStorageSettings.MaxAttachmentSizeInMB, _fileStorageSettings.AllowedAttachmentExtensions),
                 _ => throw new NotSupportedException()
             };
 
@@ -132,7 +133,7 @@ namespace MasarHub.Infrastructure.ExternalServices
                     Type = StorageType
                 }, cancellationToken),
 
-                FileType.Document => await _cloudinary.UploadAsync(new RawUploadParams
+                FileType.Document or FileType.Attachment => await _cloudinary.UploadAsync(new RawUploadParams
                 {
                     File = fileDescription,
                     Folder = folder,
@@ -151,14 +152,14 @@ namespace MasarHub.Infrastructure.ExternalServices
         {
             FileType.Image => ResourceType.Image,
             FileType.Video => ResourceType.Video,
-            FileType.Document => ResourceType.Raw,
+            FileType.Document or FileType.Attachment => ResourceType.Raw,
             _ => throw new NotSupportedException($"FileType '{fileType}' is not supported.")
         };
         private Url MapToUrlBuilder(FileType fileType) => fileType switch
         {
             FileType.Image => _cloudinary.Api.UrlImgUp,
             FileType.Video => _cloudinary.Api.UrlVideoUp,
-            FileType.Document => _cloudinary.Api.Url.ResourceType("raw"),
+            FileType.Document or FileType.Attachment => _cloudinary.Api.Url.ResourceType("raw"),
             _ => throw new NotSupportedException($"FileType '{fileType}' is not supported.")
         };
 

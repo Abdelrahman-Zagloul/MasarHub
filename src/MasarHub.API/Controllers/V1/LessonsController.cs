@@ -4,6 +4,7 @@ using MasarHub.API.Extensions.Mappers;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
+using MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MediatR;
@@ -48,6 +49,18 @@ namespace MasarHub.API.Controllers.V1
             return result.IsFailure
                 ? await HandleError(result)
                 : CreatedAtAction(nameof(GetLessonById), new { courseId, moduleId, result.Value.Id }, result.Value);
+        }
+
+        [HttpPost("{lessonId:guid}/attachment")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> AddLessonAttachment(Guid courseId, Guid moduleId, Guid lessonId, IFormFile file)
+        {
+            var command = new AddLessonAttachmentCommand(courseId, moduleId, lessonId, GetUserId(), file.ToResource());
+            var result = await _sender.Send(command);
+
+            return result.IsFailure
+                ? await HandleError(result)
+                : CreatedAtAction(nameof(GetLessonById), new { courseId, moduleId, result.Value.LessonId }, result.Value);
         }
 
 

@@ -11,6 +11,7 @@
     {
         Image,
         Video,
-        Document
+        Document,
+        Attachment
     }
 }
