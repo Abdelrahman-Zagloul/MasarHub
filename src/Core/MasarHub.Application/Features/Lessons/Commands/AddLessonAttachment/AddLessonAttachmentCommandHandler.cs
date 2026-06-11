@@ -30,11 +30,11 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment
             var creationData = await _lessonQuery.GetLessonAttachmentCreationAsync(
                 request.CourseId, request.ModuleId, request.LessonId, request.InstructorId, cancellationToken);
 
-            if (!creationData.IsOwner)
-                return Error.Forbidden("course.access_denied");
-
             if (!creationData.ModuleExist)
                 return Error.NotFound("module.not_found");
+
+            if (!creationData.IsOwner)
+                return Error.Forbidden("course.access_denied");
 
             if (!creationData.LessonExist)
                 return Error.NotFound("lesson.not_found");

@@ -37,6 +37,11 @@
 
   "lesson.not_found": "Lesson not found.",
   "lesson.max_attachment_reached": "You have reached the maximum number of attachments allowed for this lesson.",
-  "lesson.cannot_delete_published_lesson": "Cannot delete a lesson from a published course. You can archive it instead."
+  "lesson.cannot_delete_published_lesson": "Cannot delete a lesson from a published course. You can archive it instead.",
+  "lesson.cannot_archive_unpublished_lesson": "Cannot archive the lesson because the course is not published yet.",
+  "lesson.already_archived": "This lesson is already archived.",
+  "lesson.already_not_archived": "This lesson is already active.",
+  "lesson.preview_already_enabled": "Lesson preview is already enabled.",
+  "lesson.preview_already_disabled": "Lesson preview is already disabled."
 
 }

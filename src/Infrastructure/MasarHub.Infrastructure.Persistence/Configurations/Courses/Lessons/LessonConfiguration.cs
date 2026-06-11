@@ -31,6 +31,11 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses.Lessons
                    .HasMaxLength(1000)
                    .IsRequired(false);
 
+            builder.Property(l => l.LessonStatus)
+                   .HasConversion<string>()
+                   .HasMaxLength(20)
+                   .IsRequired(true);
+
             builder.Property(l => l.DisplayOrder)
                    .IsRequired();
 

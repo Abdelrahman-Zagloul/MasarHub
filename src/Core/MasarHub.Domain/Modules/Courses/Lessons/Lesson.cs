@@ -13,7 +13,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
         public int DisplayOrder { get; protected set; }
         public bool IsPreviewable { get; protected set; }
         public Guid ModuleId { get; protected set; }
-
+        public LessonStatus LessonStatus { get; private set; }
         protected Lesson() { }
 
         protected Lesson(Guid moduleId, bool isPreviewable, string title, int order, string? description)
@@ -23,6 +23,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             Title = title;
             DisplayOrder = order;
             Description = description;
+            LessonStatus = LessonStatus.Active;
         }
 
         public DomainResult UpdateTitle(string title)
@@ -35,14 +36,12 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult UpdateDescription(string? description)
         {
             Description = description;
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult ChangeOrder(int order)
         {
             var error = Guard.AgainstNegativeOrZero(order, nameof(order));
@@ -53,21 +52,45 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult EnablePreview()
         {
+            if (IsPreviewable)
+                return new DomainError("lesson.preview_already_enabled");
+
             IsPreviewable = true;
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult DisablePreview()
         {
+            if (!IsPreviewable)
+                return new DomainError("lesson.preview_already_disabled");
+
             IsPreviewable = false;
             MarkAsUpdated();
             return DomainResult.Success();
         }
+        public DomainResult Archive(CourseStatus courseStatus)
+        {
+            if (courseStatus != CourseStatus.Published)
+                return new DomainError("lesson.cannot_archive_unpublished_lesson");
 
+            if (LessonStatus == LessonStatus.Archived)
+                return new DomainError("lesson.already_archived");
+
+            LessonStatus = LessonStatus.Archived;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult Unarchive(CourseStatus courseStatus)
+        {
+            if (LessonStatus != LessonStatus.Archived)
+                return new DomainError("lesson.already_not_archived");
+
+            LessonStatus = LessonStatus.Active;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
         public DomainResult Delete(CourseStatus courseStatus)
         {
             if (courseStatus == CourseStatus.Published)

@@ -6,8 +6,12 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
+using MasarHub.Application.Features.Lessons.Commands.ArchiveLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
+using MasarHub.Application.Features.Lessons.Commands.DisableLessonPreview;
+using MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview;
+using MasarHub.Application.Features.Lessons.Commands.UnarchiveLesson;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -70,6 +74,38 @@ namespace MasarHub.API.Controllers.V1
         {
             var result = await _sender.Send(new DeleteLessonCommand(courseId, moduleId, lessonId, GetUserId()));
 
+            return await ToNoContentResultAsync(result);
+        }
+
+        [Authorize(Roles = Roles.Instructor)]
+        [HttpPatch("{lessonId:guid}/archive")]
+        public async Task<IActionResult> ArchiveLesson(Guid courseId, Guid moduleId, Guid lessonId)
+        {
+            var result = await _sender.Send(new ArchiveLessonCommand(courseId, moduleId, lessonId, GetUserId()));
+            return await ToNoContentResultAsync(result);
+        }
+
+        [Authorize(Roles = Roles.Instructor)]
+        [HttpPatch("{lessonId:guid}/unarchive")]
+        public async Task<IActionResult> UnarchiveLesson(Guid courseId, Guid moduleId, Guid lessonId)
+        {
+            var result = await _sender.Send(new UnarchiveLessonCommand(courseId, moduleId, lessonId, GetUserId()));
+            return await ToNoContentResultAsync(result);
+        }
+
+        [Authorize(Roles = Roles.Instructor)]
+        [HttpPatch("{lessonId:guid}/preview/enable")]
+        public async Task<IActionResult> EnableLessonPreview(Guid courseId, Guid moduleId, Guid lessonId)
+        {
+            var result = await _sender.Send(new EnableLessonPreviewCommand(courseId, moduleId, lessonId, GetUserId()));
+            return await ToNoContentResultAsync(result);
+        }
+
+        [Authorize(Roles = Roles.Instructor)]
+        [HttpPatch("{lessonId:guid}/preview/disable")]
+        public async Task<IActionResult> DisableLessonPreview(Guid courseId, Guid moduleId, Guid lessonId)
+        {
+            var result = await _sender.Send(new DisableLessonPreviewCommand(courseId, moduleId, lessonId, GetUserId()));
             return await ToNoContentResultAsync(result);
         }
 
