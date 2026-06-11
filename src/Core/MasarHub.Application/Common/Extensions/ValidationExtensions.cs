@@ -13,40 +13,36 @@ public static class ValidationExtensions
             .WithErrorCode("validation.required")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, string?> MaxLengthValidation<T>(
         this IRuleBuilder<T, string?> ruleBuilder,
         int maxLength,
         string propertyName)
     {
         return ruleBuilder
-            .Must(value => value == null || value.Length <= maxLength)
+            .MaximumLength(maxLength)
             .WithErrorCode("validation.max_length")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, string?> MinLengthValidation<T>(
         this IRuleBuilder<T, string?> ruleBuilder,
         int minLength,
         string propertyName)
     {
         return ruleBuilder
-            .Must(value => value == null || value.Length >= minLength)
+            .MinimumLength(minLength)
             .WithErrorCode("validation.min_length")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, string?> LengthValidation<T>(
         this IRuleBuilder<T, string?> ruleBuilder,
         int length,
         string propertyName)
     {
         return ruleBuilder
-            .Must(value => value == null || value.Length == length)
+            .Length(length)
             .WithErrorCode("validation.length")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, string> ValidEmail<T>(
         this IRuleBuilder<T, string> ruleBuilder,
         string propertyName)
@@ -56,7 +52,6 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_email")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, TProperty> ValidEnum<T, TProperty>(
         this IRuleBuilder<T, TProperty> ruleBuilder,
         string propertyName) where TProperty : struct, Enum
@@ -66,7 +61,6 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_enum")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, TProperty?> ValidEnum<T, TProperty>(
      this IRuleBuilder<T, TProperty?> ruleBuilder,
      string propertyName) where TProperty : struct, Enum
@@ -77,7 +71,6 @@ public static class ValidationExtensions
             .WithName(propertyName)
             .When(x => x != null);
     }
-
     public static IRuleBuilderOptions<T, string> ValidPassword<T>(
         this IRuleBuilder<T, string> ruleBuilder,
         string propertyName)
@@ -95,7 +88,6 @@ public static class ValidationExtensions
                 .WithErrorCode("validation.password_requires_uppercase")
                 .WithName(propertyName); ;
     }
-
     public static IRuleBuilderOptions<T, string> ValidUrl<T>(
         this IRuleBuilder<T, string> ruleBuilder,
         string propertyName)
@@ -107,7 +99,6 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_url")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, Guid> ValidGuid<T>(
         this IRuleBuilder<T, Guid> ruleBuilder,
         string propertyName)
@@ -117,7 +108,6 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_guid")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, Guid?> ValidNullableGuid<T>(
     this IRuleBuilder<T, Guid?> ruleBuilder,
     string propertyName)
@@ -154,7 +144,6 @@ public static class ValidationExtensions
             .WithErrorCode("validation.invalid_price")
             .WithName(propertyName);
     }
-
     public static IRuleBuilderOptions<T, TProperty> RequiredCollection<T, TProperty>(
         this IRuleBuilder<T, TProperty> ruleBuilder,
         string propertyName)
