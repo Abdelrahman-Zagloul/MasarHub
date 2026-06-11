@@ -6,6 +6,7 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
+using MasarHub.Application.Features.Lessons.Commands.ArchiveLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
 using MediatR;
@@ -70,6 +71,14 @@ namespace MasarHub.API.Controllers.V1
         {
             var result = await _sender.Send(new DeleteLessonCommand(courseId, moduleId, lessonId, GetUserId()));
 
+            return await ToNoContentResultAsync(result);
+        }
+
+        [Authorize(Roles = Roles.Instructor)]
+        [HttpPatch("{lessonId:guid}/archive")]
+        public async Task<IActionResult> ArchiveLesson(Guid courseId, Guid moduleId, Guid lessonId)
+        {
+            var result = await _sender.Send(new ArchiveLessonCommand(courseId, moduleId, lessonId, GetUserId()));
             return await ToNoContentResultAsync(result);
         }
 

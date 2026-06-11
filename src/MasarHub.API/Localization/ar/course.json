@@ -37,5 +37,9 @@
 
   "lesson.not_found": "الدرس غير موجود",
   "lesson.max_attachment_reached": "لقد وصلت إلى الحد الأقصى من المرفقات المسموح بها لهذا الدرس.",
-  "lesson.cannot_delete_published_lesson": "لا يمكن حذف درس من كورس منشور، يمكنك أرشفته بدلاً من ذلك."
+  "lesson.cannot_delete_published_lesson": "لا يمكن حذف درس من كورس منشور، يمكنك أرشفته بدلاً من ذلك.",
+  "lesson.cannot_archive_unPublished_lesson": "لا يمكن أرشفة الدرس لأن الكورس لم يتم نشره بعد.",
+  "lesson.already_archived": "هذا الدرس مؤرشف بالفعل.",
+  "lesson.already_not_archived": "هذا الدرس نشط بالفعل."
+
 }

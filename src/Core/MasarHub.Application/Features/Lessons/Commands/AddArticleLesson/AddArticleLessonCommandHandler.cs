@@ -40,6 +40,7 @@ namespace MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson
 
             return new AddArticleLessonResponse(
                 lessonResult.Value.Id,
+                request.CourseId,
                 request.ModuleId,
                 request.IsPreviewable,
                 creationData.NextDisplayOrder,
