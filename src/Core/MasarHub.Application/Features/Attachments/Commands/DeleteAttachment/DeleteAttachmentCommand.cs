@@ -1,9 +1,9 @@
 ﻿using MasarHub.Application.Common.Results;
 using MediatR;
 
-namespace MasarHub.Application.Features.Lessons.Commands.DeleteLessonAttachment
+namespace MasarHub.Application.Features.Attachments.Commands.DeleteAttachment
 {
-    public sealed record DeleteLessonAttachmentCommand
+    public sealed record DeleteAttachmentCommand
     (
         Guid LessonId,
         Guid AttachmentId,

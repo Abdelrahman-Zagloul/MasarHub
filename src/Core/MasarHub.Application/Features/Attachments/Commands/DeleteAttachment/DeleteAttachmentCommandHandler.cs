@@ -5,21 +5,21 @@ using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses.Lessons;
 using MediatR;
 
-namespace MasarHub.Application.Features.Lessons.Commands.DeleteLessonAttachment
+namespace MasarHub.Application.Features.Attachments.Commands.DeleteAttachment
 {
-    public sealed record DeleteLessonAttachmentCommandHandler : IRequestHandler<DeleteLessonAttachmentCommand, Result>
+    public sealed record DeleteAttachmentCommandHandler : IRequestHandler<DeleteAttachmentCommand, Result>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IRepository<LessonAttachment> _lessonAttachmentRepo;
         private readonly ILessonQuery _lessonQuery;
-        public DeleteLessonAttachmentCommandHandler(IUnitOfWork unitOfWork, IRepository<LessonAttachment> lessonAttachmentRepo, ILessonQuery lessonQuery)
+        public DeleteAttachmentCommandHandler(IUnitOfWork unitOfWork, IRepository<LessonAttachment> lessonAttachmentRepo, ILessonQuery lessonQuery)
         {
             _unitOfWork = unitOfWork;
             _lessonAttachmentRepo = lessonAttachmentRepo;
             _lessonQuery = lessonQuery;
         }
 
-        public async Task<Result> Handle(DeleteLessonAttachmentCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteAttachmentCommand request, CancellationToken cancellationToken)
         {
             var attachment = await _lessonAttachmentRepo.GetByIdAsync(request.AttachmentId);
 

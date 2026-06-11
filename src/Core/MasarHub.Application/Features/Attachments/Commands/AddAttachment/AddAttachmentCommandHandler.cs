@@ -7,17 +7,17 @@ using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses.Lessons;
 using MediatR;
 
-namespace MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment
+namespace MasarHub.Application.Features.Attachments.Commands.AddAttachment
 {
-    public sealed class AddLessonAttachmentCommandHandler
-        : IRequestHandler<AddLessonAttachmentCommand, Result<AddLessonAttachmentResponse>>
+    public sealed class AddAttachmentCommandHandler
+        : IRequestHandler<AddAttachmentCommand, Result<AddAttachmentResponse>>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFileStorageService _fileStorageService;
         private readonly ILessonQuery _lessonQuery;
         private readonly IRepository<LessonAttachment> _lessonAttachmentRepository;
 
-        public AddLessonAttachmentCommandHandler(IUnitOfWork unitOfWork, IFileStorageService fileStorageService, ILessonQuery lessonQuery, IRepository<LessonAttachment> lessonAttachmentRepository)
+        public AddAttachmentCommandHandler(IUnitOfWork unitOfWork, IFileStorageService fileStorageService, ILessonQuery lessonQuery, IRepository<LessonAttachment> lessonAttachmentRepository)
         {
             _unitOfWork = unitOfWork;
             _fileStorageService = fileStorageService;
@@ -25,19 +25,16 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment
             _lessonAttachmentRepository = lessonAttachmentRepository;
         }
 
-        public async Task<Result<AddLessonAttachmentResponse>> Handle(AddLessonAttachmentCommand request, CancellationToken cancellationToken)
+        public async Task<Result<AddAttachmentResponse>> Handle(AddAttachmentCommand request, CancellationToken cancellationToken)
         {
             var creationData = await _lessonQuery.GetLessonAttachmentCreationAsync(
-                request.CourseId, request.ModuleId, request.LessonId, request.InstructorId, cancellationToken);
-
-            if (!creationData.ModuleExist)
-                return Error.NotFound("module.not_found");
-
-            if (!creationData.IsOwner)
-                return Error.Forbidden("course.access_denied");
+                request.LessonId, request.InstructorId, cancellationToken);
 
             if (!creationData.LessonExist)
                 return Error.NotFound("lesson.not_found");
+
+            if (!creationData.IsOwner)
+                return Error.Forbidden("course.access_denied");
 
             var canAddMoreResult = LessonAttachment.CanAddMoreAttachment(creationData.AttachmentCount);
             if (canAddMoreResult.IsFailure)
@@ -64,10 +61,8 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment
             await _lessonAttachmentRepository.AddAsync(attachmentResult.Value, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return new AddLessonAttachmentResponse(
+            return new AddAttachmentResponse(
                  attachmentResult.Value.Id,
-                 request.CourseId,
-                 request.ModuleId,
                  request.LessonId,
                  uploadResult.Value.Url,
                  attachmentResult.Value.FileName,
