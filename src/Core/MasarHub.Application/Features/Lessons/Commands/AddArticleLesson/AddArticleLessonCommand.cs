@@ -6,7 +6,6 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddArticleLesson
 {
     public sealed record AddArticleLessonCommand
     (
-        Guid CourseId,
         Guid ModuleId,
         Guid InstructorId,
         bool IsPreviewable,

@@ -6,7 +6,6 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
 {
     public sealed record AddVideoLessonCommand
     (
-        Guid CourseId,
         Guid ModuleId,
         Guid InstructorId,
         bool IsPreviewable,

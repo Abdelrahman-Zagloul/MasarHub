@@ -5,7 +5,6 @@ namespace MasarHub.Application.Features.Lessons.Commands.ArchiveLesson
 {
     public sealed record ArchiveLessonCommand
     (
-        Guid CourseId,
         Guid ModuleId,
         Guid LessonId,
         Guid InstructorId

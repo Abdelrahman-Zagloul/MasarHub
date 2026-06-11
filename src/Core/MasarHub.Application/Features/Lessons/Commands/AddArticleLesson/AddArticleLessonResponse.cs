@@ -3,7 +3,6 @@
     public record AddArticleLessonResponse
     (
         Guid Id,
-        Guid CourseId,
         Guid ModuleId,
         bool IsPreviewable,
         int DisplayOrder,

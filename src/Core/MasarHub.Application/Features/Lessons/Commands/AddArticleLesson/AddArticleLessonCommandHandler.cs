@@ -23,7 +23,7 @@ namespace MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson
 
         public async Task<Result<AddArticleLessonResponse>> Handle(AddArticleLessonCommand request, CancellationToken cancellationToken)
         {
-            var creationData = await _lessonQuery.GetCreationDataAsync(request.CourseId, request.ModuleId, request.InstructorId);
+            var creationData = await _lessonQuery.GetCreationDataAsync(request.ModuleId, request.InstructorId);
 
             if (!creationData.ModuleExist)
                 return Error.NotFound("module.not_found");
@@ -40,7 +40,6 @@ namespace MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson
 
             return new AddArticleLessonResponse(
                 lessonResult.Value.Id,
-                request.CourseId,
                 request.ModuleId,
                 request.IsPreviewable,
                 creationData.NextDisplayOrder,

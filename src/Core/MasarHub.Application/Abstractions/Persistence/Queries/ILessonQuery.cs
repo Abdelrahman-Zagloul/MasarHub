@@ -5,15 +5,14 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
 {
     public interface ILessonQuery : IScopedService
     {
-        Task<LessonCreationData> GetCreationDataAsync(
-            Guid courseId, Guid moduleId, Guid instructorId, CancellationToken ct = default);
+        Task<LessonCreationData> GetCreationDataAsync(Guid moduleId, Guid instructorId, CancellationToken ct = default);
         Task<LessonAttachmentCreationData> GetLessonAttachmentCreationAsync(Guid lessonId, Guid instructorId, CancellationToken ct = default);
-        Task<CourseState> GetCourseStateAsync(Guid courseId, Guid moduleId, Guid instructorId, CancellationToken ct = default);
+        Task<CourseState> GetCourseStateAsync(Guid moduleId, Guid instructorId, CancellationToken ct = default);
         Task<bool> IsLessonOwnedByInstructorAsync(Guid lessonId, Guid instructorId, CancellationToken ct = default);
 
     }
     public sealed record LessonCreationData(bool ModuleExist, bool IsOwner, int NextDisplayOrder);
     public sealed record LessonAttachmentCreationData(bool LessonExist, bool IsOwner, int AttachmentCount);
-    public sealed record CourseState(bool IsOwner, bool ModuleExist, CourseStatus CourseStatus);
+    public sealed record CourseState(bool ModuleExist, bool IsOwner, CourseStatus CourseStatus);
 
 }

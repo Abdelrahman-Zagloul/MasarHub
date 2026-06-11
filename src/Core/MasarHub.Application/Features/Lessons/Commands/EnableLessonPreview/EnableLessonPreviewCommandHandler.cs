@@ -22,8 +22,7 @@ namespace MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview
 
         public async Task<Result> Handle(EnableLessonPreviewCommand request, CancellationToken cancellationToken)
         {
-            var courseState = await _lessonQuery.GetCourseStateAsync(
-                 request.CourseId, request.ModuleId, request.InstructorId, cancellationToken);
+            var courseState = await _lessonQuery.GetCourseStateAsync(request.ModuleId, request.InstructorId, cancellationToken);
 
             if (!courseState.ModuleExist)
                 return Error.NotFound("module.not_found");

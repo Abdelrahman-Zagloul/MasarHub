@@ -19,7 +19,7 @@ namespace MasarHub.API.Controllers.V1
 {
     [ApiVersion(1.0)]
     [Tags("Lessons")]
-    [Route("api/courses/{courseId:guid}/modules/{moduleId:guid}/lessons")]
+    [Route("api/modules/{moduleId:guid}/lessons")]
     public class LessonsController : ApiBaseController
     {
         private readonly ISender _sender;
@@ -30,76 +30,76 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPost("article")]
         [Authorize(Roles = Roles.Instructor)]
-        public async Task<IActionResult> AddArticleLesson(Guid courseId, Guid moduleId, AddArticleLessonRequest request)
+        public async Task<IActionResult> AddArticleLesson(Guid moduleId, AddArticleLessonRequest request)
         {
             var result = await _sender.Send(new AddArticleLessonCommand(
-                courseId, moduleId, GetUserId(), request.IsPreviewable, request.Title, request.Content, request.Description));
+                 moduleId, GetUserId(), request.IsPreviewable, request.Title, request.Content, request.Description));
 
             return result.IsFailure
                 ? await HandleError(result)
-                : CreatedAtAction(nameof(GetLessonById), new { courseId, moduleId, result.Value.Id }, result.Value);
+                : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
         }
 
         [HttpPost("video")]
         [Authorize(Roles = Roles.Instructor)]
-        public async Task<IActionResult> AddVideoLesson(Guid courseId, Guid moduleId, [FromForm] AddVideoLessonRequest request)
+        public async Task<IActionResult> AddVideoLesson(Guid moduleId, [FromForm] AddVideoLessonRequest request)
         {
             var command = new AddVideoLessonCommand(
-                courseId, moduleId, GetUserId(), request.IsPreviewable,
+                moduleId, GetUserId(), request.IsPreviewable,
                 request.Title, request.Description, request.VideoFile.ToResource());
 
             var result = await _sender.Send(command);
 
             return result.IsFailure
                 ? await HandleError(result)
-                : CreatedAtAction(nameof(GetLessonById), new { courseId, moduleId, result.Value.Id }, result.Value);
+                : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
         }
 
 
         [HttpDelete("{lessonId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
-        public async Task<IActionResult> DeleteLesson(Guid courseId, Guid moduleId, Guid lessonId)
+        public async Task<IActionResult> DeleteLesson(Guid moduleId, Guid lessonId)
         {
-            var result = await _sender.Send(new DeleteLessonCommand(courseId, moduleId, lessonId, GetUserId()));
+            var result = await _sender.Send(new DeleteLessonCommand(moduleId, lessonId, GetUserId()));
 
             return await ToNoContentResultAsync(result);
         }
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/archive")]
-        public async Task<IActionResult> ArchiveLesson(Guid courseId, Guid moduleId, Guid lessonId)
+        public async Task<IActionResult> ArchiveLesson(Guid moduleId, Guid lessonId)
         {
-            var result = await _sender.Send(new ArchiveLessonCommand(courseId, moduleId, lessonId, GetUserId()));
+            var result = await _sender.Send(new ArchiveLessonCommand(moduleId, lessonId, GetUserId()));
             return await ToNoContentResultAsync(result);
         }
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/unarchive")]
-        public async Task<IActionResult> UnarchiveLesson(Guid courseId, Guid moduleId, Guid lessonId)
+        public async Task<IActionResult> UnarchiveLesson(Guid moduleId, Guid lessonId)
         {
-            var result = await _sender.Send(new UnarchiveLessonCommand(courseId, moduleId, lessonId, GetUserId()));
+            var result = await _sender.Send(new UnarchiveLessonCommand(moduleId, lessonId, GetUserId()));
             return await ToNoContentResultAsync(result);
         }
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/preview/enable")]
-        public async Task<IActionResult> EnableLessonPreview(Guid courseId, Guid moduleId, Guid lessonId)
+        public async Task<IActionResult> EnableLessonPreview(Guid moduleId, Guid lessonId)
         {
-            var result = await _sender.Send(new EnableLessonPreviewCommand(courseId, moduleId, lessonId, GetUserId()));
+            var result = await _sender.Send(new EnableLessonPreviewCommand(moduleId, lessonId, GetUserId()));
             return await ToNoContentResultAsync(result);
         }
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/preview/disable")]
-        public async Task<IActionResult> DisableLessonPreview(Guid courseId, Guid moduleId, Guid lessonId)
+        public async Task<IActionResult> DisableLessonPreview(Guid moduleId, Guid lessonId)
         {
-            var result = await _sender.Send(new DisableLessonPreviewCommand(courseId, moduleId, lessonId, GetUserId()));
+            var result = await _sender.Send(new DisableLessonPreviewCommand(moduleId, lessonId, GetUserId()));
             return await ToNoContentResultAsync(result);
         }
 
 
         [HttpGet]
-        public IActionResult GetLessonById(Guid courseId, Guid moduleId, Guid lessonId)
+        public IActionResult GetLessonById(Guid moduleId, Guid lessonId)
         {
             return Ok();
         }

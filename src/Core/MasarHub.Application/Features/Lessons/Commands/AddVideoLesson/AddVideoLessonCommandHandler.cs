@@ -26,8 +26,7 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
 
         public async Task<Result<AddVideoLessonResponse>> Handle(AddVideoLessonCommand request, CancellationToken cancellationToken)
         {
-            var creationData = await _lessonQuery
-                .GetCreationDataAsync(request.CourseId, request.ModuleId, request.InstructorId, cancellationToken);
+            var creationData = await _lessonQuery.GetCreationDataAsync(request.ModuleId, request.InstructorId, cancellationToken);
 
             if (!creationData.ModuleExist)
                 return Error.NotFound("module.not_found");

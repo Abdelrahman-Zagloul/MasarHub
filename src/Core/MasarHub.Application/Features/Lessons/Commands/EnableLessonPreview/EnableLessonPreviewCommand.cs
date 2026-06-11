@@ -5,7 +5,6 @@ namespace MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview
 {
     public sealed record EnableLessonPreviewCommand
     (
-        Guid CourseId,
         Guid ModuleId,
         Guid LessonId,
         Guid InstructorId
