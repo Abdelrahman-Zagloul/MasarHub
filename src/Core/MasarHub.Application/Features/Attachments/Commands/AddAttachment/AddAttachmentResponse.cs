@@ -1,10 +1,8 @@
-﻿namespace MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment
+﻿namespace MasarHub.Application.Features.Attachments.Commands.AddAttachment
 {
-    public sealed record AddLessonAttachmentResponse
+    public sealed record AddAttachmentResponse
     (
         Guid AttachmentId,
-        Guid CourseId,
-        Guid ModuleId,
         Guid LessonId,
         string AttachmentUrl,
         string AttachmentName,

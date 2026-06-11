@@ -4,7 +4,7 @@ using MasarHub.Application.Common.DomainEvents;
 using MasarHub.Domain.Modules.Courses.Events;
 using MediatR;
 
-namespace MasarHub.Application.Features.Lessons.Commands.DeleteLessonAttachment
+namespace MasarHub.Application.Features.Attachments.Commands.DeleteAttachment
 {
     public sealed class CleanAttachmentResourseEventHandler
         : INotificationHandler<DomainEventNotification<AttachmentDeletedDomainEvent>>
