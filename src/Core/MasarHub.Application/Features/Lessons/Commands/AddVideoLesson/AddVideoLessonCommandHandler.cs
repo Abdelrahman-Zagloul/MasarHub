@@ -29,11 +29,11 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
             var creationData = await _lessonQuery
                 .GetCreationDataAsync(request.CourseId, request.ModuleId, request.InstructorId, cancellationToken);
 
-            if (!creationData.IsOwner)
-                return Error.Forbidden("course.access_denied");
-
             if (!creationData.ModuleExist)
                 return Error.NotFound("module.not_found");
+
+            if (!creationData.IsOwner)
+                return Error.Forbidden("course.access_denied");
 
             var uploadResult = await _fileStorageService.UploadAsync(request.VideoFile, FileType.Video, StorageFolders.Courses.Videos);
             if (uploadResult.IsFailure)

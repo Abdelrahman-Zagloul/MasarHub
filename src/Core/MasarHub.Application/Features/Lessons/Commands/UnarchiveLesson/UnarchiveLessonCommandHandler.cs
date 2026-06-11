@@ -5,22 +5,22 @@ using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses.Lessons;
 using MediatR;
 
-namespace MasarHub.Application.Features.Lessons.Commands.DeleteLesson
+namespace MasarHub.Application.Features.Lessons.Commands.UnarchiveLesson
 {
-    public sealed class DeleteLessonCommandHandler : IRequestHandler<DeleteLessonCommand, Result>
+    public sealed class UnarchiveLessonCommandHandler : IRequestHandler<UnarchiveLessonCommand, Result>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILessonQuery _lessonQuery;
         private readonly IRepository<Lesson> _lessonRepository;
 
-        public DeleteLessonCommandHandler(IUnitOfWork unitOfWork, ILessonQuery lessonQuery, IRepository<Lesson> lessonRepository)
+        public UnarchiveLessonCommandHandler(IUnitOfWork unitOfWork, ILessonQuery lessonQuery, IRepository<Lesson> lessonRepository)
         {
             _unitOfWork = unitOfWork;
             _lessonQuery = lessonQuery;
             _lessonRepository = lessonRepository;
         }
 
-        public async Task<Result> Handle(DeleteLessonCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(UnarchiveLessonCommand request, CancellationToken cancellationToken)
         {
             var courseState = await _lessonQuery.GetCourseStateAsync(
                  request.CourseId, request.ModuleId, request.InstructorId, cancellationToken);
@@ -35,13 +35,13 @@ namespace MasarHub.Application.Features.Lessons.Commands.DeleteLesson
             if (lesson == null)
                 return Error.NotFound("lesson.not_found");
 
-            var deletedResult = lesson.Delete(courseState.CourseStatus);
-            if (deletedResult.IsFailure)
-                return Error.Conflict(deletedResult.Error.Code);
+            var result = lesson.Unarchive(courseState.CourseStatus);
+            if (result.IsFailure)
+                return Error.Conflict(result.Error.Code);
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
             return Result.Success();
         }
     }
+
 }

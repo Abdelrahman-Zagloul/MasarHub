@@ -25,11 +25,11 @@ namespace MasarHub.Application.Features.Lessons.Commands.ArchiveLesson
             var courseState = await _lessonQuery.GetCourseStateAsync(
                  request.CourseId, request.ModuleId, request.InstructorId, cancellationToken);
 
-            if (!courseState.IsOwner)
-                return Error.Forbidden("course.access_denied");
-
             if (!courseState.ModuleExist)
                 return Error.NotFound("module.not_found");
+
+            if (!courseState.IsOwner)
+                return Error.Forbidden("course.access_denied");
 
             var lesson = await _lessonRepository.GetAsync(x => x.Id == request.LessonId && x.ModuleId == request.ModuleId);
             if (lesson == null)

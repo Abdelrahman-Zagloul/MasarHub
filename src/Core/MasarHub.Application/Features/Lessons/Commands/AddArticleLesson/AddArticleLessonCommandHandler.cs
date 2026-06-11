@@ -25,11 +25,11 @@ namespace MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson
         {
             var creationData = await _lessonQuery.GetCreationDataAsync(request.CourseId, request.ModuleId, request.InstructorId);
 
-            if (!creationData.IsOwner)
-                return Error.Forbidden("course.access_denied");
-
             if (!creationData.ModuleExist)
                 return Error.NotFound("module.not_found");
+
+            if (!creationData.IsOwner)
+                return Error.Forbidden("course.access_denied");
 
             var lessonResult = ArticleLesson.Create(request.ModuleId, request.IsPreviewable, request.Title, creationData.NextDisplayOrder, request.Description, request.Content);
             if (lessonResult.IsFailure)
