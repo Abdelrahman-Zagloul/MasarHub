@@ -2,6 +2,7 @@ using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.Modules.Courses.Lessons
 {
@@ -64,6 +65,11 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             return DomainResult.Success();
         }
 
-        public DomainResult Delete() => MarkAsDeleted();
+        public DomainResult Delete()
+        {
+            RaiseDomainEvent(new AttachmentDeletedDomainEvent(Id));
+            MarkAsDeleted();
+            return DomainResult.Success();
+        }
     }
 }

@@ -42,7 +42,7 @@
   "lesson.already_archived": "هذا الدرس مؤرشف بالفعل.",
   "lesson.already_not_archived": "هذا الدرس نشط بالفعل.",
   "lesson.preview_already_enabled": "معاينة الدرس مفعلة بالفعل.",
-  "lesson.preview_already_disabled": "معاينة الدرس معطلة بالفعل."
+  "lesson.preview_already_disabled": "معاينة الدرس معطلة بالفعل.",
 
-
+  "attachment.not_found": "لم يتم العثور على المرفق."
 }

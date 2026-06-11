@@ -21,6 +21,15 @@ namespace MasarHub.Infrastructure.Jobs
             _attachmentRepository = attachmentRepository;
         }
 
+        public async Task CleanUpAttachmentResourseAsync(Guid attachmentId)
+        {
+            var attachment = await _attachmentRepository.GetWithDeletedAsync(x => x.Id == attachmentId && x.IsDeleted);
+            if (attachment == null)
+                return;
+
+            await _fileStorageService.DeleteAsync(attachment.PublicId, FileType.Attachment);
+        }
+
         public async Task CleanUpLessonResourseAsync(Guid ModuleId, Guid LessonId)
         {
             var lesson = await _lessonRepository.GetWithDeletedAsync(x => x.Id == LessonId && x.ModuleId == ModuleId && x.IsDeleted);

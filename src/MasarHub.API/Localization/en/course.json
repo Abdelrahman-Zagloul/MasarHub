@@ -42,6 +42,9 @@
   "lesson.already_archived": "This lesson is already archived.",
   "lesson.already_not_archived": "This lesson is already active.",
   "lesson.preview_already_enabled": "Lesson preview is already enabled.",
-  "lesson.preview_already_disabled": "Lesson preview is already disabled."
+  "lesson.preview_already_disabled": "Lesson preview is already disabled.",
+
+
+  "attachment.not_found": "The attachment was not found."
 
 }

@@ -10,6 +10,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<LessonAttachmentCreationData> GetLessonAttachmentCreationAsync(
             Guid courseId, Guid moduleId, Guid lessonId, Guid instructorId, CancellationToken ct = default);
         Task<CourseState> GetCourseStateAsync(Guid courseId, Guid moduleId, Guid instructorId, CancellationToken ct = default);
+        Task<bool> IsLessonOwnedByInstructorAsync(Guid lessonId, Guid instructorId, CancellationToken ct = default);
 
     }
     public sealed record LessonCreationData(bool ModuleExist, bool IsOwner, int NextDisplayOrder);
