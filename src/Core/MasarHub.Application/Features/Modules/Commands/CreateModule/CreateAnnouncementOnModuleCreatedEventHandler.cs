@@ -18,7 +18,7 @@ namespace MasarHub.Application.Features.Modules.Commands.CreateModule
 
         public Task Handle(DomainEventNotification<ModuleCreatedDomainEvent> notification, CancellationToken cancellationToken)
         {
-            _backgroundJobService.Enqueue<IModuleJobService>(job =>
+            _backgroundJobService.Enqueue<IModuleJob>(job =>
                 job.CreateAnnouncementForNewModuleAsync(
                     notification.DomainEvent.CourseId,
                     notification.DomainEvent.ModuleTitle

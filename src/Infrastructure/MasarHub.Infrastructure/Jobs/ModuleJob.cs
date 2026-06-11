@@ -4,13 +4,13 @@ using MasarHub.Domain.Modules.Courses;
 
 namespace MasarHub.Infrastructure.Jobs
 {
-    public sealed class ModuleJobService : IModuleJobService
+    public sealed class ModuleJob : IModuleJob
     {
         private readonly IRepository<CourseAnnouncement> _announcementRepository;
         private readonly IRepository<Course> _courseRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ModuleJobService(IRepository<CourseAnnouncement> announcementRepository, IRepository<Course> courseRepository, IUnitOfWork unitOfWork)
+        public ModuleJob(IRepository<CourseAnnouncement> announcementRepository, IRepository<Course> courseRepository, IUnitOfWork unitOfWork)
         {
             _announcementRepository = announcementRepository;
             _courseRepository = courseRepository;

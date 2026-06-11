@@ -2,7 +2,7 @@
 
 namespace MasarHub.Application.Abstractions.Jobs
 {
-    public interface IModuleJobService : IScopedService
+    public interface IModuleJob : IScopedService
     {
         Task CreateAnnouncementForNewModuleAsync(Guid courseId, string moduleTitle);
     }
