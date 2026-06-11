@@ -36,6 +36,7 @@
 
 
   "lesson.not_found": "Lesson not found.",
-  "lesson.max_attachment_reached": "You have reached the maximum number of attachments allowed for this lesson."
+  "lesson.max_attachment_reached": "You have reached the maximum number of attachments allowed for this lesson.",
+  "lesson.cannot_delete_published_lesson": "Cannot delete a lesson from a published course. You can archive it instead."
 
 }

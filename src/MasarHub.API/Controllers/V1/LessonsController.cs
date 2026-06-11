@@ -7,6 +7,7 @@ using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddLessonAttachment;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
+using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,6 +62,15 @@ namespace MasarHub.API.Controllers.V1
             return result.IsFailure
                 ? await HandleError(result)
                 : CreatedAtAction(nameof(GetLessonById), new { courseId, moduleId, result.Value.LessonId }, result.Value);
+        }
+
+        [HttpDelete("{lessonId:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> DeleteLesson(Guid courseId, Guid moduleId, Guid lessonId)
+        {
+            var result = await _sender.Send(new DeleteLessonCommand(courseId, moduleId, lessonId, GetUserId()));
+
+            return await ToNoContentResultAsync(result);
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Domain.Modules.Courses;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -97,5 +98,33 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var result = await connection.QuerySingleOrDefaultAsync<LessonAttachmentCreationData>(command);
             return result ?? new LessonAttachmentCreationData(false, false, false, 0);
         }
+
+        public async Task<CourseState> GetCourseStateAsync(Guid courseId, Guid moduleId, Guid instructorId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT 
+                    CAST(CASE 
+                        WHEN EXISTS (
+                            SELECT 1 FROM courses.Courses 
+                            WHERE Id = @CourseId AND InstructorId = @InstructorId AND IsDeleted = 0
+                        ) THEN 1 ELSE 0 
+                    END AS BIT) AS IsOwner,
+
+                    CAST(CASE 
+                        WHEN EXISTS (
+                            SELECT 1 FROM courses.CourseModules 
+                            WHERE Id = @ModuleId AND CourseId = @CourseId AND IsDeleted = 0
+                        ) THEN 1 ELSE 0 
+                    END AS BIT) AS ModuleExist,
+
+                    (SELECT Status FROM courses.Courses WHERE Id = @CourseId AND IsDeleted = 0) AS CourseStatus;";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { courseId, moduleId, instructorId }, cancellationToken: ct);
+
+            var result = await connection.QueryFirstOrDefaultAsync<CourseState>(command);
+            return result ?? new CourseState(false, false, CourseStatus.Draft);
+        }
+
     }
 }

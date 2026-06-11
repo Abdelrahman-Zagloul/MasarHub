@@ -36,5 +36,6 @@
 
 
   "lesson.not_found": "الدرس غير موجود",
-  "lesson.max_attachment_reached": "لقد وصلت إلى الحد الأقصى من المرفقات المسموح بها لهذا الدرس."
+  "lesson.max_attachment_reached": "لقد وصلت إلى الحد الأقصى من المرفقات المسموح بها لهذا الدرس.",
+  "lesson.cannot_delete_published_lesson": "لا يمكن حذف درس من كورس منشور، يمكنك أرشفته بدلاً من ذلك."
 }
