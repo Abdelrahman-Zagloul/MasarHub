@@ -14,6 +14,9 @@ namespace MasarHub.Application.Settings
         public int MaxDocumentSizeInMB { get; set; }
 
         [Required]
+        public int MaxAttachmentSizeInMB { get; set; }
+
+        [Required]
         public string[] AllowedImageExtensions { get; set; } = [];
 
         [Required]
@@ -21,5 +24,8 @@ namespace MasarHub.Application.Settings
 
         [Required]
         public string[] AllowedDocumentExtensions { get; set; } = [];
+
+        [Required]
+        public string[] AllowedAttachmentExtensions { get; set; } = [];
     }
 }

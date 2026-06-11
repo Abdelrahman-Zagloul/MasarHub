@@ -55,7 +55,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var result = await connection.QueryFirstOrDefaultAsync<ModuleUpdateData>(command);
             return result ?? new ModuleUpdateData(false, false, Guid.Empty);
         }
-        public async Task<bool> IsCourseOwnerAsync(Guid courseId, Guid instructorId, CancellationToken cancellationToken)
+        public async Task<bool> IsCourseOwnerAsync(Guid courseId, Guid instructorId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT CAST(
@@ -69,7 +69,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                     END AS BIT);
             ";
             using var connection = _connectionFactory.CreateConnection();
-            var command = new CommandDefinition(sql, new { CourseId = courseId, InstructorId = instructorId }, cancellationToken: cancellationToken);
+            var command = new CommandDefinition(sql, new { CourseId = courseId, InstructorId = instructorId }, cancellationToken: ct);
             return await connection.ExecuteScalarAsync<bool>(command);
         }
     }

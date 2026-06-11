@@ -33,5 +33,14 @@ namespace MasarHub.Infrastructure.Persistence.Repositories
 
         public async Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
             => await _dbSet.Where(predicate).ToListAsync(ct);
+
+
+        public async Task<TEntity?> GetWithDeletedAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+            => await _context.Set<TEntity>().IgnoreQueryFilters()
+                .FirstOrDefaultAsync(predicate, ct);
+
+        public async Task<List<TEntity>> GetAllWithDeletedAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
+            => await _context.Set<TEntity>().IgnoreQueryFilters()
+                .Where(predicate).ToListAsync(ct);
     }
 }

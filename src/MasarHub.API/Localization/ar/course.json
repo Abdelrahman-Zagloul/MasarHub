@@ -32,6 +32,10 @@
   "module.duplicate_reorder_module_ids": "تكرار معرفات الموديول في إعادة الترتيب.",
   "module.invalid_module_ids": "تحتوي قائمة معرفات الموديول على معرفات غير صالحة.",
   "module.reorder_items_mismatch": "قائمة معرفات الموديول لا تطابق عدد الموديولات في هذا الكورس.",
-  "module.reorder_module_not_found": "واحد أو أكثر من الموديولات المحددة لإعادة الترتيب غير موجود في هذا الكورس."
+  "module.reorder_module_not_found": "واحد أو أكثر من الموديولات المحددة لإعادة الترتيب غير موجود في هذا الكورس.",
 
+
+  "lesson.not_found": "الدرس غير موجود",
+  "lesson.max_attachment_reached": "لقد وصلت إلى الحد الأقصى من المرفقات المسموح بها لهذا الدرس.",
+  "lesson.cannot_delete_published_lesson": "لا يمكن حذف درس من كورس منشور، يمكنك أرشفته بدلاً من ذلك."
 }
