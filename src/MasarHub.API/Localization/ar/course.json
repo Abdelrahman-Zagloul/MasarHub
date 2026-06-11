@@ -17,6 +17,8 @@
   "MinPrice": "أدنى سعر",
   "MaxPrice": "أعلى سعر",
   "OrderedModuleIds": "معرفات الموديلات",
+  "OrderedLessonIds": "معرفات الدروس",
+
 
   "course.not_found": "الكورس غير موجود.",
   "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس.",
@@ -42,6 +44,10 @@
   "lesson.already_not_archived": "هذا الدرس نشط بالفعل.",
   "lesson.preview_already_enabled": "معاينة الدرس مفعلة بالفعل.",
   "lesson.preview_already_disabled": "معاينة الدرس معطلة بالفعل.",
+  "lesson.duplicate_reorder_lesson_ids": "تكرار معرفات الدروس في إعادة الترتيب.",
+  "lesson.invalid_lesson_ids": "تحتوي قائمة معرفات الدروس على معرفات غير صالحة.",
+  "lesson.reorder_items_mismatch": "قائمة معرفات الدروس لا تطابق عدد الدروس في هذا الموديول.",
+  "lesson.reorder_lesson_not_found": "واحد أو أكثر من الدروس المحددة لإعادة الترتيب غير موجود في هذا الموديول.",
 
   "attachment.not_found": "لم يتم العثور على المرفق."
 }

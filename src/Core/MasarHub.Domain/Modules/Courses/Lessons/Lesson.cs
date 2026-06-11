@@ -42,16 +42,6 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             MarkAsUpdated();
             return DomainResult.Success();
         }
-        public DomainResult ChangeOrder(int order)
-        {
-            var error = Guard.AgainstNegativeOrZero(order, nameof(order));
-            if (error != DomainError.None)
-                return error;
-
-            DisplayOrder = order;
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
         public DomainResult EnablePreview()
         {
             if (IsPreviewable)
@@ -88,6 +78,16 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
                 return new DomainError("lesson.already_not_archived");
 
             LessonStatus = LessonStatus.Active;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult ChangeDisplayOrder(int displayOrder)
+        {
+            var error = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
+            if (error != DomainError.None)
+                return error;
+
+            DisplayOrder = displayOrder;
             MarkAsUpdated();
             return DomainResult.Success();
         }

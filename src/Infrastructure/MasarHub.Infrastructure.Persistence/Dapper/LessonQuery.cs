@@ -125,6 +125,39 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var result = await connection.QueryFirstOrDefaultAsync<CourseState>(command);
             return result ?? new CourseState(false, false, CourseStatus.Draft);
         }
+        public async Task<LessonReorderData> GetReorderDataAsync(Guid moduleId, Guid instructorId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT
+                    CAST(1 AS BIT) AS ModuleExist,
+
+                    CAST(
+                        CASE
+                            WHEN c.InstructorId = @InstructorId
+                            THEN 1
+                            ELSE 0
+                        END
+                    AS BIT) AS IsOwner
+
+                FROM courses.CourseModules m
+                INNER JOIN courses.Courses c
+                    ON c.Id = m.CourseId
+                    AND c.IsDeleted = 0
+
+                WHERE m.Id = @ModuleId
+                    AND m.IsDeleted = 0;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new
+            {
+                ModuleId = moduleId,
+                InstructorId = instructorId
+            }, cancellationToken: ct);
+
+            var result = await connection.QueryFirstOrDefaultAsync<LessonReorderData>(command);
+            return result ?? new LessonReorderData(false, false);
+        }
         public async Task<bool> IsLessonOwnedByInstructorAsync(Guid lessonId, Guid instructorId, CancellationToken ct = default)
         {
             const string sql = @"
