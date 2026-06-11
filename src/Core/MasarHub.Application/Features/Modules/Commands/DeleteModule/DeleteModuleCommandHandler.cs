@@ -22,16 +22,16 @@ namespace MasarHub.Application.Features.Modules.Commands.DeleteModule
 
         public async Task<Result> Handle(DeleteModuleCommand request, CancellationToken cancellationToken)
         {
-            var updateData = await _courseModuleQuery.GetUpdateDataAsync(request.ModuleId, request.InstructorId, cancellationToken);
+            var deleteData = await _courseModuleQuery.GetDeleteDataAsync(request.CourseId, request.ModuleId, request.InstructorId, cancellationToken);
 
-            if (!updateData.ModuleExists)
+            if (!deleteData.ModuleExists)
                 return Error.NotFound("module.not_found");
 
-            if (!updateData.IsOwner)
+            if (!deleteData.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
-            if (request.CourseId != updateData.CourseId)
-                return Error.BadRequest("module.course_mismatch");
+            if (deleteData.HasLessons)
+                return Error.BadRequest("module.cannot_delete.has_lessons");
 
             var courseModule = await _courseModuleRepository.GetByIdAsync(request.ModuleId, cancellationToken);
             if (courseModule == null)

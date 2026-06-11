@@ -33,27 +33,89 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return await connection.QueryFirstAsync<ModuleCreationData>(command);
         }
-        public async Task<ModuleUpdateData> GetUpdateDataAsync(Guid moduleId, Guid instructorId, CancellationToken ct)
+        public async Task<ModuleUpdateData> GetUpdateDataAsync(Guid courseId, Guid moduleId, Guid instructorId, CancellationToken ct)
         {
             const string sql = @"
-                SELECT 
-                    CAST(CASE WHEN m.Id IS NOT NULL THEN 1 ELSE 0 END AS BIT) AS ModuleExists,
-                    CAST(CASE WHEN c.InstructorId = @InstructorId THEN 1 ELSE 0 END AS BIT) AS IsOwner,
-                    m.CourseId AS CourseId
+                SELECT
+                    CAST(1 AS BIT) AS ModuleExists,
+
+                    CAST(
+                        CASE
+                            WHEN c.InstructorId = @InstructorId
+                            THEN 1
+                            ELSE 0
+                        END
+                    AS BIT) AS IsOwner
+
                 FROM courses.CourseModules m
-                INNER JOIN courses.Courses c ON m.CourseId = c.Id AND c.IsDeleted = 0
-                WHERE m.Id = @ModuleId AND m.IsDeleted = 0;
+                INNER JOIN courses.Courses c
+                    ON c.Id = m.CourseId
+                    AND c.IsDeleted = 0
+
+                WHERE m.Id = @ModuleId
+                    AND m.CourseId = @CourseId
+                    AND m.IsDeleted = 0;
             ";
 
             using var connection = _connectionFactory.CreateConnection();
-
             var command = new CommandDefinition(
                 sql,
-                new { ModuleId = moduleId, InstructorId = instructorId },
+                new
+                {
+                    CourseId = courseId,
+                    ModuleId = moduleId,
+                    InstructorId = instructorId
+                },
                 cancellationToken: ct);
 
             var result = await connection.QueryFirstOrDefaultAsync<ModuleUpdateData>(command);
-            return result ?? new ModuleUpdateData(false, false, Guid.Empty);
+            return result ?? new ModuleUpdateData(false, false);
+        }
+        public async Task<ModuleDeleteData> GetDeleteDataAsync(Guid courseId, Guid moduleId, Guid instructorId, CancellationToken ct)
+        {
+            const string sql = @"
+                SELECT
+                    CAST(1 AS BIT) AS ModuleExists,
+
+                    CAST(
+                        CASE
+                            WHEN c.InstructorId = @InstructorId
+                            THEN 1
+                            ELSE 0
+                        END
+                    AS BIT) AS IsOwner,
+
+                    CAST(
+                        CASE
+                            WHEN EXISTS (
+                                SELECT 1
+                                FROM courses.Lessons l
+                                WHERE l.ModuleId = m.Id
+                                    AND l.IsDeleted = 0
+                            )
+                            THEN 1
+                            ELSE 0
+                        END
+                    AS BIT) AS HasLessons
+
+                FROM courses.CourseModules m
+                INNER JOIN courses.Courses c
+                    ON c.Id = m.CourseId
+                    AND c.IsDeleted = 0
+
+                WHERE m.Id = @ModuleId
+                    AND m.CourseId = @CourseId
+                    AND m.IsDeleted = 0;";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new
+            {
+                CourseId = courseId,
+                ModuleId = moduleId,
+                InstructorId = instructorId
+            }, cancellationToken: ct);
+            var result = await connection.QueryFirstOrDefaultAsync<ModuleDeleteData>(command);
+            return result ?? new ModuleDeleteData(false, false, false);
         }
         public async Task<bool> IsCourseOwnerAsync(Guid courseId, Guid instructorId, CancellationToken ct)
         {
