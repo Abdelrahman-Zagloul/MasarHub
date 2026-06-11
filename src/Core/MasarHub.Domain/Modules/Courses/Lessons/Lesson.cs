@@ -54,12 +54,18 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
         }
         public DomainResult EnablePreview()
         {
+            if (IsPreviewable)
+                return new DomainError("lesson.preview_already_enabled");
+
             IsPreviewable = true;
             MarkAsUpdated();
             return DomainResult.Success();
         }
         public DomainResult DisablePreview()
         {
+            if (!IsPreviewable)
+                return new DomainError("lesson.preview_already_disabled");
+
             IsPreviewable = false;
             MarkAsUpdated();
             return DomainResult.Success();
@@ -67,7 +73,7 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
         public DomainResult Archive(CourseStatus courseStatus)
         {
             if (courseStatus != CourseStatus.Published)
-                return new DomainError("lesson.cannot_archive_unPublished_lesson");
+                return new DomainError("lesson.cannot_archive_unpublished_lesson");
 
             if (LessonStatus == LessonStatus.Archived)
                 return new DomainError("lesson.already_archived");
