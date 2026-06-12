@@ -4,6 +4,7 @@ using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Categories.Queries.GetCategories;
 using MasarHub.Application.Features.Categories.Queries.GetCategoryById;
 using MasarHub.Domain.Modules.Categories;
+using System.Text;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -226,8 +227,14 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
         }
         public async Task<bool> BulkUpdateDisplayOrderAsync(Guid? parentCategoryId, IReadOnlyList<Guid> orderedCategoryIds, CancellationToken ct = default)
         {
-            var valuesList = orderedCategoryIds.Select((id, index) => $"('{id}', {index + 1})");
-            var valuesRows = string.Join(", ", valuesList);
+            if (orderedCategoryIds is null || orderedCategoryIds.Count == 0)
+                return false;
+
+            var valuesBuilder = new StringBuilder(orderedCategoryIds.Count * 45);
+            for (int i = 0; i < orderedCategoryIds.Count; i++)
+                valuesBuilder.Append($"('{orderedCategoryIds[i]}', {i + 1}),");
+
+            valuesBuilder.Length--;
 
             var parentCategoryCondition = parentCategoryId is null
                 ? "C.ParentCategoryId IS NULL"
@@ -239,8 +246,8 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                     C.UpdatedAt = SYSUTCDATETIME()
                 FROM categories.Categories C
                 INNER JOIN (
-                    VALUES {valuesRows}
-                ) AS T(CategoryId, NewOrder) ON C.Id = CAST(T.CategoryId AS uniqueidentifier)
+                    VALUES {valuesBuilder.ToString()}
+                ) AS T(CategoryId, NewOrder) ON C.Id = T.CategoryId
                 WHERE {parentCategoryCondition};";
 
             using var connection = _connectionFactory.CreateConnection();
