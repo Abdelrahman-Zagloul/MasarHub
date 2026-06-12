@@ -9,6 +9,7 @@ namespace MasarHub.Application.Features.Categories.Commands.CreateCategory
         {
             RuleFor(x => x.Name)
                 .Required("Name")
+                .MinLengthValidation(3, "Name")
                 .MaxLengthValidation(200, "Name");
         }
     }

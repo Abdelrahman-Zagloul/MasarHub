@@ -11,22 +11,18 @@ namespace MasarHub.Application.Features.Courses.Commands.UpdateCourse
                 .ValidGuid("CourseId");
 
             RuleFor(x => x.Title)
-                .NotEmpty().WithErrorCode("validation.required").WithName("Title")
-                .MaxLengthValidation(100, "Title")
-                .When(x => x.Title != null);
+                .MinLengthValidation(5, "Title")
+                .MaxLengthValidation(200, "Title");
 
             RuleFor(x => x.Description)
-                .NotEmpty().WithErrorCode("validation.required").WithName("Description")
-                .MaxLengthValidation(2000, "Description")
-                .When(x => x.Description != null);
+                .MinLengthValidation(10, "Description")
+                .MaxLengthValidation(2000, "Description");
 
             RuleFor(x => x.Language)
-                .ValidEnum("Language")
-                .When(x => x.Language.HasValue);
+                .ValidEnum("Language");
 
             RuleFor(x => x.Level)
-                .ValidEnum("Level")
-                .When(x => x.Level.HasValue);
+                .ValidEnum("Level");
 
             RuleFor(x => x.CategoryId)
                 .ValidNullableGuid("CategoryId");

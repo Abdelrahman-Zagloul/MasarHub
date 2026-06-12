@@ -12,6 +12,7 @@ namespace MasarHub.Application.Features.Categories.Commands.UpdateCategoryName
                 .ValidGuid("Id");
 
             RuleFor(x => x.Name)
+                .MinLengthValidation(3, "Name")
                 .MaxLengthValidation(200, "Name");
 
             RuleFor(x => x.ParentCategoryId)
