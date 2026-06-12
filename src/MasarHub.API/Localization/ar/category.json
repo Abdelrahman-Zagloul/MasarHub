@@ -21,6 +21,6 @@
   "category.invalid_category_ids": "واحد أو أكثر من معرفات التصنيفات غير صالح.",
   "category.reorder_items_mismatch": "قائمة إعادة ترتيب التصنيفات غير مكتملة أو غير صالحة.",
   "category.reorder_category_not_found": "واحد أو أكثر من التصنيفات لا ينتمي إلى مجموعة إعادة الترتيب.",
-
+  "category.reorder_failed": "حدث خطأ أثناء إعادة ترتيب التصنيفات. يرجى المحاولة مرة أخرى.",
   "category.max_depth": "لا يمكن أن يتجاوز عمق الأقسام 3 مستويات."
 }

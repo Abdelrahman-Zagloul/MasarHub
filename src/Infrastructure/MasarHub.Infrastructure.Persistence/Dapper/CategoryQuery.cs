@@ -212,5 +212,42 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return new PagedResult<CategoryResponse>(categories, totalCount);
         }
+        public async Task<List<Guid>> GetCategoryIdsByParentIdAsync(Guid? parentCategoryId, CancellationToken ct = default)
+        {
+            var sql = parentCategoryId is null
+                ? "SELECT Id FROM categories.Categories WHERE ParentCategoryId IS NULL"
+                : "SELECT Id FROM categories.Categories WHERE ParentCategoryId = @ParentCategoryId";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { ParentCategoryId = parentCategoryId }, cancellationToken: ct);
+
+            var ids = await connection.QueryAsync<Guid>(command);
+            return ids.ToList();
+        }
+        public async Task<bool> BulkUpdateDisplayOrderAsync(Guid? parentCategoryId, IReadOnlyList<Guid> orderedCategoryIds, CancellationToken ct = default)
+        {
+            var valuesList = orderedCategoryIds.Select((id, index) => $"('{id}', {index + 1})");
+            var valuesRows = string.Join(", ", valuesList);
+
+            var parentCategoryCondition = parentCategoryId is null
+                ? "C.ParentCategoryId IS NULL"
+                : "C.ParentCategoryId = @ParentCategoryId";
+
+            var sql = $@"
+                UPDATE C
+                SET C.DisplayOrder = T.NewOrder,
+                    C.UpdatedAt = SYSUTCDATETIME()
+                FROM categories.Categories C
+                INNER JOIN (
+                    VALUES {valuesRows}
+                ) AS T(CategoryId, NewOrder) ON C.Id = CAST(T.CategoryId AS uniqueidentifier)
+                WHERE {parentCategoryCondition};";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { ParentCategoryId = parentCategoryId }, cancellationToken: ct);
+
+            var affectedRows = await connection.ExecuteAsync(command);
+            return affectedRows > 0;
+        }
     }
 }

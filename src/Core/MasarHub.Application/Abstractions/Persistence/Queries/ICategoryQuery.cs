@@ -15,6 +15,8 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<CategoryCreationData> GetCreationDataAsync(string slug, Guid? parentCategoryId, CancellationToken ct = default);
         Task<CategoryDeletionCheckData> CanDeleteAsync(Guid id, CancellationToken ct = default);
         Task<PagedResult<CategoryResponse>> GetAllAsync(GetCategoriesQuery query, CancellationToken ct = default);
+        Task<List<Guid>> GetCategoryIdsByParentIdAsync(Guid? parentCategoryId, CancellationToken ct = default);
+        Task<bool> BulkUpdateDisplayOrderAsync(Guid? parentCategoryId, IReadOnlyList<Guid> orderedCategoryIds, CancellationToken ct = default);
     }
 
     public sealed record CategoryCreationData(int NextDisplayOrder, bool SlugExists);

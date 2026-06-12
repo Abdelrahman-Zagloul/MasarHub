@@ -1,44 +1,35 @@
-﻿using MasarHub.Application.Abstractions.Persistence.Repositories;
+﻿using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
-using MasarHub.Domain.Modules.Categories;
 using MediatR;
 
 namespace MasarHub.Application.Features.Categories.Commands.ReorderCategories
 {
     public sealed class ReorderCategoriesCommandHandler : IRequestHandler<ReorderCategoriesCommand, Result>
     {
-        private readonly IRepository<Category> _categoryRepository;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public ReorderCategoriesCommandHandler(IRepository<Category> categoryRepository, IUnitOfWork unitOfWork)
+        private readonly ICategoryQuery _categoryQuery;
+        public ReorderCategoriesCommandHandler(ICategoryQuery categoryQuery)
         {
-            _categoryRepository = categoryRepository;
-            _unitOfWork = unitOfWork;
+            _categoryQuery = categoryQuery;
         }
 
         public async Task<Result> Handle(ReorderCategoriesCommand request, CancellationToken cancellationToken)
         {
-            var categories = request.ParentCategoryId is null
-                ? await _categoryRepository.GetAllAsync(x => x.ParentCategoryId == null, cancellationToken)
-                : await _categoryRepository.GetAllAsync(x => x.ParentCategoryId == request.ParentCategoryId, cancellationToken);
+            var existingCategoryIds = await _categoryQuery.GetCategoryIdsByParentIdAsync(request.ParentCategoryId, cancellationToken);
 
-            if (categories.Count != request.OrderedCategoryIds.Count)
+            if (existingCategoryIds.Count != request.OrderedCategoryIds.Count)
                 return Error.BadRequest("category.reorder_items_mismatch");
 
-            var categoryMap = categories.ToDictionary(x => x.Id);
-            for (int i = 0; i < request.OrderedCategoryIds.Count; i++)
-            {
-                var categoryId = request.OrderedCategoryIds[i];
-                if (!categoryMap.TryGetValue(categoryId, out var category))
-                    return Error.BadRequest("category.reorder_category_not_found");
+            var orderedCategoryIdsSet = request.OrderedCategoryIds.ToHashSet();
 
-                var result = category.ChangeDisplayOrder(i + 1);
-                if (result.IsFailure)
-                    return result.Error;
-            }
+            if (!existingCategoryIds.All(id => orderedCategoryIdsSet.Contains(id)))
+                return Error.BadRequest("category.reorder_category_not_found");
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            bool isSuccess = await _categoryQuery.BulkUpdateDisplayOrderAsync(request.ParentCategoryId, request.OrderedCategoryIds, cancellationToken);
+
+            if (!isSuccess)
+                return Error.Failure("category.reorder_failed");
+
             return Result.Success();
         }
     }
