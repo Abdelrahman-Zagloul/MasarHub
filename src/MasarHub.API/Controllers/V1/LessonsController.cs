@@ -20,7 +20,7 @@ namespace MasarHub.API.Controllers.V1
 {
     [ApiVersion(1.0)]
     [Tags("Lessons")]
-    [Route("api/modules/{moduleId:guid}/lessons")]
+    [Route("api/v{version:apiVersion}/modules/{moduleId:guid}/lessons")]
     public class LessonsController : ApiBaseController
     {
         private readonly ISender _sender;

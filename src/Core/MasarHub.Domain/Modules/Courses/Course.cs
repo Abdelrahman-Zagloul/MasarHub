@@ -30,7 +30,7 @@ namespace MasarHub.Domain.Modules.Courses
         public IReadOnlyCollection<CourseRequirement> Requirements => _requirements.AsReadOnly();
         public IReadOnlyCollection<CourseLearningObjective> LearningObjectives => _learningObjectives.AsReadOnly();
 
-        #region Constractor
+        #region Constructor
         private Course() { }
 
         private Course(

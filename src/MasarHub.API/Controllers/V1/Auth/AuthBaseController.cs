@@ -9,7 +9,7 @@ namespace MasarHub.API.Controllers.V1.Auth
 {
     [ApiVersion(1.0)]
     [Tags("Authentication")]
-    [Route("api/auth")]
+    [Route("api/v{version:apiVersion}/auth")]
     public abstract class AuthBaseController : ApiBaseController
     {
         protected readonly ISender _sender;
