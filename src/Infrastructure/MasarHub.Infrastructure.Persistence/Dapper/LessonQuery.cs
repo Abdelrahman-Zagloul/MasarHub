@@ -184,5 +184,37 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return await connection.QuerySingleAsync<bool>(command);
         }
+        public async Task<List<Guid>> GetLessonIdsByModuleIdAsync(Guid moduleId, CancellationToken ct = default)
+        {
+            const string sql = "SELECT Id FROM courses.Lessons WHERE ModuleId = @ModuleId And IsDeleted = 0";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { ModuleId = moduleId }, cancellationToken: ct);
+
+            var ids = await connection.QueryAsync<Guid>(command);
+            return ids.ToList();
+        }
+        public async Task<bool> BulkUpdateDisplayOrderAsync(Guid moduleId, IReadOnlyCollection<Guid> orderedLessonIds, CancellationToken ct = default)
+        {
+            var valuesList = orderedLessonIds.Select((id, index) => $"('{id}', {index + 1})");
+            var valuesRows = string.Join(", ", valuesList);
+
+            var sql = $@"
+                UPDATE L
+                SET L.DisplayOrder = T.NewOrder
+                FROM courses.Lessons L
+                INNER JOIN (
+                    VALUES {valuesRows}
+                ) AS T(LessonId, NewOrder) ON L.Id = CAST(T.LessonId AS uniqueidentifier)
+                WHERE L.ModuleId = @ModuleId AND L.IsDeleted = 0;";
+
+            using var connection = _connectionFactory.CreateConnection();
+
+            var command = new CommandDefinition(sql, new { ModuleId = moduleId }, cancellationToken: ct);
+
+            var affectedRows = await connection.ExecuteAsync(command);
+            return affectedRows > 0;
+        }
+
     }
 }

@@ -30,24 +30,19 @@ namespace MasarHub.Application.Features.Lessons.Commands.ReorderLessons
             if (!reorderData.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
-            var lessons = await _lessonRepository.GetAllAsync(x => x.ModuleId == request.ModuleId, cancellationToken);
+            var existingLessonIds = await _lessonQuery.GetLessonIdsByModuleIdAsync(request.ModuleId, cancellationToken);
 
-            if (lessons.Count != request.OrderedLessonIds.Count)
+            if (existingLessonIds.Count != request.OrderedLessonIds.Count)
                 return Error.BadRequest("lesson.reorder_items_mismatch");
 
-            var lessonMap = lessons.ToDictionary(x => x.Id);
-            for (int i = 0; i < request.OrderedLessonIds.Count; i++)
-            {
-                var lessonId = request.OrderedLessonIds[i];
-                if (!lessonMap.TryGetValue(lessonId, out var lesson))
-                    return Error.BadRequest("lesson.reorder_lesson_not_found");
+            var orderedLessonIdsSet = request.OrderedLessonIds.ToHashSet();
+            if (!existingLessonIds.All(id => orderedLessonIdsSet.Contains(id)))
+                return Error.BadRequest("lesson.reorder_lesson_not_found");
 
-                var result = lesson.ChangeDisplayOrder(i + 1);
-                if (result.IsFailure)
-                    return result.Error;
-            }
+            bool isSuccess = await _lessonQuery.BulkUpdateDisplayOrderAsync(request.ModuleId, request.OrderedLessonIds, cancellationToken);
+            if (!isSuccess)
+                return Error.Failure("lesson.reorder_failed");
 
-            await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
         }
     }

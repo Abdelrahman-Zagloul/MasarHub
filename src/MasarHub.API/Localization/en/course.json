@@ -48,7 +48,7 @@
   "lesson.invalid_lesson_ids": "The lesson ID list contains invalid IDs.",
   "lesson.reorder_items_mismatch": "The lesson ID list does not match the number of lessons in this module.",
   "lesson.reorder_lesson_not_found": "One or more of the specified lessons for reordering were not found in this module.",
-
+  "lesson.reorder_failed": "An error occurred while reordering the lessons. Please try again.",
 
   "attachment.not_found": "The attachment was not found."
 

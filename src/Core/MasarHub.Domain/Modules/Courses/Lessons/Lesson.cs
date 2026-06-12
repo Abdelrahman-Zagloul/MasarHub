@@ -81,16 +81,6 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             MarkAsUpdated();
             return DomainResult.Success();
         }
-        public DomainResult ChangeDisplayOrder(int displayOrder)
-        {
-            var error = Guard.AgainstNegativeOrZero(displayOrder, nameof(displayOrder));
-            if (error != DomainError.None)
-                return error;
-
-            DisplayOrder = displayOrder;
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
         public DomainResult Delete(CourseStatus courseStatus)
         {
             if (courseStatus == CourseStatus.Published)
