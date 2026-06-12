@@ -7,6 +7,7 @@ using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.ArchiveLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
+using MasarHub.Application.Features.Lessons.Commands.UpdateLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
 using MasarHub.Application.Features.Lessons.Commands.DisableLessonPreview;
 using MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview;
@@ -56,6 +57,14 @@ namespace MasarHub.API.Controllers.V1
                 : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
         }
 
+
+        [HttpPut("{lessonId:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> UpdateLesson(Guid moduleId, Guid lessonId, UpdateLessonRequest request)
+        {
+            var result = await _sender.Send(new UpdateLessonCommand(moduleId, lessonId, GetUserId(), request.Title, request.Description));
+            return await ToNoContentResultAsync(result);
+        }
 
         [HttpDelete("{lessonId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
