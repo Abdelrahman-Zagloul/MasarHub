@@ -12,6 +12,7 @@ namespace MasarHub.Application.Features.Courses.Commands.RejectCourse
 
             RuleFor(x => x.Reason)
                 .Required("Reason")
+                .MinLengthValidation(5, "Reason")
                 .MaxLengthValidation(1000, "Reason");
         }
     }
