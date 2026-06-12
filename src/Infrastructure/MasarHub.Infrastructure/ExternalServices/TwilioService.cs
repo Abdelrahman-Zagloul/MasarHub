@@ -10,13 +10,13 @@ using Twilio.Types;
 
 namespace MasarHub.Infrastructure.ExternalServices
 {
-    public sealed class TwilloService : ISmsService
+    public sealed class TwilioService : ISmsService
     {
-        private readonly TwilioSettings _twilio;
-        private readonly ILogger<TwilloService> _logger;
-        public TwilloService(IOptions<TwilioSettings> twilio, ILogger<TwilloService> logger)
+        private readonly TwilioSettings _twilioSettings;
+        private readonly ILogger<TwilioService> _logger;
+        public TwilioService(IOptions<TwilioSettings> twilioSettings, ILogger<TwilioService> logger)
         {
-            _twilio = twilio.Value;
+            _twilioSettings = twilioSettings.Value;
             _logger = logger;
         }
 
@@ -24,12 +24,12 @@ namespace MasarHub.Infrastructure.ExternalServices
         {
             try
             {
-                TwilioClient.Init(_twilio.AccountSID, _twilio.AuthToken);
+                TwilioClient.Init(_twilioSettings.AccountSID, _twilioSettings.AuthToken);
 
                 var result = await MessageResource.CreateAsync(
 
                     body: body,
-                    from: new PhoneNumber(_twilio.TwilioPhoneNumber),
+                    from: new PhoneNumber(_twilioSettings.TwilioPhoneNumber),
                     to: phoneNumber
                 );
 

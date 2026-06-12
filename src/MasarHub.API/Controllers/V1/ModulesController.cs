@@ -14,7 +14,7 @@ namespace MasarHub.API.Controllers.V1
 {
     [ApiVersion(1.0)]
     [Tags("Modules")]
-    [Route("api/courses/{courseId:guid}/modules")]
+    [Route("api/v{version:apiVersion}/courses/{courseId:guid}/modules")]
     public sealed class ModulesController : ApiBaseController
     {
         private readonly ISender _sender;

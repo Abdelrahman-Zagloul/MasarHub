@@ -16,7 +16,7 @@ namespace MasarHub.API.Controllers.V1
 {
     [ApiVersion(1.0)]
     [Tags("Categories")]
-    [Route("api/categories")]
+    [Route("api/v{version:apiVersion}/categories")]
     public sealed class CategoriesController : ApiBaseController
     {
         private readonly ISender _sender;

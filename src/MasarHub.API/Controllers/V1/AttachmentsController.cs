@@ -13,7 +13,7 @@ namespace MasarHub.API.Controllers.V1
 {
     [ApiVersion(1.0)]
     [Tags("Attachments")]
-    [Route("api/lessons/{lessonId:guid}/attachment")]
+    [Route("api/v{version:apiVersion}/lessons/{lessonId:guid}/attachment")]
     public sealed class AttachmentsController : ApiBaseController
     {
         private readonly ISender _sender;
