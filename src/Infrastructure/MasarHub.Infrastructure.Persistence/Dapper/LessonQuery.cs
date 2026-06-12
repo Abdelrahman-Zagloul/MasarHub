@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Domain.Modules.Courses;
+using System.Text;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -194,19 +195,24 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var ids = await connection.QueryAsync<Guid>(command);
             return ids.ToList();
         }
-        public async Task<bool> BulkUpdateDisplayOrderAsync(Guid moduleId, IReadOnlyCollection<Guid> orderedLessonIds, CancellationToken ct = default)
+        public async Task<bool> BulkUpdateDisplayOrderAsync(Guid moduleId, IReadOnlyList<Guid> orderedLessonIds, CancellationToken ct = default)
         {
-            var valuesList = orderedLessonIds.Select((id, index) => $"('{id}', {index + 1})");
-            var valuesRows = string.Join(", ", valuesList);
+            if (orderedLessonIds is null || orderedLessonIds.Count == 0)
+                return false;
 
+            var valuesBuilder = new StringBuilder(orderedLessonIds.Count * 45);
+            for (int i = 0; i < orderedLessonIds.Count; i++)
+                valuesBuilder.Append($"('{orderedLessonIds[i]}', {i + 1}),");
+
+            valuesBuilder.Length--;
             var sql = $@"
                 UPDATE L
                 SET L.DisplayOrder = T.NewOrder,
-                M.UpdatedAt = SYSUTCDATETIME()
+                    L.UpdatedAt = SYSUTCDATETIME()
                 FROM courses.Lessons L
                 INNER JOIN (
-                    VALUES {valuesRows}
-                ) AS T(LessonId, NewOrder) ON L.Id = CAST(T.LessonId AS uniqueidentifier)
+                    VALUES {valuesBuilder.ToString()}
+                ) AS T(LessonId, NewOrder) ON L.Id = T.LessonId
                 WHERE L.ModuleId = @ModuleId AND L.IsDeleted = 0;";
 
             using var connection = _connectionFactory.CreateConnection();

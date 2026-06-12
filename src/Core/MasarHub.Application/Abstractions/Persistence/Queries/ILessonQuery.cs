@@ -11,7 +11,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<LessonReorderData> GetReorderDataAsync(Guid moduleId, Guid instructorId, CancellationToken ct = default);
         Task<bool> IsLessonOwnedByInstructorAsync(Guid lessonId, Guid instructorId, CancellationToken ct = default);
         Task<List<Guid>> GetLessonIdsByModuleIdAsync(Guid moduleId, CancellationToken ct = default);
-        Task<bool> BulkUpdateDisplayOrderAsync(Guid moduleId, IReadOnlyCollection<Guid> orderedLessonIds, CancellationToken ct = default);
+        Task<bool> BulkUpdateDisplayOrderAsync(Guid moduleId, IReadOnlyList<Guid> orderedLessonIds, CancellationToken ct = default);
     }
     public sealed record LessonCreationData(bool ModuleExist, bool IsOwner, int NextDisplayOrder);
     public sealed record LessonAttachmentCreationData(bool LessonExist, bool IsOwner, int AttachmentCount);
