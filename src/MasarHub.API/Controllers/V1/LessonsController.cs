@@ -10,6 +10,7 @@ using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
 using MasarHub.Application.Features.Lessons.Commands.DisableLessonPreview;
 using MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview;
+using MasarHub.Application.Features.Lessons.Commands.ReorderLessons;
 using MasarHub.Application.Features.Lessons.Commands.UnarchiveLesson;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -97,6 +98,13 @@ namespace MasarHub.API.Controllers.V1
             return await ToNoContentResultAsync(result);
         }
 
+        [Authorize(Roles = Roles.Instructor)]
+        [HttpPatch("reorder")]
+        public async Task<IActionResult> ReorderLesson(Guid moduleId, ReorderLessonsRequest request)
+        {
+            var result = await _sender.Send(new ReorderLessonsCommand(moduleId, GetUserId(), request.OrderedLessonIds));
+            return await ToNoContentResultAsync(result);
+        }
 
         [HttpGet]
         public IActionResult GetLessonById(Guid moduleId, Guid lessonId)

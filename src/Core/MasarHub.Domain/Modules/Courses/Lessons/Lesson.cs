@@ -42,16 +42,6 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
             MarkAsUpdated();
             return DomainResult.Success();
         }
-        public DomainResult ChangeOrder(int order)
-        {
-            var error = Guard.AgainstNegativeOrZero(order, nameof(order));
-            if (error != DomainError.None)
-                return error;
-
-            DisplayOrder = order;
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
         public DomainResult EnablePreview()
         {
             if (IsPreviewable)

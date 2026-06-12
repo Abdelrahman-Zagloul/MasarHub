@@ -125,6 +125,39 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var result = await connection.QueryFirstOrDefaultAsync<CourseState>(command);
             return result ?? new CourseState(false, false, CourseStatus.Draft);
         }
+        public async Task<LessonReorderData> GetReorderDataAsync(Guid moduleId, Guid instructorId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT
+                    CAST(1 AS BIT) AS ModuleExist,
+
+                    CAST(
+                        CASE
+                            WHEN c.InstructorId = @InstructorId
+                            THEN 1
+                            ELSE 0
+                        END
+                    AS BIT) AS IsOwner
+
+                FROM courses.CourseModules m
+                INNER JOIN courses.Courses c
+                    ON c.Id = m.CourseId
+                    AND c.IsDeleted = 0
+
+                WHERE m.Id = @ModuleId
+                    AND m.IsDeleted = 0;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new
+            {
+                ModuleId = moduleId,
+                InstructorId = instructorId
+            }, cancellationToken: ct);
+
+            var result = await connection.QueryFirstOrDefaultAsync<LessonReorderData>(command);
+            return result ?? new LessonReorderData(false, false);
+        }
         public async Task<bool> IsLessonOwnedByInstructorAsync(Guid lessonId, Guid instructorId, CancellationToken ct = default)
         {
             const string sql = @"
@@ -151,5 +184,38 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return await connection.QuerySingleAsync<bool>(command);
         }
+        public async Task<List<Guid>> GetLessonIdsByModuleIdAsync(Guid moduleId, CancellationToken ct = default)
+        {
+            const string sql = "SELECT Id FROM courses.Lessons WHERE ModuleId = @ModuleId And IsDeleted = 0";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { ModuleId = moduleId }, cancellationToken: ct);
+
+            var ids = await connection.QueryAsync<Guid>(command);
+            return ids.ToList();
+        }
+        public async Task<bool> BulkUpdateDisplayOrderAsync(Guid moduleId, IReadOnlyCollection<Guid> orderedLessonIds, CancellationToken ct = default)
+        {
+            var valuesList = orderedLessonIds.Select((id, index) => $"('{id}', {index + 1})");
+            var valuesRows = string.Join(", ", valuesList);
+
+            var sql = $@"
+                UPDATE L
+                SET L.DisplayOrder = T.NewOrder,
+                M.UpdatedAt = SYSUTCDATETIME()
+                FROM courses.Lessons L
+                INNER JOIN (
+                    VALUES {valuesRows}
+                ) AS T(LessonId, NewOrder) ON L.Id = CAST(T.LessonId AS uniqueidentifier)
+                WHERE L.ModuleId = @ModuleId AND L.IsDeleted = 0;";
+
+            using var connection = _connectionFactory.CreateConnection();
+
+            var command = new CommandDefinition(sql, new { ModuleId = moduleId }, cancellationToken: ct);
+
+            var affectedRows = await connection.ExecuteAsync(command);
+            return affectedRows > 0;
+        }
+
     }
 }

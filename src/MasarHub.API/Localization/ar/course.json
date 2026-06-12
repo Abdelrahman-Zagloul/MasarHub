@@ -17,6 +17,8 @@
   "MinPrice": "أدنى سعر",
   "MaxPrice": "أعلى سعر",
   "OrderedModuleIds": "معرفات الموديلات",
+  "OrderedLessonIds": "معرفات الدروس",
+
 
   "course.not_found": "الكورس غير موجود.",
   "course.access_denied": "ليس لديك إذن للوصول إلى هذا الكورس.",
@@ -33,6 +35,8 @@
   "module.reorder_items_mismatch": "قائمة معرفات الموديول لا تطابق عدد الموديولات في هذا الكورس.",
   "module.reorder_module_not_found": "واحد أو أكثر من الموديولات المحددة لإعادة الترتيب غير موجود في هذا الكورس.",
   "module.cannot_delete.has_lessons": "لا يمكن حذف وحدة تحتوي على دروس.",
+  "module.reorder_failed": "حدث خطأ أثناء إعادة ترتيب الموديلات. يرجى المحاولة مرة أخرى.",
+
 
   "lesson.not_found": "الدرس غير موجود",
   "lesson.max_attachment_reached": "لقد وصلت إلى الحد الأقصى من المرفقات المسموح بها لهذا الدرس.",
@@ -42,6 +46,11 @@
   "lesson.already_not_archived": "هذا الدرس نشط بالفعل.",
   "lesson.preview_already_enabled": "معاينة الدرس مفعلة بالفعل.",
   "lesson.preview_already_disabled": "معاينة الدرس معطلة بالفعل.",
+  "lesson.duplicate_reorder_lesson_ids": "تكرار معرفات الدروس في إعادة الترتيب.",
+  "lesson.invalid_lesson_ids": "تحتوي قائمة معرفات الدروس على معرفات غير صالحة.",
+  "lesson.reorder_items_mismatch": "قائمة معرفات الدروس لا تطابق عدد الدروس في هذا الموديول.",
+  "lesson.reorder_lesson_not_found": "واحد أو أكثر من الدروس المحددة لإعادة الترتيب غير موجود في هذا الموديول.",
+  "lesson.reorder_failed": "حدث خطأ أثناء إعادة ترتيب الدروس. يرجى المحاولة مرة أخرى.",
 
   "attachment.not_found": "لم يتم العثور على المرفق."
 }

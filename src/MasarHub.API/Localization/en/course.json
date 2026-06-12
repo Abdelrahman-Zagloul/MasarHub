@@ -17,6 +17,7 @@
   "MinPrice": "Minimum Price",
   "MaxPrice": "Maximum Price",
   "OrderedModuleIds": "Ordered Module IDs",
+  "OrderedLessonIds": "Ordered Lesson IDs",
 
   "course.not_found": "Course not found.",
   "course.access_denied": "You do not have permission to access this course.",
@@ -33,6 +34,7 @@
   "module.reorder_items_mismatch": "The module ID list does not match the number of modules in this course.",
   "module.reorder_module_not_found": "One or more of the specified modules for reordering were not found in this course.",
   "module.cannot_delete.has_lessons": "Cannot delete a module that contains lessons.",
+  "module.reorder_failed": "An error occurred while reordering the modules. Please try again.",
 
 
   "lesson.not_found": "Lesson not found.",
@@ -43,7 +45,11 @@
   "lesson.already_not_archived": "This lesson is already active.",
   "lesson.preview_already_enabled": "Lesson preview is already enabled.",
   "lesson.preview_already_disabled": "Lesson preview is already disabled.",
-
+  "lesson.duplicate_reorder_lesson_ids": "Duplicate lessons IDs found in the reorder request.",
+  "lesson.invalid_lesson_ids": "The lesson ID list contains invalid IDs.",
+  "lesson.reorder_items_mismatch": "The lesson ID list does not match the number of lessons in this module.",
+  "lesson.reorder_lesson_not_found": "One or more of the specified lessons for reordering were not found in this module.",
+  "lesson.reorder_failed": "An error occurred while reordering the lessons. Please try again.",
 
   "attachment.not_found": "The attachment was not found."
 
