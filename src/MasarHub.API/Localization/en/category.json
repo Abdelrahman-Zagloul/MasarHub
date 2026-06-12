@@ -20,5 +20,6 @@
   "category.duplicate_reorder_category_ids": "Duplicate category IDs were found in the reorder request.",
   "category.reorder_items_mismatch": "The provided category reorder list is incomplete or invalid.",
   "category.reorder_category_not_found": "One or more categories do not belong to this reorder group.",
+  "category.reorder_failed": "An error occurred while reordering the categories. Please try again.",
   "category.max_depth": "Category depth cannot be greater than 3 levels."
 }
