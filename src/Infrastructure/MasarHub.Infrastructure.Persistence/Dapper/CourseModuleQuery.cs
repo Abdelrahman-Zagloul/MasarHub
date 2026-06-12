@@ -134,5 +134,35 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { CourseId = courseId, InstructorId = instructorId }, cancellationToken: ct);
             return await connection.ExecuteScalarAsync<bool>(command);
         }
+        public async Task<List<Guid>> GetModuleIdsByCourseIdAsync(Guid courseId, CancellationToken ct = default)
+        {
+            const string sql = "SELECT Id FROM courses.Modules WHERE CourseId = @CourseId AND IsDeleted = 0";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: ct);
+            var ids = await connection.QueryAsync<Guid>(command);
+            return ids.ToList();
+        }
+        public async Task<bool> BulkUpdateDisplayOrderAsync(Guid courseId, IReadOnlyCollection<Guid> orderedModuleIds, CancellationToken ct = default)
+        {
+            var valuesList = orderedModuleIds.Select((id, index) => $"('{id}', {index + 1})");
+            var valuesRows = string.Join(", ", valuesList);
+
+            var sql = $@"
+                UPDATE M
+                SET M.DisplayOrder = T.NewOrder,
+                    M.UpdatedAt = SYSUTCDATETIME() 
+                FROM courses.Modules M
+                INNER JOIN (
+                    VALUES {valuesRows}
+                ) AS T(ModuleId, NewOrder) ON M.Id = CAST(T.ModuleId AS uniqueidentifier)
+                WHERE M.CourseId = @CourseId AND M.IsDeleted = 0;";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: ct);
+
+            var affectedRows = await connection.ExecuteAsync(command);
+            return affectedRows > 0;
+        }
     }
 }

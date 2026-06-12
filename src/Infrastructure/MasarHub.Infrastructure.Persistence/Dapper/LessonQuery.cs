@@ -201,7 +201,8 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             var sql = $@"
                 UPDATE L
-                SET L.DisplayOrder = T.NewOrder
+                SET L.DisplayOrder = T.NewOrder,
+                M.UpdatedAt = SYSUTCDATETIME()
                 FROM courses.Lessons L
                 INNER JOIN (
                     VALUES {valuesRows}

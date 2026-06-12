@@ -1,23 +1,16 @@
 ﻿using MasarHub.Application.Abstractions.Persistence.Queries;
-using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
-using MasarHub.Domain.Modules.Courses.Lessons;
 using MediatR;
 
 namespace MasarHub.Application.Features.Lessons.Commands.ReorderLessons
 {
     public sealed class ReorderLessonsCommandHandler : IRequestHandler<ReorderLessonsCommand, Result>
     {
-        private readonly IRepository<Lesson> _lessonRepository;
         private readonly ILessonQuery _lessonQuery;
-        private readonly IUnitOfWork _unitOfWork;
-
-        public ReorderLessonsCommandHandler(IRepository<Lesson> lessonRepository, ILessonQuery lessonQuery, IUnitOfWork unitOfWork)
+        public ReorderLessonsCommandHandler(ILessonQuery lessonQuery)
         {
-            _lessonRepository = lessonRepository;
             _lessonQuery = lessonQuery;
-            _unitOfWork = unitOfWork;
         }
 
         public async Task<Result> Handle(ReorderLessonsCommand request, CancellationToken cancellationToken)

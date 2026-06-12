@@ -35,6 +35,8 @@
   "module.reorder_items_mismatch": "قائمة معرفات الموديول لا تطابق عدد الموديولات في هذا الكورس.",
   "module.reorder_module_not_found": "واحد أو أكثر من الموديولات المحددة لإعادة الترتيب غير موجود في هذا الكورس.",
   "module.cannot_delete.has_lessons": "لا يمكن حذف وحدة تحتوي على دروس.",
+  "module.reorder_failed": "حدث خطأ أثناء إعادة ترتيب الموديلات. يرجى المحاولة مرة أخرى.",
+
 
   "lesson.not_found": "الدرس غير موجود",
   "lesson.max_attachment_reached": "لقد وصلت إلى الحد الأقصى من المرفقات المسموح بها لهذا الدرس.",

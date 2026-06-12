@@ -34,6 +34,7 @@
   "module.reorder_items_mismatch": "The module ID list does not match the number of modules in this course.",
   "module.reorder_module_not_found": "One or more of the specified modules for reordering were not found in this course.",
   "module.cannot_delete.has_lessons": "Cannot delete a module that contains lessons.",
+  "module.reorder_failed": "An error occurred while reordering the modules. Please try again.",
 
 
   "lesson.not_found": "Lesson not found.",
