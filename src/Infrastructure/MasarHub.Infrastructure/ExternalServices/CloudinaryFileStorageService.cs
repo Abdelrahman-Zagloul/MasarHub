@@ -110,7 +110,7 @@ namespace MasarHub.Infrastructure.ExternalServices
                 {
                     ResourceType = ResourceType.Video,
                     Type = StorageType,
-                    //Metadata = true
+                    ImageMetadata = true,
                 };
 
                 var resourceResult = await _cloudinary.GetResourceAsync(getResourceParams, cancellationToken);

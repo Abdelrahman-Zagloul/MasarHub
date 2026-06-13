@@ -1,4 +1,3 @@
-﻿using MasarHub.Application.Common.Models.Storage;
 using MasarHub.Application.Common.Results;
 using MediatR;
 
@@ -11,6 +10,6 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
         bool IsPreviewable,
         string Title,
         string? Description,
-        FileResource VideoFile
+        string FileKey
     ) : IRequest<Result<AddVideoLessonResponse>>;
 }

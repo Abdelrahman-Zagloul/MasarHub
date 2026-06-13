@@ -1,12 +1,10 @@
 ﻿using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
-using MasarHub.API.Extensions.Mappers;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.ArchiveLesson;
-using MasarHub.Application.Features.Lessons.Commands.CompleteVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
 using MasarHub.Application.Features.Lessons.Commands.DisableLessonPreview;
@@ -41,22 +39,19 @@ namespace MasarHub.API.Controllers.V1
 
             return result.IsFailure
                 ? await HandleError(result)
-                : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
+                : CreatedAtAction(nameof(GetLessonById), new { moduleId, lessonId = result.Value.Id }, result.Value);
         }
 
         [HttpPost("video")]
         [Authorize(Roles = Roles.Instructor)]
-        public async Task<IActionResult> AddVideoLesson(Guid moduleId, [FromForm] AddVideoLessonRequest request)
+        public async Task<IActionResult> AddVideoLesson(Guid moduleId, AddVideoLessonRequest request)
         {
-            var command = new AddVideoLessonCommand(
-                moduleId, GetUserId(), request.IsPreviewable,
-                request.Title, request.Description, request.VideoFile.ToResource());
-
+            var command = new AddVideoLessonCommand(moduleId, GetUserId(), request.IsPreviewable, request.Title, request.Description, request.FileKey);
             var result = await _sender.Send(command);
 
             return result.IsFailure
-                ? await HandleError(result)
-                : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
+               ? await HandleError(result)
+               : CreatedAtAction(nameof(GetLessonById), new { moduleId, lessonId = result.Value.Id }, result.Value);
         }
 
         [HttpGet("video-upload/signature")]
@@ -65,18 +60,6 @@ namespace MasarHub.API.Controllers.V1
         {
             var result = await _sender.Send(new GetVideoUploadSignatureQuery(moduleId, GetUserId()));
             return await ToOkResultAsync(result);
-        }
-
-        [HttpPost("cloud/video")]
-        [Authorize(Roles = Roles.Instructor)]
-        public async Task<IActionResult> AddVideoLessonV2(Guid moduleId, CompleteVideoLessonRequest request)
-        {
-            var command = new CompleteVideoLessonCommand(moduleId, GetUserId(), request.IsPreviewable, request.Title, request.Description, request.FileKey);
-            var result = await _sender.Send(command);
-
-            return result.IsFailure
-               ? await HandleError(result)
-               : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
         }
 
 
@@ -137,11 +120,10 @@ namespace MasarHub.API.Controllers.V1
             return await ToNoContentResultAsync(result);
         }
 
-        [HttpGet]
+        [HttpGet("{lessonId:guid}")]
         public IActionResult GetLessonById(Guid moduleId, Guid lessonId)
         {
             return Ok();
         }
     }
-    public sealed record AddVideoLessonRequest(bool IsPreviewable, string Title, string? Description, IFormFile VideoFile);
 }

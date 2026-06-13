@@ -118,23 +118,6 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var result = await connection.QueryFirstOrDefaultAsync<ModuleDeleteData>(command);
             return result ?? new ModuleDeleteData(false, false, false);
         }
-        public async Task<bool> IsCourseOwnerAsync(Guid courseId, Guid instructorId, CancellationToken ct)
-        {
-            const string sql = @"
-                SELECT CAST(
-                    CASE 
-                        WHEN EXISTS (
-                            SELECT 1 
-                            FROM courses.Courses 
-                            WHERE Id = @CourseId AND InstructorId = @InstructorId AND IsDeleted = 0
-                        ) THEN 1 
-                        ELSE 0 
-                    END AS BIT);
-            ";
-            using var connection = _connectionFactory.CreateConnection();
-            var command = new CommandDefinition(sql, new { CourseId = courseId, InstructorId = instructorId }, cancellationToken: ct);
-            return await connection.ExecuteScalarAsync<bool>(command);
-        }
         public async Task<List<Guid>> GetModuleIdsByCourseIdAsync(Guid courseId, CancellationToken ct = default)
         {
             const string sql = "SELECT Id FROM courses.Modules WHERE CourseId = @CourseId AND IsDeleted = 0";
