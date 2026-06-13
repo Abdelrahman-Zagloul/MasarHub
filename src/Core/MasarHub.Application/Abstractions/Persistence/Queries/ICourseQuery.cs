@@ -15,8 +15,11 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken ct = default);
         Task<CourseThumbnailDetails> GetThumbnailDetailsAsync(Guid courseId, CancellationToken ct = default);
         Task<PagedResult<CourseResponse>> GetAllAsync(GetCoursesQuery query, CourseStatus? status, CancellationToken ct = default);
+        Task<CourseAccessData> GetCourseAccessData(Guid courseId, Guid instructorId, CancellationToken ct = default);
     }
     public sealed record CourseCreationData(bool CategoryExists, int SlugCount);
     public sealed record InstructorInfo(string FullName, string Email);
     public sealed record CourseThumbnailDetails(bool CourseExists, string? ThumbnailPublicId);
+    public sealed record CourseAccessData(bool CourseExist, bool IsOwner);
+
 }

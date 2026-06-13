@@ -7,16 +7,22 @@ namespace MasarHub.Application.Features.Modules.Commands.ReorderModules
 {
     public sealed class ReorderModulesCommandHandler : IRequestHandler<ReorderModulesCommand, Result>
     {
+        private readonly ICourseQuery _courseQuery;
         private readonly ICourseModuleQuery _courseModuleQuery;
-        public ReorderModulesCommandHandler(ICourseModuleQuery courseModuleQuery)
+        public ReorderModulesCommandHandler(ICourseQuery courseQuery, ICourseModuleQuery courseModuleQuery)
         {
+            _courseQuery = courseQuery;
             _courseModuleQuery = courseModuleQuery;
         }
 
         public async Task<Result> Handle(ReorderModulesCommand request, CancellationToken cancellationToken)
         {
-            var isOwner = await _courseModuleQuery.IsCourseOwnerAsync(request.CourseId, request.InstructorId, cancellationToken);
-            if (!isOwner)
+            var courseAccessData = await _courseQuery.GetCourseAccessData(request.CourseId, request.InstructorId, cancellationToken);
+
+            if (!courseAccessData.CourseExist)
+                return Error.Forbidden("course.not_found");
+
+            if (!courseAccessData.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
             var existingModuleIds = await _courseModuleQuery.GetModuleIdsByCourseIdAsync(request.CourseId, cancellationToken);
