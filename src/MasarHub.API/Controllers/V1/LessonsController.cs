@@ -6,6 +6,7 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.ArchiveLesson;
+using MasarHub.Application.Features.Lessons.Commands.CompleteVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
 using MasarHub.Application.Features.Lessons.Commands.DisableLessonPreview;
@@ -58,13 +59,24 @@ namespace MasarHub.API.Controllers.V1
                 : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
         }
 
-
         [HttpGet("video-upload/signature")]
         [Authorize(Roles = Roles.Instructor)]
         public async Task<IActionResult> GetVideoUploadSignature(Guid moduleId)
         {
             var result = await _sender.Send(new GetVideoUploadSignatureQuery(moduleId, GetUserId()));
             return await ToOkResultAsync(result);
+        }
+
+        [HttpPost("cloud/video")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> AddVideoLessonV2(Guid moduleId, CompleteVideoLessonRequest request)
+        {
+            var command = new CompleteVideoLessonCommand(moduleId, GetUserId(), request.IsPreviewable, request.Title, request.Description, request.FileKey);
+            var result = await _sender.Send(command);
+
+            return result.IsFailure
+               ? await HandleError(result)
+               : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
         }
 
 

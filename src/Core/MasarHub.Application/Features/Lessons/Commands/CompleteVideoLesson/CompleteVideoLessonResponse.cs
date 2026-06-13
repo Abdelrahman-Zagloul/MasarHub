@@ -1,6 +1,6 @@
-﻿namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
+namespace MasarHub.Application.Features.Lessons.Commands.CompleteVideoLesson
 {
-    public sealed record AddVideoLessonResponse
+    public sealed record CompleteVideoLessonResponse
     (
         Guid Id,
         Guid ModuleId,

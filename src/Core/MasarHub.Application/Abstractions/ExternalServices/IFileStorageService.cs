@@ -10,5 +10,6 @@ namespace MasarHub.Application.Abstractions.ExternalServices
         Task<Result> DeleteAsync(string fileKey, FileType fileType, CancellationToken cancellationToken = default);
         string GetUrl(string fileKey, FileType fileType);
         UploadSignatureParams GenerateUploadSignature(FileType fileType, string folder);
+        Task<Result<StoredFile>> GetVideoMetadataAsync(string fileKey, CancellationToken cancellationToken = default);
     }
 }
