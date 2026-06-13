@@ -6,6 +6,7 @@ using MasarHub.Application.Common.Results;
 using MasarHub.Application.Settings;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
 using ApplicationError = MasarHub.Application.Common.Results.Errors.Error;
 
 namespace MasarHub.Infrastructure.ExternalServices
@@ -101,7 +102,44 @@ namespace MasarHub.Infrastructure.ExternalServices
                 StorageType
             );
         }
+        public async Task<Result<StoredFile>> GetVideoMetadataAsync(string fileKey, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var getResourceParams = new GetResourceParams(fileKey)
+                {
+                    ResourceType = ResourceType.Video,
+                    Type = StorageType,
+                    //Metadata = true
+                };
 
+                var resourceResult = await _cloudinary.GetResourceAsync(getResourceParams, cancellationToken);
+
+                if (resourceResult.Error != null)
+                {
+                    _logger.LogError("Cloudinary GetResource failed for key '{FileKey}'. Error: {ErrorMessage}", fileKey, resourceResult.Error.Message);
+                    return ApplicationError.NotFound("storage.file_not_found");
+                }
+
+                var contentType = $"video/{resourceResult.Format ?? "mp4"}";
+                var duration = resourceResult.JsonObj?["duration"]?.Value<double>() ?? 0;
+
+                return new StoredFile
+                (
+                    fileKey,
+                    resourceResult.OriginalFilename ?? fileKey,
+                    contentType,
+                    resourceResult.Bytes,
+                    GetUrl(fileKey, FileType.Video),
+                    duration
+                );
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error while fetching metadata for video key '{FileKey}'.", fileKey);
+                return ApplicationError.Failure("storage.connection_failed");
+            }
+        }
         private Result ValidateFileUpload(FileResource file, FileType fileType)
         {
             if (file is null || file.FileSizeInByte <= 0)
@@ -188,6 +226,7 @@ namespace MasarHub.Infrastructure.ExternalServices
             FileType.Document or FileType.Attachment => _cloudinary.Api.Url.ResourceType("raw"),
             _ => throw new NotSupportedException($"FileType '{fileType}' is not supported.")
         };
+
 
     }
 }
