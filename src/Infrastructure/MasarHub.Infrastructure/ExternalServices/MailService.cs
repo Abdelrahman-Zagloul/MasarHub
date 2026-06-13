@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Common.Models;
+﻿using MasarHub.Application.Common.Models.Storage;
 using MasarHub.Application.ExternalServices;
 using MasarHub.Application.Settings;
 using Microsoft.Extensions.Logging;

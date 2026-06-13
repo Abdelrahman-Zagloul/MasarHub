@@ -1,7 +1,7 @@
 ﻿using MasarHub.Application.Abstractions.ExternalServices;
 using MasarHub.Application.Abstractions.Jobs;
 using MasarHub.Application.Abstractions.Persistence.Repositories;
-using MasarHub.Application.Common.Models;
+using MasarHub.Application.Common.Models.Storage;
 using MasarHub.Domain.Modules.Courses.Lessons;
 
 namespace MasarHub.Infrastructure.Jobs

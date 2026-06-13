@@ -1,7 +1,7 @@
 ﻿using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using MasarHub.Application.Abstractions.ExternalServices;
-using MasarHub.Application.Common.Models;
+using MasarHub.Application.Common.Models.Storage;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Settings;
 using Microsoft.Extensions.Logging;
@@ -13,17 +13,19 @@ namespace MasarHub.Infrastructure.ExternalServices
     public sealed class CloudinaryFileStorageService : IFileStorageService
     {
         private readonly Cloudinary _cloudinary;
+        private readonly CloudinarySettings _cloudinarySettings;
         private readonly FileStorageSettings _fileStorageSettings;
         private readonly ILogger<CloudinaryFileStorageService> _logger;
         private const string StorageType = "authenticated";
-        public CloudinaryFileStorageService(Cloudinary cloudinary, IOptions<FileStorageSettings> options, ILogger<CloudinaryFileStorageService> logger)
+        public CloudinaryFileStorageService(Cloudinary cloudinary, IOptions<CloudinarySettings> cloudinaryOptions, IOptions<FileStorageSettings> fileOptions, ILogger<CloudinaryFileStorageService> logger)
         {
             _cloudinary = cloudinary;
-            _fileStorageSettings = options.Value;
+            _cloudinarySettings = cloudinaryOptions.Value;
+            _fileStorageSettings = fileOptions.Value;
             _logger = logger;
         }
 
-        public async Task<Result<StoredFile>> UploadAsync(FileResource file, FileType fileType, string? folder = null, CancellationToken cancellationToken = default)
+        public async Task<Result<StoredFile>> UploadAsync(FileResource file, FileType fileType, string folder, CancellationToken cancellationToken = default)
         {
             var validationResult = ValidateFileUpload(file, fileType);
             if (validationResult.IsFailure)
@@ -76,6 +78,30 @@ namespace MasarHub.Infrastructure.ExternalServices
             .Type(StorageType)
             .BuildUrl(fileKey);
         }
+        public UploadSignatureParams GenerateUploadSignature(FileType fileType, string folder)
+        {
+            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+            var parameters = new SortedDictionary<string, object>
+            {
+                ["timestamp"] = timestamp,
+                ["type"] = StorageType,
+                ["folder"] = folder
+            };
+
+            var signature = _cloudinary.Api.SignParameters(parameters);
+
+            return new UploadSignatureParams(
+                _cloudinarySettings.CloudName,
+                _cloudinarySettings.APIKey,
+                signature,
+                timestamp,
+                folder,
+                MapToResourceType(fileType).ToString(),
+                StorageType
+            );
+        }
+
         private Result ValidateFileUpload(FileResource file, FileType fileType)
         {
             if (file is null || file.FileSizeInByte <= 0)
