@@ -6,6 +6,7 @@ namespace MasarHub.Application.Abstractions.Jobs
     {
         Task CleanUpLessonResourseAsync(Guid ModuleId, Guid LessonId);
         Task CleanUpAttachmentResourseAsync(Guid attachmentId);
+        Task CleanUpVideoThumbnailAsync(string thumbnailPublicId);
     }
 
 }
