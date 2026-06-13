@@ -1,7 +1,6 @@
-﻿using MasarHub.Application.Abstractions.ExternalServices;
+using MasarHub.Application.Abstractions.ExternalServices;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Abstractions.Persistence.Repositories;
-using MasarHub.Application.Common.Models.Storage;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses.Lessons;
@@ -34,9 +33,11 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
             if (!creationData.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
-            var uploadResult = await _fileStorageService.UploadAsync(request.VideoFile, FileType.Video, StorageFolders.Courses.Videos);
-            if (uploadResult.IsFailure)
-                return uploadResult.Errors[0];
+
+            var metadataResult = await _fileStorageService.GetVideoMetadataAsync(request.FileKey, cancellationToken);
+            if (metadataResult.IsFailure)
+                return metadataResult.Errors[0];
+
 
             var lessonResult = VideoLesson.Create(
                 request.ModuleId,
@@ -44,17 +45,14 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
                 request.Title,
                 creationData.NextDisplayOrder,
                 request.Description,
-                uploadResult.Value.FileKey,
-                request.VideoFile.FileName,
-                request.VideoFile.FileSizeInByte,
-                uploadResult.Value.DurationInSecond
+                request.FileKey,
+                metadataResult.Value.FileName,
+                metadataResult.Value.FileSizeInByte,
+                metadataResult.Value.DurationInSecond
             );
 
             if (lessonResult.IsFailure)
-            {
-                await _fileStorageService.DeleteAsync(uploadResult.Value.FileKey, FileType.Video, cancellationToken);
                 return lessonResult.Error;
-            }
 
             await _lessonRepository.AddAsync(lessonResult.Value, cancellationToken);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
@@ -66,10 +64,10 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
                 creationData.NextDisplayOrder,
                 request.Title,
                 request.Description,
-                uploadResult.Value.Url,
-                request.VideoFile.FileName,
-                request.VideoFile.FileSizeInByte,
-                uploadResult.Value.DurationInSecond
+                metadataResult.Value.Url,
+                metadataResult.Value.FileName,
+                metadataResult.Value.FileSizeInByte,
+                metadataResult.Value.DurationInSecond
             );
         }
     }

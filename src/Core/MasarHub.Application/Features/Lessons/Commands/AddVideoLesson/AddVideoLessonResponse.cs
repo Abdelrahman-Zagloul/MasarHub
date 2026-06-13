@@ -1,4 +1,4 @@
-﻿namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
+namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
 {
     public sealed record AddVideoLessonResponse
     (

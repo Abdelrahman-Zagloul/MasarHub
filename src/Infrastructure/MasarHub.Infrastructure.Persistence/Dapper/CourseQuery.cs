@@ -254,5 +254,46 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var courses = (await multi.ReadAsync<CourseResponse>()).ToList();
             return new PagedResult<CourseResponse>(courses, totalCount);
         }
+        public async Task<CourseAccessData> GetCourseAccessData(Guid courseId, Guid instructorId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT
+                    CAST(
+                        CASE
+                            WHEN EXISTS (
+                                SELECT 1
+                                FROM courses.Courses
+                                WHERE Id = @CourseId AND IsDeleted = 0
+                            )
+                            THEN 1
+                            ELSE 0
+                        END AS BIT
+                    ) AS CourseExist,
+
+                    CAST(
+                        CASE
+                            WHEN EXISTS (
+                                SELECT 1
+                                FROM courses.Courses
+                                WHERE Id = @CourseId
+                                  AND InstructorId = @InstructorId AND IsDeleted = 0
+                            )
+                            THEN 1
+                            ELSE 0
+                        END AS BIT
+                    ) AS IsOwner;
+                ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql,
+                new
+                {
+                    CourseId = courseId,
+                    InstructorId = instructorId
+                },
+                cancellationToken: ct);
+
+            return await connection.QuerySingleAsync<CourseAccessData>(command);
+        }
     }
 }
