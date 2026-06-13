@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
+using MasarHub.API.Extensions.Mappers;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
@@ -12,6 +13,7 @@ using MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview;
 using MasarHub.Application.Features.Lessons.Commands.ReorderLessons;
 using MasarHub.Application.Features.Lessons.Commands.UnarchiveLesson;
 using MasarHub.Application.Features.Lessons.Commands.UpdateLesson;
+using MasarHub.Application.Features.Lessons.Commands.UpdateVideoThumbnail;
 using MasarHub.Application.Features.Lessons.Queries.GetVideoUploadSignature;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -109,6 +111,14 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> DisableLessonPreview(Guid moduleId, Guid lessonId)
         {
             var result = await _sender.Send(new DisableLessonPreviewCommand(moduleId, lessonId, GetUserId()));
+            return await ToNoContentResultAsync(result);
+        }
+
+        [Authorize(Roles = Roles.Instructor)]
+        [HttpPatch("{lessonId:guid}/thumbnail")]
+        public async Task<IActionResult> UpdateVideoThumbnail(Guid moduleId, Guid lessonId, IFormFile file)
+        {
+            var result = await _sender.Send(new UpdateVideoThumbnailCommand(moduleId, lessonId, GetUserId(), file.ToResource()));
             return await ToNoContentResultAsync(result);
         }
 

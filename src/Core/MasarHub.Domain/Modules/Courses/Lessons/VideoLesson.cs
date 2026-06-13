@@ -1,5 +1,6 @@
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.Modules.Courses.Lessons
 {
@@ -40,8 +41,13 @@ namespace MasarHub.Domain.Modules.Courses.Lessons
 
         public DomainResult UpdateThumbnail(string? thumbnailPublicId)
         {
+            var oldThumbnail = ThumbnailPublicId;
             ThumbnailPublicId = thumbnailPublicId;
             MarkAsUpdated();
+
+            if (!string.IsNullOrWhiteSpace(oldThumbnail))
+                RaiseDomainEvent(new ThumbnailChangedDomainEvent(oldThumbnail));
+
             return DomainResult.Success();
         }
     }

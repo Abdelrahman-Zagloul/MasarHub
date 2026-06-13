@@ -30,6 +30,11 @@ namespace MasarHub.Infrastructure.Jobs
             await _fileStorageService.DeleteAsync(attachment.PublicId, FileType.Attachment);
         }
 
+        public async Task CleanUpVideoThumbnailAsync(string thumbnailPublicId)
+        {
+            await _fileStorageService.DeleteAsync(thumbnailPublicId, FileType.Image);
+        }
+
         public async Task CleanUpLessonResourseAsync(Guid ModuleId, Guid LessonId)
         {
             var lesson = await _lessonRepository.GetWithDeletedAsync(x => x.Id == LessonId && x.ModuleId == ModuleId && x.IsDeleted);

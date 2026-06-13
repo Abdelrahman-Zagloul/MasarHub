@@ -51,6 +51,7 @@
   "lesson.reorder_items_mismatch": "قائمة معرفات الدروس لا تطابق عدد الدروس في هذا الموديول.",
   "lesson.reorder_lesson_not_found": "واحد أو أكثر من الدروس المحددة لإعادة الترتيب غير موجود في هذا الموديول.",
   "lesson.reorder_failed": "حدث خطأ أثناء إعادة ترتيب الدروس. يرجى المحاولة مرة أخرى.",
+  "lesson.not_video_lesson": "هذا الدرس ليس درس فيديو.",
 
   "attachment.not_found": "لم يتم العثور على المرفق."
 }
