@@ -7,12 +7,13 @@ using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
 using MasarHub.Application.Features.Lessons.Commands.ArchiveLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
-using MasarHub.Application.Features.Lessons.Commands.UpdateLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
 using MasarHub.Application.Features.Lessons.Commands.DisableLessonPreview;
 using MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview;
 using MasarHub.Application.Features.Lessons.Commands.ReorderLessons;
 using MasarHub.Application.Features.Lessons.Commands.UnarchiveLesson;
+using MasarHub.Application.Features.Lessons.Commands.UpdateLesson;
+using MasarHub.Application.Features.Lessons.Queries.GetVideoUploadSignature;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,6 +56,15 @@ namespace MasarHub.API.Controllers.V1
             return result.IsFailure
                 ? await HandleError(result)
                 : CreatedAtAction(nameof(GetLessonById), new { moduleId, result.Value.Id }, result.Value);
+        }
+
+
+        [HttpGet("video-upload/signature")]
+        [Authorize(Roles = Roles.Instructor)]
+        public async Task<IActionResult> GetVideoUploadSignature(Guid moduleId)
+        {
+            var result = await _sender.Send(new GetVideoUploadSignatureQuery(moduleId, GetUserId()));
+            return await ToOkResultAsync(result);
         }
 
 

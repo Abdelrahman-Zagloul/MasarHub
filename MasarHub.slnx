@@ -14,5 +14,4 @@
     <Project Path="src/Infrastructure/MasarHub.Infrastructure.Persistence/MasarHub.Infrastructure.Persistence.csproj" Id="2fb28fc8-8952-449a-a85b-196a15f576d6" />
     <Project Path="src/Infrastructure/MasarHub.Infrastructure/MasarHub.Infrastructure.csproj" Id="4a0d314f-75a1-4707-b274-b9864dce35e4" />
   </Folder>
-  <Folder Name="/tests/" />
 </Solution>

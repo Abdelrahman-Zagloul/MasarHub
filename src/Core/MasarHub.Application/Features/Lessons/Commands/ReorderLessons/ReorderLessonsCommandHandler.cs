@@ -15,12 +15,12 @@ namespace MasarHub.Application.Features.Lessons.Commands.ReorderLessons
 
         public async Task<Result> Handle(ReorderLessonsCommand request, CancellationToken cancellationToken)
         {
-            var reorderData = await _lessonQuery.GetReorderDataAsync(request.ModuleId, request.InstructorId, cancellationToken);
+            var moduleAccessData = await _lessonQuery.GetModuleAccessDataAsync(request.ModuleId, request.InstructorId, cancellationToken);
 
-            if (!reorderData.ModuleExist)
+            if (!moduleAccessData.ModuleExist)
                 return Error.NotFound("module.not_found");
 
-            if (!reorderData.IsOwner)
+            if (!moduleAccessData.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
             var existingLessonIds = await _lessonQuery.GetLessonIdsByModuleIdAsync(request.ModuleId, cancellationToken);

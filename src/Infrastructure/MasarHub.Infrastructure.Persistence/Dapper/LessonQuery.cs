@@ -126,7 +126,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var result = await connection.QueryFirstOrDefaultAsync<CourseState>(command);
             return result ?? new CourseState(false, false, CourseStatus.Draft);
         }
-        public async Task<LessonReorderData> GetReorderDataAsync(Guid moduleId, Guid instructorId, CancellationToken ct = default)
+        public async Task<ModuleAccessData> GetModuleAccessDataAsync(Guid moduleId, Guid instructorId, CancellationToken ct = default)
         {
             const string sql = @"
                 SELECT
@@ -156,8 +156,8 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 InstructorId = instructorId
             }, cancellationToken: ct);
 
-            var result = await connection.QueryFirstOrDefaultAsync<LessonReorderData>(command);
-            return result ?? new LessonReorderData(false, false);
+            var result = await connection.QueryFirstOrDefaultAsync<ModuleAccessData>(command);
+            return result ?? new ModuleAccessData(false, false);
         }
         public async Task<bool> IsLessonOwnedByInstructorAsync(Guid lessonId, Guid instructorId, CancellationToken ct = default)
         {

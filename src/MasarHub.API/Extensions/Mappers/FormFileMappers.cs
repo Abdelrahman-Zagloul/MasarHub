@@ -1,4 +1,4 @@
-﻿using MasarHub.Application.Common.Models;
+﻿using MasarHub.Application.Common.Models.Storage;
 
 namespace MasarHub.API.Extensions.Mappers
 {
