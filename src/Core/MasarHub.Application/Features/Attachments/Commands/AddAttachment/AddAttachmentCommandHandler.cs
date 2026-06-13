@@ -1,7 +1,7 @@
 ﻿using MasarHub.Application.Abstractions.ExternalServices;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Abstractions.Persistence.Repositories;
-using MasarHub.Application.Common.Models;
+using MasarHub.Application.Common.Models.Storage;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses.Lessons;

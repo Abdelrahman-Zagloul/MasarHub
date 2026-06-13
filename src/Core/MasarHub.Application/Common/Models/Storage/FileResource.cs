@@ -1,4 +1,4 @@
-﻿namespace MasarHub.Application.Common.Models
+﻿namespace MasarHub.Application.Common.Models.Storage
 {
     public sealed record FileResource
     (
@@ -7,11 +7,4 @@
         Stream Content,
         long FileSizeInByte
     );
-    public enum FileType
-    {
-        Image,
-        Video,
-        Document,
-        Attachment
-    }
 }

@@ -1,5 +1,5 @@
 ﻿using MasarHub.Application.Common.DependencyInjection;
-using MasarHub.Application.Common.Models;
+using MasarHub.Application.Common.Models.Storage;
 
 namespace MasarHub.Application.ExternalServices
 {

@@ -1,4 +1,4 @@
-﻿namespace MasarHub.Application.Common.Models
+﻿namespace MasarHub.Application.Common.Models.Storage
 {
     public static class StorageFolders
     {
