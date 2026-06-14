@@ -3,7 +3,7 @@ using MasarHub.Application.Common.Extensions;
 
 namespace MasarHub.Application.Features.Lessons.Commands.ReorderLessons
 {
-    public class ReorderLessonsCommandValidator : AbstractValidator<ReorderLessonsCommand>
+    public sealed class ReorderLessonsCommandValidator : AbstractValidator<ReorderLessonsCommand>
     {
         public ReorderLessonsCommandValidator()
         {

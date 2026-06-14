@@ -5,7 +5,7 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Password.ForgetPassword
 {
-    public class ForgetPasswordCommandHandler : IRequestHandler<ForgetPasswordCommand, Result>
+    public sealed class ForgetPasswordCommandHandler : IRequestHandler<ForgetPasswordCommand, Result>
     {
         private readonly IAuthService _authService;
         private readonly IMediator _mediator;

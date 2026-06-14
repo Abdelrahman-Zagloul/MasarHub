@@ -3,7 +3,7 @@ using MasarHub.Application.Common.Extensions;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Password.ChangePassword
 {
-    public class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
+    public sealed class ChangePasswordCommandValidator : AbstractValidator<ChangePasswordCommand>
     {
         public ChangePasswordCommandValidator()
         {

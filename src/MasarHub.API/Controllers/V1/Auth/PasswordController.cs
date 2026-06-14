@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.RateLimiting;
 namespace MasarHub.API.Controllers.V1.Auth
 {
     [Tags("Authentication")]
-    public sealed class PasswordController : AuthBaseController
+    public sealed class PasswordController : AuthControllerBase
     {
         public PasswordController(ILocalizationService localizationService, ISender sender)
             : base(localizationService, sender) { }

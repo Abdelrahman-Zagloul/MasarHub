@@ -5,7 +5,7 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Token.RevokeToken
 {
-    public class RevokeTokenCommandHandler : IRequestHandler<RevokeTokenCommand, Result>
+    public sealed class RevokeTokenCommandHandler : IRequestHandler<RevokeTokenCommand, Result>
     {
         private readonly IRefreshTokenService _refreshTokenService;
 
