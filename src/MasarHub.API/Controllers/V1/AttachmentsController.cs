@@ -26,6 +26,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPost()]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Upload lesson attachment")]
+        [EndpointDescription("Uploads a file attachment to a lesson. Supported file types include documents, images, and other educational resources. Instructor only.")]
         public async Task<IActionResult> AddLessonAttachment(Guid lessonId, IFormFile file)
         {
             var command = new AddAttachmentCommand(lessonId, GetUserId(), file.ToResource());
@@ -39,6 +41,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpDelete("{attachmentId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Delete lesson attachment")]
+        [EndpointDescription("Permanently deletes a file attachment from a lesson. Instructor only.")]
         public async Task<IActionResult> DeleteAttachment(Guid lessonId, Guid attachmentId)
         {
             var result = await _sender.Send(new DeleteAttachmentCommand(lessonId, attachmentId, GetUserId()));
@@ -47,6 +51,8 @@ namespace MasarHub.API.Controllers.V1
 
 
         [HttpGet("{attachmentId:guid}")]
+        [EndpointSummary("Get attachment by ID (stub)")]
+        [EndpointDescription("Retrieves a specific attachment by its ID. Currently a stub endpoint returning OK.")]
         public IActionResult GetAttachmentById(Guid lessonId, Guid attachmentId)
         {
             return Ok();

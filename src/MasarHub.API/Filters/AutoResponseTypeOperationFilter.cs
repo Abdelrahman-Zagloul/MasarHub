@@ -127,18 +127,14 @@ namespace MasarHub.API.Filters
             if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out var schema) && schema is OpenApiSchema concreteSchema)
             {
                 if (concreteSchema.Properties == null)
-                {
                     concreteSchema.Properties = new Dictionary<string, IOpenApiSchema>();
-                }
 
                 if (!concreteSchema.Properties.ContainsKey(propertyName))
-                {
                     concreteSchema.Properties.Add(propertyName, new OpenApiSchema
                     {
                         Type = type,
                         Description = description
                     });
-                }
 
                 concreteSchema.AdditionalPropertiesAllowed = false;
                 concreteSchema.AdditionalProperties = null;
@@ -166,6 +162,7 @@ namespace MasarHub.API.Filters
             var hasAuthorize = action.MethodInfo
                 .GetCustomAttributes<AuthorizeAttribute>(true).Any()
                 || action.ControllerTypeInfo.GetCustomAttributes<AuthorizeAttribute>(true).Any();
+
             return !isAnonymous && hasAuthorize;
         }
         private static bool HasAttributeWithRolesOrPolicy(ControllerActionDescriptor action)

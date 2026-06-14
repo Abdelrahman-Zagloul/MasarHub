@@ -34,6 +34,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPost("article")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Add an article lesson")]
+        [EndpointDescription("Creates a new article-type lesson with title, content, and description within the specified module. Instructor only.")]
         public async Task<IActionResult> AddArticleLesson(Guid moduleId, AddArticleLessonRequest request)
         {
             var result = await _sender.Send(new AddArticleLessonCommand(
@@ -46,6 +48,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPost("video")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Add a video lesson")]
+        [EndpointDescription("Creates a new video-type lesson using a previously uploaded file key within the specified module. Instructor only.")]
         public async Task<IActionResult> AddVideoLesson(Guid moduleId, AddVideoLessonRequest request)
         {
             var command = new AddVideoLessonCommand(moduleId, GetUserId(), request.IsPreviewable, request.Title, request.Description, request.FileKey);
@@ -58,6 +62,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpGet("video-upload/signature")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Get video upload signature")]
+        [EndpointDescription("Generates a signed upload URL for direct browser-to-cloud video upload. Returns the signature, timestamp, and public ID.")]
         public async Task<IActionResult> GetVideoUploadSignature(Guid moduleId)
         {
             var result = await _sender.Send(new GetVideoUploadSignatureQuery(moduleId, GetUserId()));
@@ -67,6 +73,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPut("{lessonId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Update lesson details")]
+        [EndpointDescription("Updates the title and description of an existing lesson within the specified module. Instructor only.")]
         public async Task<IActionResult> UpdateLesson(Guid moduleId, Guid lessonId, UpdateLessonRequest request)
         {
             var result = await _sender.Send(new UpdateLessonCommand(moduleId, lessonId, GetUserId(), request.Title, request.Description));
@@ -75,6 +83,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpDelete("{lessonId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Delete a lesson")]
+        [EndpointDescription("Permanently deletes a lesson from the specified module. Instructor only.")]
         public async Task<IActionResult> DeleteLesson(Guid moduleId, Guid lessonId)
         {
             var result = await _sender.Send(new DeleteLessonCommand(moduleId, lessonId, GetUserId()));
@@ -84,6 +94,8 @@ namespace MasarHub.API.Controllers.V1
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/archive")]
+        [EndpointSummary("Archive a lesson")]
+        [EndpointDescription("Archives a lesson, hiding it from students while preserving its content. Instructor only.")]
         public async Task<IActionResult> ArchiveLesson(Guid moduleId, Guid lessonId)
         {
             var result = await _sender.Send(new ArchiveLessonCommand(moduleId, lessonId, GetUserId()));
@@ -92,6 +104,8 @@ namespace MasarHub.API.Controllers.V1
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/unarchive")]
+        [EndpointSummary("Unarchive a lesson")]
+        [EndpointDescription("Restores an archived lesson, making it visible to students again. Instructor only.")]
         public async Task<IActionResult> UnarchiveLesson(Guid moduleId, Guid lessonId)
         {
             var result = await _sender.Send(new UnarchiveLessonCommand(moduleId, lessonId, GetUserId()));
@@ -100,6 +114,8 @@ namespace MasarHub.API.Controllers.V1
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/preview/enable")]
+        [EndpointSummary("Enable lesson preview")]
+        [EndpointDescription("Allows non-enrolled students to preview this lesson without purchasing the course. Instructor only.")]
         public async Task<IActionResult> EnableLessonPreview(Guid moduleId, Guid lessonId)
         {
             var result = await _sender.Send(new EnableLessonPreviewCommand(moduleId, lessonId, GetUserId()));
@@ -108,6 +124,8 @@ namespace MasarHub.API.Controllers.V1
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/preview/disable")]
+        [EndpointSummary("Disable lesson preview")]
+        [EndpointDescription("Restricts lesson preview to only enrolled students. Instructor only.")]
         public async Task<IActionResult> DisableLessonPreview(Guid moduleId, Guid lessonId)
         {
             var result = await _sender.Send(new DisableLessonPreviewCommand(moduleId, lessonId, GetUserId()));
@@ -116,6 +134,8 @@ namespace MasarHub.API.Controllers.V1
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/thumbnail")]
+        [EndpointSummary("Update video lesson thumbnail")]
+        [EndpointDescription("Uploads a custom thumbnail image for a video lesson. The old thumbnail is automatically cleaned up. Instructor only.")]
         public async Task<IActionResult> UpdateVideoThumbnail(Guid moduleId, Guid lessonId, IFormFile file)
         {
             var result = await _sender.Send(new UpdateVideoThumbnailCommand(moduleId, lessonId, GetUserId(), file.ToResource()));
@@ -124,6 +144,8 @@ namespace MasarHub.API.Controllers.V1
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("reorder")]
+        [EndpointSummary("Reorder lessons")]
+        [EndpointDescription("Changes the display order of lessons within a module by providing an ordered list of lesson IDs. Instructor only.")]
         public async Task<IActionResult> ReorderLesson(Guid moduleId, ReorderLessonsRequest request)
         {
             var result = await _sender.Send(new ReorderLessonsCommand(moduleId, GetUserId(), request.OrderedLessonIds));
@@ -131,6 +153,8 @@ namespace MasarHub.API.Controllers.V1
         }
 
         [HttpGet("{lessonId:guid}")]
+        [EndpointSummary("Get lesson by ID (stub)")]
+        [EndpointDescription("Retrieves a specific lesson within a module. Currently a stub endpoint returning OK.")]
         public IActionResult GetLessonById(Guid moduleId, Guid lessonId)
         {
             return Ok();
