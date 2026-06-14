@@ -15,6 +15,7 @@ namespace MasarHub.API.Extensions
             {
                 options.OperationFilter<RemoveApiVersionParametersFilter>();
                 options.OperationFilter<AcceptLanguageHeaderFilter>();
+                options.OperationFilter<AutoResponseTypeOperationFilter>();
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Title = "MasarHub API",

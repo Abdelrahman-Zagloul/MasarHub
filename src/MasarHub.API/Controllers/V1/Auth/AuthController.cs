@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
+
 namespace MasarHub.API.Controllers.V1.Auth
 {
     [Tags("Authentication")]
@@ -20,6 +21,8 @@ namespace MasarHub.API.Controllers.V1.Auth
               : base(localizationService, sender) { }
 
         [HttpPost("student/register")]
+        [EndpointSummary("Register a new student account")]
+        [EndpointDescription("Creates a new student account with the provided registration details and returns a success message upon completion.")]
         public async Task<IActionResult> RegisterStudent(RegisterStudentCommand command)
         {
             var result = await _sender.Send(command);
@@ -30,6 +33,8 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("instructor/register")]
+        [EndpointSummary("Register a new instructor account")]
+        [EndpointDescription("Creates a new instructor account with the provided registration details and returns a success message upon completion.")]
         public async Task<IActionResult> RegisterInstructor(RegisterInstructorCommand command)
         {
             var result = await _sender.Send(command);
@@ -40,6 +45,8 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("login")]
+        [EndpointSummary("Authenticate user credentials")]
+        [EndpointDescription("Authenticates the user with email and password. Returns JWT tokens on success, or triggers 2FA if enabled.")]
         public async Task<IActionResult> Login(LoginCommand command)
         {
             var result = await _sender.Send(command);
@@ -66,6 +73,8 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("external/login")]
+        [EndpointSummary("Login with external provider")]
+        [EndpointDescription("Authenticates the user using an external authentication provider (e.g., Google, Facebook) and returns JWT tokens.")]
         public async Task<IActionResult> ExternalLogin(ExternalLoginCommand command)
         {
             var result = await _sender.Send(command);
@@ -78,6 +87,8 @@ namespace MasarHub.API.Controllers.V1.Auth
 
         [Authorize]
         [HttpPost("logout")]
+        [EndpointSummary("Logout current session")]
+        [EndpointDescription("Revokes the current refresh token and clears the refresh token cookie to end the user session.")]
         public async Task<IActionResult> LogoutAsync()
         {
             await _sender.Send(new LogoutCommand(GetUserId(), IpAddress));

@@ -39,6 +39,7 @@ namespace MasarHub.API.Middlewares
 
             var problemDetails = new ProblemDetails
             {
+                Type = "https://httpstatuses.com/500",
                 Title = await _localizer.GetAsync(ErrorType.Failure.ToString()),
                 Status = StatusCodes.Status500InternalServerError,
                 Instance = context.Request.Path

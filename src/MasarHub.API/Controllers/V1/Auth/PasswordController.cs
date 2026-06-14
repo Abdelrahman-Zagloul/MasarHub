@@ -19,6 +19,8 @@ namespace MasarHub.API.Controllers.V1.Auth
 
         [Authorize]
         [HttpPost("password/change")]
+        [EndpointSummary("Change current password")]
+        [EndpointDescription("Allows an authenticated user to change their password by providing the current and new password.")]
         [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
         public async Task<IActionResult> ChangePasswordAsync(ChangePasswordRequest request)
         {
@@ -30,6 +32,8 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("password/forget")]
+        [EndpointSummary("Request password reset")]
+        [EndpointDescription("Sends a password reset code to the user's registered email address.")]
         [EnableRateLimiting(RateLimitingPolicies.Otp)]
         public async Task<IActionResult> ForgetPasswordAsync(ForgetPasswordCommand command)
         {
@@ -41,6 +45,8 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("password/reset")]
+        [EndpointSummary("Reset forgotten password")]
+        [EndpointDescription("Resets the password using the reset code sent to the user's email, along with the new password.")]
         [EnableRateLimiting(RateLimitingPolicies.Strict)]
         public async Task<IActionResult> ResetPasswordAsync(ResetPasswordCommand command)
         {
@@ -53,6 +59,8 @@ namespace MasarHub.API.Controllers.V1.Auth
 
         [Authorize]
         [HttpPost("password/verify")]
+        [EndpointSummary("Verify current password")]
+        [EndpointDescription("Checks whether the provided password matches the authenticated user's current password. Returns a boolean result.")]
         [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
         public async Task<IActionResult> VerifyPassword(VerifyPasswordCommand command)
         {

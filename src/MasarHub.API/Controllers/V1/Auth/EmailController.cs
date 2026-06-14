@@ -16,6 +16,8 @@ namespace MasarHub.API.Controllers.V1.Auth
             : base(localizationService, sender) { }
 
         [HttpPost("email/confirm")]
+        [EndpointSummary("Confirm email address")]
+        [EndpointDescription("Confirms the user's email address using a confirmation token sent via email. Returns JWT tokens upon successful confirmation.")]
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailCommand command)
         {
             var result = await _sender.Send(command);
@@ -31,6 +33,8 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("email/resend-confirmation")]
+        [EndpointSummary("Resend email confirmation")]
+        [EndpointDescription("Resends the email confirmation message to the user's registered email address.")]
         public async Task<IActionResult> ResendConfirmEmailAsync(ResendConfirmEmailCommand command)
         {
             var result = await _sender.Send(command);
