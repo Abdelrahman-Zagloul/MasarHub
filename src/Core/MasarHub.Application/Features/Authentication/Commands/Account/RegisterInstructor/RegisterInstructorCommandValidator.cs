@@ -33,7 +33,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.Register
                 .MaxLengthValidation(2000, "Bio");
 
             RuleFor(x => x.Company)
-                .MaxLengthValidation(200, "Compamny");
+                .MaxLengthValidation(200, "Company");
 
 
             RuleFor(x => x.SocialLinks)
