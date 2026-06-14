@@ -29,6 +29,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPost]
         [Authorize(Roles = Roles.Admin)]
+        [EndpointSummary("Create a new category")]
+        [EndpointDescription("Creates a new course category with a name, description, and optional parent category. Admin only.")]
         public async Task<IActionResult> CreateCategory(CreateCategoryCommand command)
         {
             var result = await _sender.Send(command);
@@ -39,6 +41,8 @@ namespace MasarHub.API.Controllers.V1
         }
 
         [HttpGet]
+        [EndpointSummary("List all categories")]
+        [EndpointDescription("Retrieves a paginated list of all course categories with optional filtering and search.")]
         public async Task<IActionResult> GetAllCategorizes([FromQuery] GetCategoriesQuery query)
         {
             var result = await _sender.Send(query);
@@ -46,6 +50,8 @@ namespace MasarHub.API.Controllers.V1
         }
 
         [HttpGet("{id:guid}")]
+        [EndpointSummary("Get category by ID")]
+        [EndpointDescription("Retrieves detailed information about a specific category.")]
         public async Task<IActionResult> GetCategoryById(Guid id)
         {
             var result = await _sender.Send(new GetCategoryByIdQuery(id));
@@ -54,6 +60,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPut("{id:guid}")]
         [Authorize(Roles = Roles.Admin)]
+        [EndpointSummary("Update a category")]
+        [EndpointDescription("Updates the name, description, parent category, or root placement of an existing category. Admin only.")]
         public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryRequest request)
         {
             var result = await _sender.Send(new UpdateCategoryCommand(id, request.Name, request.Description, request.ParentCategoryId, request.MoveToRoot));
@@ -62,6 +70,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPatch("reorder")]
         [Authorize(Roles = Roles.Admin)]
+        [EndpointSummary("Reorder categories")]
+        [EndpointDescription("Changes the display order of categories. Admin only.")]
         public async Task<IActionResult> ReorderCategories(ReorderCategoriesCommand command)
         {
             var result = await _sender.Send(command);
@@ -70,6 +80,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpDelete("{id:guid}")]
         [Authorize(Roles = Roles.Admin)]
+        [EndpointSummary("Delete a category")]
+        [EndpointDescription("Permanently deletes a category. Admin only.")]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
             var result = await _sender.Send(new DeleteCategoryCommand(id));

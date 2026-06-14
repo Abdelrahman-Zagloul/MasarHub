@@ -15,6 +15,8 @@ namespace MasarHub.API.Controllers.V1.Auth
 
         [Authorize]
         [HttpPost("token/revoke")]
+        [EndpointSummary("Revoke refresh token")]
+        [EndpointDescription("Revokes the current refresh token retrieved from the cookie, terminating the session.")]
         public async Task<IActionResult> RevokeTokenAsync()
         {
             var refreshToken = Request.Cookies[RefreshTokenCookieName];
@@ -27,6 +29,8 @@ namespace MasarHub.API.Controllers.V1.Auth
         }
 
         [HttpPost("token/refresh")]
+        [EndpointSummary("Refresh JWT tokens")]
+        [EndpointDescription("Uses the refresh token stored in the cookie to issue a new JWT access token and a new refresh token.")]
         public async Task<IActionResult> RefreshTokenAsync()
         {
             var refreshToken = Request.Cookies[RefreshTokenCookieName];

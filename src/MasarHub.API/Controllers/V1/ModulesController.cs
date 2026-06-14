@@ -26,6 +26,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPost]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Create a new module")]
+        [EndpointDescription("Creates a new module within a course with the specified title and description. Instructor only.")]
         public async Task<IActionResult> Create(Guid courseId, CreateModuleRequest request)
         {
             var result = await _sender.Send(new CreateModuleCommand(courseId, GetUserId(), request.Title, request.Description));
@@ -37,6 +39,8 @@ namespace MasarHub.API.Controllers.V1
 
 
         [HttpGet("{moduleId:guid}")]
+        [EndpointSummary("Get module by ID (stub)")]
+        [EndpointDescription("Retrieves a specific module within a course. Currently a stub endpoint returning OK.")]
         public async Task<IActionResult> GetModuleById(Guid courseId, Guid moduleId)
         {
             return Ok();
@@ -45,6 +49,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPut("{moduleId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Update module details")]
+        [EndpointDescription("Updates the title and/or description of an existing module. Instructor only.")]
         public async Task<IActionResult> UpdateModule(Guid courseId, Guid moduleId, UpdateModuleRequest request)
         {
             var result = await _sender.Send(new UpdateModuleCommand(courseId, moduleId, GetUserId(), request.Title, request.Description));
@@ -55,6 +61,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpDelete("{moduleId:guid}")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Delete a module")]
+        [EndpointDescription("Deletes an existing module and its associated lessons. Instructor only.")]
         public async Task<IActionResult> DeleteModule(Guid courseId, Guid moduleId)
         {
             var result = await _sender.Send(new DeleteModuleCommand(courseId, moduleId, GetUserId()));
@@ -64,6 +72,8 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpPatch("reorder")]
         [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Reorder modules")]
+        [EndpointDescription("Changes the display order of modules within a course by providing an ordered list of module IDs. Instructor only.")]
         public async Task<IActionResult> ReorderModules(Guid courseId, ReorderModulesRequest request)
         {
             var result = await _sender.Send(new ReorderModulesCommand(courseId, GetUserId(), request.OrderedModuleIds));
