@@ -59,10 +59,8 @@ namespace MasarHub.API.Filters
             foreach (var code in successCodes)
                 operation.Responses?.Remove(code);
         }
-
         private static void AddSuccessResponse(OpenApiOperation operation, OperationFilterContext context, Type? successType)
         {
-            var action = context.ApiDescription.ActionDescriptor as ControllerActionDescriptor;
             var statusCode = GetStatusCode(context.ApiDescription.HttpMethod);
 
             if (successType == null || successType == typeof(Unit) || successType == typeof(Task))
@@ -72,24 +70,28 @@ namespace MasarHub.API.Filters
             }
 
             var schema = context.SchemaGenerator.GenerateSchema(successType, context.SchemaRepository);
-            operation.Responses?.TryAdd(statusCode, new OpenApiResponse
+
+            if (schema is OpenApiSchema openApiSchema)
             {
-                Description = "Success",
-                Content = new Dictionary<string, OpenApiMediaType>
+                operation.Responses?.TryAdd(statusCode, new OpenApiResponse
                 {
-                    ["application/json"] = new() { Schema = schema }
-                }
-            });
+                    Description = "Success",
+                    Content = new Dictionary<string, OpenApiMediaType>
+                    {
+                        ["application/json"] = new() { Schema = openApiSchema }
+                    }
+                });
+            }
         }
         private static void AddErrorResponses(OpenApiOperation operation, OperationFilterContext context, ControllerActionDescriptor action)
         {
-            var requiresAuth = !IsAnonymous(action) && HasAuthorizeAttribute(action);
+            var requiresAuth = RequiresAuthorization(action);
             var hasRolesOrPolicy = requiresAuth && HasAttributeWithRolesOrPolicy(action);
 
-            var validationErrorSchema = GetOrCreateSchema(context, "MasarHubApiValidationError", includeErrors: true);
-            var errorSchema = GetOrCreateSchema(context, "MasarHubApiError", includeErrors: false);
+            var validationErrorSchema = GetAndEnrichSchema(context, typeof(ValidationProblemDetails).Name, "traceId", JsonSchemaType.String, "Trace identifier for tracking and debugging errors.");
+            var errorSchema = GetAndEnrichSchema(context, typeof(ProblemDetails).Name, "traceId", JsonSchemaType.String, "Trace identifier for tracking and debugging errors.");
 
-            var schemaMap = new List<(string Code, string Description, IOpenApiSchema Schema)>
+            var schemaMap = new List<(string Code, string Description, OpenApiSchema Schema)>
             {
                 ("400", "Bad Request - Validation or Malformed Data", validationErrorSchema)
             };
@@ -100,8 +102,8 @@ namespace MasarHub.API.Filters
             if (hasRolesOrPolicy)
                 schemaMap.Add(("403", "Forbidden - Insufficient Permissions", errorSchema));
 
-            schemaMap.Add(("404", "Not Found - Resource doesn't exist", errorSchema));
-            schemaMap.Add(("409", "Conflict - Business Rule Violation", errorSchema));
+            schemaMap.Add(("404", "Not Found - Resource Not Found", errorSchema));
+            schemaMap.Add(("409", "Conflict - Conflict or Business Rule Violation", errorSchema));
             schemaMap.Add(("500", "Internal Server Error", errorSchema));
 
             foreach (var (code, description, schema) in schemaMap)
@@ -116,6 +118,36 @@ namespace MasarHub.API.Filters
                 });
             }
         }
+        private static OpenApiSchema GetAndEnrichSchema(OperationFilterContext context, string schemaKey, string propertyName, JsonSchemaType type, string description)
+        {
+            var baseSchema = context.SchemaGenerator.GenerateSchema(schemaKey == typeof(ProblemDetails).Name
+                ? typeof(ProblemDetails)
+                : typeof(ValidationProblemDetails), context.SchemaRepository);
+
+            if (context.SchemaRepository.Schemas.TryGetValue(schemaKey, out var schema) && schema is OpenApiSchema concreteSchema)
+            {
+                if (concreteSchema.Properties == null)
+                {
+                    concreteSchema.Properties = new Dictionary<string, IOpenApiSchema>();
+                }
+
+                if (!concreteSchema.Properties.ContainsKey(propertyName))
+                {
+                    concreteSchema.Properties.Add(propertyName, new OpenApiSchema
+                    {
+                        Type = type,
+                        Description = description
+                    });
+                }
+
+                concreteSchema.AdditionalPropertiesAllowed = false;
+                concreteSchema.AdditionalProperties = null;
+
+                return concreteSchema;
+            }
+
+            return baseSchema as OpenApiSchema ?? new OpenApiSchema();
+        }
         private static string GetStatusCode(string? httpMethod)
         {
             return httpMethod?.ToUpperInvariant() switch
@@ -125,15 +157,16 @@ namespace MasarHub.API.Filters
                 _ => "200"
             };
         }
+        private static bool RequiresAuthorization(ControllerActionDescriptor action)
+        {
+            var isAnonymous = action.EndpointMetadata
+                .OfType<AllowAnonymousAttribute>()
+                .Any();
 
-        private static bool IsAnonymous(ControllerActionDescriptor action)
-        {
-            return action.EndpointMetadata.OfType<AllowAnonymousAttribute>().Any();
-        }
-        private static bool HasAuthorizeAttribute(ControllerActionDescriptor action)
-        {
-            return action.MethodInfo.GetCustomAttributes<AuthorizeAttribute>(true).Any()
+            var hasAuthorize = action.MethodInfo
+                .GetCustomAttributes<AuthorizeAttribute>(true).Any()
                 || action.ControllerTypeInfo.GetCustomAttributes<AuthorizeAttribute>(true).Any();
+            return !isAnonymous && hasAuthorize;
         }
         private static bool HasAttributeWithRolesOrPolicy(ControllerActionDescriptor action)
         {
@@ -144,44 +177,6 @@ namespace MasarHub.API.Filters
             return attributes.Any(a =>
                 !string.IsNullOrWhiteSpace(a.Roles) ||
                 !string.IsNullOrWhiteSpace(a.Policy));
-        }
-        private static IOpenApiSchema GetOrCreateSchema(OperationFilterContext context, string schemaId, bool includeErrors)
-        {
-            if (context.SchemaRepository.Schemas.TryGetValue(schemaId, out var existing))
-                return existing;
-
-            var properties = new Dictionary<string, IOpenApiSchema>
-            {
-                ["type"] = new OpenApiSchema { Type = JsonSchemaType.String, Description = "URI reference identifying the problem type." },
-                ["title"] = new OpenApiSchema { Type = JsonSchemaType.String, Description = "Short, human-readable summary of the problem." },
-                ["status"] = new OpenApiSchema { Type = JsonSchemaType.Integer, Description = "HTTP status code." },
-                ["detail"] = new OpenApiSchema { Type = JsonSchemaType.String, Description = "Human-readable explanation of the problem." },
-                ["instance"] = new OpenApiSchema { Type = JsonSchemaType.String, Description = "URI reference identifying the specific occurrence." },
-                ["traceId"] = new OpenApiSchema { Type = JsonSchemaType.String, Description = "Trace identifier for tracking errors." }
-            };
-
-            if (includeErrors)
-            {
-                properties["errors"] = new OpenApiSchema
-                {
-                    Type = JsonSchemaType.Object,
-                    Description = "Validation errors keyed by property name.",
-                    AdditionalProperties = new OpenApiSchema
-                    {
-                        Type = JsonSchemaType.Array,
-                        Items = new OpenApiSchema { Type = JsonSchemaType.String }
-                    }
-                };
-            }
-
-            var schema = new OpenApiSchema
-            {
-                Type = JsonSchemaType.Object,
-                Properties = properties
-            };
-
-            context.SchemaRepository.Schemas[schemaId] = schema;
-            return schema;
         }
     }
 }
