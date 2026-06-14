@@ -15,10 +15,7 @@ public static class ProblemDetailsFactory
         return await HandleFailureAsync(result, controller, localizer);
     }
 
-    private static async Task<IActionResult> HandleFailureAsync(
-        Result result,
-        ControllerBase controller,
-        ILocalizationService localizer)
+    private static async Task<IActionResult> HandleFailureAsync(Result result, ControllerBase controller, ILocalizationService localizer)
     {
         var error = result.Errors.First();
 
@@ -27,6 +24,7 @@ public static class ProblemDetailsFactory
 
         var problem = new ProblemDetails
         {
+            Type = $"https://httpstatuses.com/{statusCode}",
             Title = await localizer.GetAsync(error.Type.ToString()),
             Detail = detail,
             Status = statusCode,
@@ -37,10 +35,7 @@ public static class ProblemDetailsFactory
         return controller.StatusCode(statusCode, problem);
     }
 
-    private static async Task<IActionResult> HandleValidationAsync(
-        Result result,
-        ControllerBase controller,
-        ILocalizationService localizer)
+    private static async Task<IActionResult> HandleValidationAsync(Result result, ControllerBase controller, ILocalizationService localizer)
     {
         var errors = new Dictionary<string, List<string>>();
         foreach (var error in result.Errors)
@@ -57,6 +52,7 @@ public static class ProblemDetailsFactory
 
         var problem = new ProblemDetails
         {
+            Type = "https://httpstatuses.com/400",
             Title = await localizer.GetAsync(ErrorType.Validation.ToString()),
             Detail = await localizer.GetAsync("one_or_more_validation"),
             Status = StatusCodes.Status400BadRequest,
