@@ -3,7 +3,7 @@ using MasarHub.Application.Common.Extensions;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail
 {
-    internal sealed class ConfirmEmailCommandValidator : AbstractValidator<ConfirmEmailCommand>
+    public sealed class ConfirmEmailCommandValidator : AbstractValidator<ConfirmEmailCommand>
     {
         public ConfirmEmailCommandValidator()
         {
