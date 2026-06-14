@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -58,14 +59,14 @@ namespace MasarHub.Domain.Modules.Exams
             if (moduleId.HasValue)
             {
                 var moduleError = Guard.AgainstEmptyGuid(moduleId.Value, nameof(moduleId));
-                if (moduleError is not null)
+                if (error != DomainError.None)
                     return moduleError;
             }
 
             if (durationMinutes.HasValue)
             {
                 var durationError = Guard.AgainstNegativeOrZero(durationMinutes.Value, nameof(durationMinutes));
-                if (durationError is not null)
+                if (error != DomainError.None)
                     return durationError;
             }
 
@@ -82,7 +83,7 @@ namespace MasarHub.Domain.Modules.Exams
                 return draftResult;
 
             var error = Guard.AgainstNullOrWhiteSpace(title, nameof(title));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Title = title;
@@ -124,7 +125,7 @@ namespace MasarHub.Domain.Modules.Exams
             if (durationMinutes.HasValue)
             {
                 var error = Guard.AgainstNegativeOrZero(durationMinutes.Value, nameof(durationMinutes));
-                if (error is not null)
+                if (error != DomainError.None)
                     return error;
             }
 
@@ -140,7 +141,7 @@ namespace MasarHub.Domain.Modules.Exams
                 return draftResult;
 
             var error = Guard.AgainstNull(question, nameof(question));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             if (question.ExamId != Id)

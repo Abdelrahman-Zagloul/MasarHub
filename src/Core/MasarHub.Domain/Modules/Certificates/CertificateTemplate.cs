@@ -1,4 +1,5 @@
 ﻿using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 using MasarHub.Domain.Modules.Certificates.Events;
@@ -39,7 +40,7 @@ namespace MasarHub.Domain.Modules.Certificates
         public DomainResult UpdateContent(string htmlContent)
         {
             var error = Guard.AgainstNullOrWhiteSpace(htmlContent, nameof(htmlContent));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             HtmlContent = htmlContent;
@@ -51,7 +52,7 @@ namespace MasarHub.Domain.Modules.Certificates
         public DomainResult UpdatePreview(string previewImageUrl)
         {
             var error = Guard.AgainstNullOrWhiteSpace(previewImageUrl, nameof(previewImageUrl));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             PreviewImageUrl = previewImageUrl;

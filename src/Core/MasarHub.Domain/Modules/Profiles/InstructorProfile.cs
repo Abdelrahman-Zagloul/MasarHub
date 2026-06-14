@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -40,7 +41,7 @@ namespace MasarHub.Domain.Modules.Profiles
         public DomainResult UpdateHeadline(string headline)
         {
             var error = Guard.AgainstNullOrWhiteSpace(headline, nameof(headline));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             Headline = headline;
@@ -82,7 +83,7 @@ namespace MasarHub.Domain.Modules.Profiles
         public DomainResult AddSocialLink(SocialLink socialLink)
         {
             var error = Guard.AgainstNull(socialLink, nameof(socialLink));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             if (_socialLinks.Count >= 10)
