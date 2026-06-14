@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -63,7 +64,7 @@ namespace MasarHub.Domain.Modules.Payments
         public DomainResult<decimal> ApplyCoupon(decimal price, Guid courseId)
         {
             var error = Guard.AgainstNegative(price, nameof(price));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             var applicableResult = EnsureApplicableToCourse(courseId);
@@ -80,7 +81,7 @@ namespace MasarHub.Domain.Modules.Payments
         public DomainResult EnsureApplicableToCourse(Guid courseId)
         {
             var error = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             if (IsExpired())

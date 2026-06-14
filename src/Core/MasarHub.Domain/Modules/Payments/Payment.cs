@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -47,7 +48,7 @@ namespace MasarHub.Domain.Modules.Payments
                 return pendingResult;
 
             var error = Guard.AgainstNullOrWhiteSpace(externalId, nameof(externalId));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             ExternalId = externalId;
