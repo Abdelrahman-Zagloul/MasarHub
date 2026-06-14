@@ -6,7 +6,7 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Token.RefreshToken
 {
-    public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, Result<AccessWithRefreshTokenResult>>
+    public sealed class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, Result<AccessWithRefreshTokenResult>>
     {
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly ITokenService _accessTokenService;

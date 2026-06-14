@@ -25,7 +25,7 @@ namespace MasarHub.API.Controllers.V1
     [ApiVersion(1.0)]
     [Tags("Courses")]
     [Route("api/v{version:apiVersion}/courses")]
-    public sealed class CoursesController : ApiBaseController
+    public sealed class CoursesController : ApiControllerBase
     {
         private readonly ISender _sender;
         public CoursesController(ILocalizationService localizationService, ISender sender) : base(localizationService)

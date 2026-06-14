@@ -3,7 +3,7 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Modules.Commands.ReorderModules
 {
-    public record ReorderModulesCommand
+    public sealed record ReorderModulesCommand
     (
          Guid CourseId,
          Guid InstructorId,

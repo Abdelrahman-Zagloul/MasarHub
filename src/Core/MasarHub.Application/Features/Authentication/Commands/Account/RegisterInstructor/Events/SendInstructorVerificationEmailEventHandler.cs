@@ -4,7 +4,7 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Authentication.Commands.Account.RegisterInstructor.Events
 {
-    public class SendInstructorVerificationEmailEventHandler : INotificationHandler<InstructorRegisteredEvent>
+    public sealed class SendInstructorVerificationEmailEventHandler : INotificationHandler<InstructorRegisteredEvent>
     {
         private readonly IAppEmailService _appEmailService;
         private readonly IBackgroundJobService _backgroundJobService;
