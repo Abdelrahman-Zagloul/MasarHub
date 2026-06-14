@@ -10,7 +10,7 @@ namespace MasarHub.API.Controllers.V1.Auth
 {
     [Tags("Authentication")]
     [EnableRateLimiting(RateLimitingPolicies.Otp)]
-    public sealed class EmailController : AuthBaseController
+    public sealed class EmailController : AuthControllerBase
     {
         public EmailController(ILocalizationService localizationService, ISender sender)
             : base(localizationService, sender) { }

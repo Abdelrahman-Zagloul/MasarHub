@@ -17,7 +17,7 @@ namespace MasarHub.API.Controllers.V1.Auth
 {
     [Tags("Authentication")]
     [EnableRateLimiting(RateLimitingPolicies.Sensitive)]
-    public sealed class TwoFactorController : AuthBaseController
+    public sealed class TwoFactorController : AuthControllerBase
     {
         public TwoFactorController(ILocalizationService localizationService, ISender sender)
             : base(localizationService, sender) { }

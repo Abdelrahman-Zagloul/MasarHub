@@ -3,7 +3,7 @@ using MediatR;
 
 namespace MasarHub.Application.Features.Modules.Commands.UpdateModule
 {
-    public record UpdateModuleCommand
+    public sealed record UpdateModuleCommand
     (
          Guid CourseId,
          Guid ModuleId,

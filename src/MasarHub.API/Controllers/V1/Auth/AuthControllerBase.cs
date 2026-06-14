@@ -10,14 +10,14 @@ namespace MasarHub.API.Controllers.V1.Auth
     [ApiVersion(1.0)]
     [Tags("Authentication")]
     [Route("api/v{version:apiVersion}/auth")]
-    public abstract class AuthBaseController : ApiBaseController
+    public abstract class AuthControllerBase : ApiControllerBase
     {
         protected readonly ISender _sender;
         protected string? IpAddress => HttpContext.Connection.RemoteIpAddress?.ToString();
 
         protected const string RefreshTokenCookieName = "refreshToken";
 
-        protected AuthBaseController(ILocalizationService localizationService, ISender sender)
+        protected AuthControllerBase(ILocalizationService localizationService, ISender sender)
             : base(localizationService)
         {
             _sender = sender;

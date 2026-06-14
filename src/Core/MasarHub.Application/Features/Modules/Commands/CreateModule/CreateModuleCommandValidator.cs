@@ -3,7 +3,7 @@ using MasarHub.Application.Common.Extensions;
 
 namespace MasarHub.Application.Features.Modules.Commands.CreateModule
 {
-    public class CreateModuleCommandValidator : AbstractValidator<CreateModuleCommand>
+    public sealed class CreateModuleCommandValidator : AbstractValidator<CreateModuleCommand>
     {
         public CreateModuleCommandValidator()
         {

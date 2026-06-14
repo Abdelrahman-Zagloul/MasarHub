@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace MasarHub.API.Controllers.V1.Auth
 {
     [Tags("Authentication")]
-    public sealed class TokenController : AuthBaseController
+    public sealed class TokenController : AuthControllerBase
     {
         public TokenController(ILocalizationService localizationService, ISender sender)
             : base(localizationService, sender) { }

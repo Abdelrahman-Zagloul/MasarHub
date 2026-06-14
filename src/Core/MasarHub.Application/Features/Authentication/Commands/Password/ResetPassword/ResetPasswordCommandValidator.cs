@@ -4,7 +4,7 @@ using MasarHub.Application.Common.Extensions;
 namespace MasarHub.Application.Features.Authentication.Commands.Password.ResetPassword
 {
 
-    public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
+    public sealed class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
     {
         public ResetPasswordCommandValidator()
         {
