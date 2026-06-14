@@ -14,4 +14,16 @@
     <Project Path="src/Infrastructure/MasarHub.Infrastructure.Persistence/MasarHub.Infrastructure.Persistence.csproj" Id="2fb28fc8-8952-449a-a85b-196a15f576d6" />
     <Project Path="src/Infrastructure/MasarHub.Infrastructure/MasarHub.Infrastructure.csproj" Id="4a0d314f-75a1-4707-b274-b9864dce35e4" />
   </Folder>
+  <Folder Name="/tests/Unit/">
+    <Project Path="tests/Unit/MasarHub.Domain.UnitTests/MasarHub.Domain.UnitTests.csproj" />
+    <Project Path="tests/Unit/MasarHub.Application.UnitTests/MasarHub.Application.UnitTests.csproj" />
+    <Project Path="tests/Unit/MasarHub.Infrastructure.UnitTests/MasarHub.Infrastructure.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Integration/">
+    <Project Path="tests/Integration/MasarHub.Infrastructure.IntegrationTests/MasarHub.Infrastructure.IntegrationTests.csproj" />
+    <Project Path="tests/Integration/MasarHub.API.IntegrationTests/MasarHub.API.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Architecture/">
+    <Project Path="tests/Architecture/MasarHub.ArchitectureTests/MasarHub.ArchitectureTests.csproj" />
+  </Folder>
 </Solution>
