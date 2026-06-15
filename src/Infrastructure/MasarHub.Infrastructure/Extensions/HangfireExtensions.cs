@@ -36,7 +36,7 @@ namespace MasarHub.Infrastructure.Extensions
         public static IApplicationBuilder UseHangfireJobs(this IApplicationBuilder app)
         {
             BackgroundJob.Enqueue<LocalizationSyncJob>(x => x.SyncAsync(default));
-            RecurringJob.AddOrUpdate<LocalizationSyncJob>("localization-cache-refresh", x => x.SyncAsync(default), Cron.Daily);
+            RecurringJob.AddOrUpdate<LocalizationSyncJob>("localization-cache-refresh", x => x.SyncAsync(default), Cron.Weekly);
 
             return app;
         }
