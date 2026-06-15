@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.Account.Login;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Account.Login
 {
-    [Trait("UnitTests", "Feature.Auth.Login.Validator")]
+    [Trait("UnitTests.Feature.Auth", "Login")]
     public sealed class LoginCommandValidatorTests
     {
         private readonly LoginCommandValidator _sut = new();

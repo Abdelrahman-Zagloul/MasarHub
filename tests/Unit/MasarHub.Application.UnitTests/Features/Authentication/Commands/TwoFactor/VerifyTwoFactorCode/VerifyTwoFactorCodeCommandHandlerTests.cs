@@ -8,7 +8,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.VerifyTwoFactorCode
 {
-    [Trait("UnitTests", "Feature.Auth.VerifyTwoFactorCode.Handler")]
+    [Trait("UnitTests.Feature.Auth", "VerifyTwoFactorCode")]
     public sealed class VerifyTwoFactorCodeCommandHandlerTests
     {
         private readonly Mock<ITwoFactorService> _twoFactorServiceMock;

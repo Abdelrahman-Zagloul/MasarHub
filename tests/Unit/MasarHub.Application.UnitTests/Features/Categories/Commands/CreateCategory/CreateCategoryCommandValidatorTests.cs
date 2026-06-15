@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Categories.Commands.CreateCategory;
 
 namespace MasarHub.Application.UnitTests.Features.Categories.Commands.CreateCategory
 {
-    [Trait("UnitTests", "Feature.Categories.CreateCategory.Validator")]
+    [Trait("UnitTests.Feature.Categories", "CreateCategory")]
     public sealed class CreateCategoryCommandValidatorTests
     {
         private readonly CreateCategoryCommandValidator _sut = new();

@@ -11,7 +11,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.VerifyAuthenticator
 {
-    [Trait("UnitTests", "Feature.Auth.VerifyAuthenticator.Handler")]
+    [Trait("UnitTests.Feature.Auth", "VerifyAuthenticator")]
     public sealed class VerifyAuthenticatorCommandHandlerTests
     {
         private readonly Mock<ITwoFactorService> _twoFactorServiceMock;

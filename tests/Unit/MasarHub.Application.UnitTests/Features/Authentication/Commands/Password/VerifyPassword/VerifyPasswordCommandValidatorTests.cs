@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.Password.VerifyPassw
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Password.VerifyPassword
 {
-    [Trait("UnitTests", "Feature.Auth.VerifyPassword.Validator")]
+    [Trait("UnitTests.Feature.Auth", "VerifyPassword")]
     public sealed class VerifyPasswordCommandValidatorTests
     {
         private readonly VerifyPasswordCommandValidator _sut = new();

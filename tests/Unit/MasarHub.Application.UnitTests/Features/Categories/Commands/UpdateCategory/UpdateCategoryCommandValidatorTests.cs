@@ -4,7 +4,7 @@ using MasarHub.Application.Features.Categories.Commands.UpdateCategoryName;
 
 namespace MasarHub.Application.UnitTests.Features.Categories.Commands.UpdateCategory
 {
-    [Trait("UnitTests", "Feature.Categories.UpdateCategory.Validator")]
+    [Trait("UnitTests.Feature.Categories", "UpdateCategory")]
     public sealed class UpdateCategoryCommandValidatorTests
     {
         private readonly UpdateCategoryCommandValidator _sut = new();

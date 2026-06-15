@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.Password.ForgetPassw
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Password.ForgetPassword
 {
-    [Trait("UnitTests", "Feature.Auth.ForgetPassword.Validator")]
+    [Trait("UnitTests.Feature.Auth", "ForgetPassword")]
     public sealed class ForgetPasswordCommandValidatorTests
     {
         private readonly ForgetPasswordCommandValidator _sut = new();

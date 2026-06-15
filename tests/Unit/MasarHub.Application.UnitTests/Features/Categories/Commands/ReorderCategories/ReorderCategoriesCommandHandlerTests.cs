@@ -7,7 +7,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Categories.Commands.ReorderCategories
 {
-    [Trait("UnitTests", "Feature.Categories.ReorderCategories.Handler")]
+    [Trait("UnitTests.Feature.Categories", "ReorderCategories")]
     public sealed class ReorderCategoriesCommandHandlerTests
     {
         private readonly Mock<ICategoryQuery> _categoryQueryMock;

@@ -9,7 +9,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Password.ForgetPassword
 {
-    [Trait("UnitTests", "Feature.Auth.ForgetPassword.Handler")]
+    [Trait("UnitTests.Feature.Auth", "ForgetPassword")]
     public sealed class ForgetPasswordCommandHandlerTests
     {
         private readonly Mock<IAuthService> _authServiceMock;

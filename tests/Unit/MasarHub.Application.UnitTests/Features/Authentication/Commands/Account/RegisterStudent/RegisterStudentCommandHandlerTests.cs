@@ -11,7 +11,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Account.RegisterStudent
 {
-    [Trait("UnitTests", "Feature.Auth.RegisterStudent.Handler")]
+    [Trait("UnitTests.Feature.Auth", "RegisterStudent")]
     public sealed class RegisterStudentCommandHandlerTests
     {
         private readonly Mock<IAuthService> _authServiceMock;

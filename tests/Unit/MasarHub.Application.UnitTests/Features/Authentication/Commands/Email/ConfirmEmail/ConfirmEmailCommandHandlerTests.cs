@@ -10,7 +10,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Email.ConfirmEmail
 {
-    [Trait("UnitTests", "Feature.Auth.ConfirmEmail.Handler")]
+    [Trait("UnitTests.Feature.Auth", "ConfirmEmail")]
     public sealed class ConfirmEmailCommandHandlerTests
     {
         private readonly Mock<IAuthService> _authServiceMock;

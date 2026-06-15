@@ -10,7 +10,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Account.ExternalLogin
 {
-    [Trait("UnitTests", "Feature.Auth.ExternalLogin.Handler")]
+    [Trait("UnitTests.Feature.Auth", "ExternalLogin")]
     public sealed class ExternalLoginCommandHandlerTests
     {
         private readonly Mock<IMediator> _mediatorMock;

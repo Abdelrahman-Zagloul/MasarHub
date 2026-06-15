@@ -12,7 +12,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Account.RegisterInstructor
 {
-    [Trait("UnitTests", "Feature.Auth.RegisterInstructor.Handler")]
+    [Trait("UnitTests.Feature.Auth", "RegisterInstructor")]
     public sealed class RegisterInstructorCommandHandlerTests
     {
         private readonly Mock<IAuthService> _authServiceMock;
@@ -128,7 +128,7 @@ namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Accoun
                 Gender.Male, "StrongPass123!", "Headline", "Bio", "Company",
                 [
                     new SocialLinkRequest("GitHub", "https://github.com/abdelrahman"),
-            new SocialLinkRequest("GitHub", "https://github.com/abdelrahman-duplicate")
+                    new SocialLinkRequest("LinkedIn", "https://github.com/abdelrahman")
                 ]);
 
             _authServiceMock

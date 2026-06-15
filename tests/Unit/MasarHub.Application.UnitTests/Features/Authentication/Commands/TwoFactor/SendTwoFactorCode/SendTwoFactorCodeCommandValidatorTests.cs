@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.TwoFactor.SendTwoFac
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.SendTwoFactorCode
 {
-    [Trait("UnitTests", "Feature.Auth.SendTwoFactorCode.Validator")]
+    [Trait("UnitTests.Feature.Auth", "SendTwoFactorCode")]
     public sealed class SendTwoFactorCodeCommandValidatorTests
     {
         private readonly SendTwoFactorCodeCommandValidator _sut = new();

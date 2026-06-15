@@ -7,7 +7,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Token.RevokeToken
 {
-    [Trait("UnitTests", "Feature.Auth.RevokeToken.Handler")]
+    [Trait("UnitTests.Feature.Auth", "RevokeToken")]
     public sealed class RevokeTokenCommandHandlerTests
     {
         private readonly Mock<IRefreshTokenService> _refreshTokenServiceMock;

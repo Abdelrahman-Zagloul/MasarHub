@@ -5,7 +5,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Account.Logout
 {
-    [Trait("UnitTests", "Feature.Auth.Logout.Handler")]
+    [Trait("UnitTests.Feature.Auth", "Logout")]
     public sealed class LogoutCommandHandlerTests
     {
         private readonly Mock<IRefreshTokenService> _refreshTokenServiceMock;

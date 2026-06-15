@@ -9,7 +9,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Categories.Commands.CreateCategory
 {
-    [Trait("UnitTests", "Feature.Categories.CreateCategory.Handler")]
+    [Trait("UnitTests.Feature.Categories", "CreateCategory")]
     public sealed class CreateCategoryCommandHandlerTests
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;

@@ -10,7 +10,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Password.ResetPassword
 {
-    [Trait("UnitTests", "Feature.Auth.ResetPassword.Handler")]
+    [Trait("UnitTests.Feature.Auth", "ResetPassword")]
     public sealed class ResetPasswordCommandHandlerTests
     {
         private readonly Mock<IAuthService> _authServiceMock;

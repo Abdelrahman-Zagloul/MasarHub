@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Email.ConfirmEmail
 {
-    [Trait("UnitTests", "Feature.Auth.ConfirmEmail.Validator")]
+    [Trait("UnitTests.Feature.Auth", "ConfirmEmail")]
     public sealed class ConfirmEmailCommandValidatorTests
     {
         private readonly ConfirmEmailCommandValidator _sut = new();
