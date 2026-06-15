@@ -9,7 +9,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Categories.Commands.DeleteCategory
 {
-    [Trait("UnitTests", "Feature.Categories.DeleteCategory.Handler")]
+    [Trait("UnitTests.Feature.Categories", "DeleteCategory")]
     public sealed class DeleteCategoryCommandHandlerTests
     {
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;

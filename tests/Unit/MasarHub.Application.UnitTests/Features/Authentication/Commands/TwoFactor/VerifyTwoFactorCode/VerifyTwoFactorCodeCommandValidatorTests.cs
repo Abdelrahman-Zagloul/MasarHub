@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyTwoF
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.VerifyTwoFactorCode
 {
-    [Trait("UnitTests", "Feature.Auth.VerifyTwoFactorCode.Validator")]
+    [Trait("UnitTests.Feature.Auth", "VerifyTwoFactorCode")]
     public sealed class VerifyTwoFactorCodeCommandValidatorTests
     {
         private readonly VerifyTwoFactorCodeCommandValidator _sut = new();

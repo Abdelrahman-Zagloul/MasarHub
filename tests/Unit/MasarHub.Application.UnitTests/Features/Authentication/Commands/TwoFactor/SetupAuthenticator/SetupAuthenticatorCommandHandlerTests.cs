@@ -6,7 +6,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.SetupAuthenticator
 {
-    [Trait("UnitTests", "Feature.Auth.SetupAuthenticator.Handler")]
+    [Trait("UnitTests.Feature.Auth", "SetupAuthenticator")]
     public sealed class SetupAuthenticatorCommandHandlerTests
     {
         private readonly Mock<ITwoFactorService> _twoFactorServiceMock;

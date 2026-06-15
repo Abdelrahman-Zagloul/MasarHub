@@ -8,7 +8,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Categories.Queries.GetCategories
 {
-    [Trait("UnitTests", "Feature.Categories.GetCategories.Handler")]
+    [Trait("UnitTests.Feature.Categories", "GetCategories")]
     public sealed class GetCategoriesQueryHandlerTests
     {
         private readonly Mock<ICategoryQuery> _categoryQueryMock;

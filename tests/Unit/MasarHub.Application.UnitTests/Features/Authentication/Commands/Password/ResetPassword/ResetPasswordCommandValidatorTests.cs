@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.Password.ResetPasswo
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Password.ResetPassword
 {
-    [Trait("UnitTests", "Feature.Auth.ResetPassword.Validator")]
+    [Trait("UnitTests.Feature.Auth", "ResetPassword")]
     public sealed class ResetPasswordCommandValidatorTests
     {
         private readonly ResetPasswordCommandValidator _sut = new();

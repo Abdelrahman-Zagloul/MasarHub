@@ -9,7 +9,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.DisableTwoFactor
 {
-    [Trait("UnitTests", "Feature.Auth.DisableTwoFactor.Handler")]
+    [Trait("UnitTests.Feature.Auth", "DisableTwoFactor")]
     public sealed class DisableTwoFactorCommandHandlerTests
     {
         private readonly Mock<ITwoFactorService> _twoFactorServiceMock;

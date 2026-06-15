@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Categories.Queries.GetCategoryById;
 
 namespace MasarHub.Application.UnitTests.Features.Categories.Queries.GetCategoryById
 {
-    [Trait("UnitTests", "Feature.Categories.GetCategoryById.Validator")]
+    [Trait("UnitTests.Feature.Categories", "GetCategoryById")]
     public sealed class GetCategoryByIdQueryValidatorTests
     {
         private readonly GetCategoryByIdQueryValidator _sut = new();

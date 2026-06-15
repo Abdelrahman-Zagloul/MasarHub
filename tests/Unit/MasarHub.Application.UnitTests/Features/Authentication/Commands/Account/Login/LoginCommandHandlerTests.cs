@@ -9,7 +9,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Account.Login
 {
-    [Trait("UnitTests", "Feature.Auth.Login.Handler")]
+    [Trait("UnitTests.Feature.Auth", "Login")]
     public sealed class LoginCommandHandlerTests
     {
         private readonly Mock<IAuthService> _authServiceMock;
