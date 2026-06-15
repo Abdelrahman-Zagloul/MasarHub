@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.Password.ChangePassw
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Password.ChangePassword
 {
-    [Trait("UnitTests", "Feature.Auth.ChangePassword.Validator")]
+    [Trait("UnitTests.Feature.Auth", "ChangePassword")]
     public sealed class ChangePasswordCommandValidatorTests
     {
         private readonly ChangePasswordCommandValidator _sut = new();

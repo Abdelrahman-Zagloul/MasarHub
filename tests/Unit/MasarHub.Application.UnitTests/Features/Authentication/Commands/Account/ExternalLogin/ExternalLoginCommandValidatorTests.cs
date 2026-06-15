@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.Account.ExternalLogi
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Account.ExternalLogin
 {
-    [Trait("UnitTests", "Feature.Auth.ExternalLogin.Validator")]
+    [Trait("UnitTests.Feature.Auth", "ExternalLogin")]
     public sealed class ExternalLoginCommandValidatorTests
     {
         private readonly ExternalLoginCommandValidator _sut = new();

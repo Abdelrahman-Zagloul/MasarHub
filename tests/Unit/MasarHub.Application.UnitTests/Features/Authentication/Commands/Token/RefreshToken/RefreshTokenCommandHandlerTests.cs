@@ -8,7 +8,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Token.RefreshToken
 {
-    [Trait("UnitTests", "Feature.Auth.RefreshToken.Handler")]
+    [Trait("UnitTests.Feature.Auth", "RefreshToken")]
     public sealed class RefreshTokenCommandHandlerTests
     {
         private readonly Mock<IRefreshTokenService> _refreshTokenServiceMock;

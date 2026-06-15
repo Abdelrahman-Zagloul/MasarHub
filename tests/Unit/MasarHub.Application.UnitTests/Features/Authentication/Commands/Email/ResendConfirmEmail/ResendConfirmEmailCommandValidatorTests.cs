@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.Email.ResendConfirmE
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Email.ResendConfirmEmail
 {
-    [Trait("UnitTests", "Feature.Auth.ResendConfirmEmail.Validator")]
+    [Trait("UnitTests.Feature.Auth", "ResendConfirmEmail")]
     public sealed class ResendConfirmEmailCommandValidatorTests
     {
         private readonly ResendConfirmEmailCommandValidator _sut = new();

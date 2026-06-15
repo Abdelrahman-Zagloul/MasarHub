@@ -4,7 +4,7 @@ using MasarHub.Domain.Modules.Profiles;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Account.RegisterStudent
 {
-    [Trait("UnitTests", "Feature.Auth.RegisterStudent.Validator")]
+    [Trait("UnitTests.Feature.Auth", "RegisterStudent")]
     public sealed class RegisterStudentCommandValidatorTests
     {
         private readonly RegisterStudentCommandValidator _sut = new();

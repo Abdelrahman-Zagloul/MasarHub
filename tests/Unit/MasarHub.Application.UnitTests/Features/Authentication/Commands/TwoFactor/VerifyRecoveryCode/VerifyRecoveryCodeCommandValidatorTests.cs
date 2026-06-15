@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Authentication.Commands.TwoFactor.VerifyReco
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.VerifyRecoveryCode
 {
-    [Trait("UnitTests", "Feature.Auth.VerifyRecoveryCode.Validator")]
+    [Trait("UnitTests.Feature.Auth", "VerifyRecoveryCode")]
     public sealed class VerifyRecoveryCodeCommandValidatorTests
     {
         private readonly VerifyRecoveryCodeCommandValidator _sut = new();

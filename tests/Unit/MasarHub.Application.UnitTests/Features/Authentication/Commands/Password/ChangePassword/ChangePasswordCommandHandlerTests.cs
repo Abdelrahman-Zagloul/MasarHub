@@ -9,7 +9,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Password.ChangePassword
 {
-    [Trait("UnitTests", "Feature.Auth.ChangePassword.Handler")]
+    [Trait("UnitTests.Feature.Auth", "ChangePassword")]
     public sealed class ChangePasswordCommandHandlerTests
     {
         private readonly Mock<IAuthService> _authServiceMock;

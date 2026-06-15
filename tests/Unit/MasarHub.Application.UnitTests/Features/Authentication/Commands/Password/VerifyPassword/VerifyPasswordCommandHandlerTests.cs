@@ -7,7 +7,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.Password.VerifyPassword
 {
-    [Trait("UnitTests", "Feature.Auth.VerifyPassword.Handler")]
+    [Trait("UnitTests.Feature.Auth", "VerifyPassword")]
     public sealed class VerifyPasswordCommandHandlerTests
     {
         private readonly Mock<IAuthService> _authServiceMock;

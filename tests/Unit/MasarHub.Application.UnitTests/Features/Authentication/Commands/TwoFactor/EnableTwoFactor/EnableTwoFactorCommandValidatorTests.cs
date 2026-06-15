@@ -4,7 +4,7 @@ using MasarHub.Domain.Modules.Profiles;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.EnableTwoFactor
 {
-    [Trait("UnitTests", "Feature.Auth.EnableTwoFactor.Validator")]
+    [Trait("UnitTests.Feature.Auth", "EnableTwoFactor")]
     public sealed class EnableTwoFactorCommandValidatorTests
     {
         private readonly EnableTwoFactorCommandValidator _sut = new();

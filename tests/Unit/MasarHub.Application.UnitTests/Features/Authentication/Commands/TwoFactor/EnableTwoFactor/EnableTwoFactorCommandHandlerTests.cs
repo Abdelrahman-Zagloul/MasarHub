@@ -10,7 +10,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.EnableTwoFactor
 {
-    [Trait("UnitTests", "Feature.Auth.EnableTwoFactor.Handler")]
+    [Trait("UnitTests.Feature.Auth", "EnableTwoFactor")]
     public sealed class EnableTwoFactorCommandHandlerTests
     {
         private readonly Mock<ITwoFactorService> _twoFactorServiceMock;

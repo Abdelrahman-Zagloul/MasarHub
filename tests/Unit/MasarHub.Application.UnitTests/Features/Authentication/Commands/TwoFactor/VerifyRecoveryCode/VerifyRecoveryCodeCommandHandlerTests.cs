@@ -10,7 +10,7 @@ using Moq;
 
 namespace MasarHub.Application.UnitTests.Features.Authentication.Commands.TwoFactor.VerifyRecoveryCode
 {
-    [Trait("UnitTests", "Feature.Auth.VerifyRecoveryCode.Handler")]
+    [Trait("UnitTests.Feature.Auth", "VerifyRecoveryCode")]
     public sealed class VerifyRecoveryCodeCommandHandlerTests
     {
         private readonly Mock<ITwoFactorService> _twoFactorServiceMock;

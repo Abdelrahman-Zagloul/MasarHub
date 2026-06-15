@@ -3,7 +3,7 @@ using MasarHub.Application.Features.Categories.Commands.ReorderCategories;
 
 namespace MasarHub.Application.UnitTests.Features.Categories.Commands.ReorderCategories
 {
-    [Trait("UnitTests", "Feature.Categories.ReorderCategories.Validator")]
+    [Trait("UnitTests.Feature.Categories", "ReorderCategories")]
     public sealed class ReorderCategoriesCommandValidatorTests
     {
         private readonly ReorderCategoriesCommandValidator _sut = new();
