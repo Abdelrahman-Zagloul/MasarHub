@@ -1,26 +1,27 @@
-﻿using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
+using MasarHub.Domain.Common.Results;
 using MasarHub.Domain.Modules.Courses.Lessons;
 using MediatR;
 
-namespace MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview
+namespace MasarHub.Application.Features.Lessons.Commands.ToggleLessonPreview
 {
-    public sealed class EnableLessonPreviewCommandHandler : IRequestHandler<EnableLessonPreviewCommand, Result>
+    public sealed class ToggleLessonPreviewCommandHandler : IRequestHandler<ToggleLessonPreviewCommand, Result>
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly ILessonQuery _lessonQuery;
         private readonly IRepository<Lesson> _lessonRepository;
 
-        public EnableLessonPreviewCommandHandler(IUnitOfWork unitOfWork, ILessonQuery lessonQuery, IRepository<Lesson> lessonRepository)
+        public ToggleLessonPreviewCommandHandler(IUnitOfWork unitOfWork, ILessonQuery lessonQuery, IRepository<Lesson> lessonRepository)
         {
             _unitOfWork = unitOfWork;
             _lessonQuery = lessonQuery;
             _lessonRepository = lessonRepository;
         }
 
-        public async Task<Result> Handle(EnableLessonPreviewCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(ToggleLessonPreviewCommand request, CancellationToken cancellationToken)
         {
             var courseState = await _lessonQuery.GetCourseStateAsync(request.ModuleId, request.InstructorId, cancellationToken);
 
@@ -34,7 +35,10 @@ namespace MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview
             if (lesson == null)
                 return Error.NotFound("lesson.not_found");
 
-            var result = lesson.EnablePreview();
+            DomainResult result = request.Previewable
+                ? lesson.EnablePreview()
+                : lesson.DisablePreview();
+
             if (result.IsFailure)
                 return Error.Conflict(result.Error.Code);
 
