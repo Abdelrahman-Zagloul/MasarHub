@@ -5,13 +5,11 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
-using MasarHub.Application.Features.Lessons.Commands.ArchiveLesson;
 using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
-using MasarHub.Application.Features.Lessons.Commands.DisableLessonPreview;
-using MasarHub.Application.Features.Lessons.Commands.EnableLessonPreview;
 using MasarHub.Application.Features.Lessons.Commands.ReorderLessons;
-using MasarHub.Application.Features.Lessons.Commands.UnarchiveLesson;
+using MasarHub.Application.Features.Lessons.Commands.ToggleLessonArchive;
+using MasarHub.Application.Features.Lessons.Commands.ToggleLessonPreview;
 using MasarHub.Application.Features.Lessons.Commands.UpdateLesson;
 using MasarHub.Application.Features.Lessons.Commands.UpdateVideoThumbnail;
 using MasarHub.Application.Features.Lessons.Queries.GetVideoUploadSignature;
@@ -94,41 +92,21 @@ namespace MasarHub.API.Controllers.V1
 
         [Authorize(Roles = Roles.Instructor)]
         [HttpPatch("{lessonId:guid}/archive")]
-        [EndpointSummary("Archive a lesson")]
-        [EndpointDescription("Archives a lesson, hiding it from students while preserving its content. Instructor only.")]
-        public async Task<IActionResult> ArchiveLesson(Guid moduleId, Guid lessonId)
+        [EndpointSummary("Toggle lesson archive")]
+        [EndpointDescription("Archives or unarchives a lesson. Send Archived=true to hide from students, Archived=false to restore. Instructor only.")]
+        public async Task<IActionResult> ToggleLessonArchive(Guid moduleId, Guid lessonId, ToggleLessonArchiveRequest request)
         {
-            var result = await _sender.Send(new ArchiveLessonCommand(moduleId, lessonId, GetUserId()));
+            var result = await _sender.Send(new ToggleLessonArchiveCommand(moduleId, lessonId, GetUserId(), request.Archived));
             return await ToNoContentResultAsync(result);
         }
 
         [Authorize(Roles = Roles.Instructor)]
-        [HttpPatch("{lessonId:guid}/unarchive")]
-        [EndpointSummary("Unarchive a lesson")]
-        [EndpointDescription("Restores an archived lesson, making it visible to students again. Instructor only.")]
-        public async Task<IActionResult> UnarchiveLesson(Guid moduleId, Guid lessonId)
+        [HttpPatch("{lessonId:guid}/preview")]
+        [EndpointSummary("Toggle lesson preview")]
+        [EndpointDescription("Enables or disables lesson preview for non-enrolled students. Send Previewable=true to allow, Previewable=false to restrict. Instructor only.")]
+        public async Task<IActionResult> ToggleLessonPreview(Guid moduleId, Guid lessonId, ToggleLessonPreviewRequest request)
         {
-            var result = await _sender.Send(new UnarchiveLessonCommand(moduleId, lessonId, GetUserId()));
-            return await ToNoContentResultAsync(result);
-        }
-
-        [Authorize(Roles = Roles.Instructor)]
-        [HttpPatch("{lessonId:guid}/preview/enable")]
-        [EndpointSummary("Enable lesson preview")]
-        [EndpointDescription("Allows non-enrolled students to preview this lesson without purchasing the course. Instructor only.")]
-        public async Task<IActionResult> EnableLessonPreview(Guid moduleId, Guid lessonId)
-        {
-            var result = await _sender.Send(new EnableLessonPreviewCommand(moduleId, lessonId, GetUserId()));
-            return await ToNoContentResultAsync(result);
-        }
-
-        [Authorize(Roles = Roles.Instructor)]
-        [HttpPatch("{lessonId:guid}/preview/disable")]
-        [EndpointSummary("Disable lesson preview")]
-        [EndpointDescription("Restricts lesson preview to only enrolled students. Instructor only.")]
-        public async Task<IActionResult> DisableLessonPreview(Guid moduleId, Guid lessonId)
-        {
-            var result = await _sender.Send(new DisableLessonPreviewCommand(moduleId, lessonId, GetUserId()));
+            var result = await _sender.Send(new ToggleLessonPreviewCommand(moduleId, lessonId, GetUserId(), request.Previewable));
             return await ToNoContentResultAsync(result);
         }
 
