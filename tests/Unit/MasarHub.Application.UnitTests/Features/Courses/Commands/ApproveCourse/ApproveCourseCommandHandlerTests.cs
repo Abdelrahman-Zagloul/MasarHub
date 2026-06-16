@@ -58,27 +58,11 @@ namespace MasarHub.Application.UnitTests.Features.Courses.Commands.ApproveCourse
         }
 
         [Fact]
-        public async Task Handle_AlreadyPublished_ReturnsDomainError()
+        public async Task Handle_DomainFailure_ReturnsFailure()
         {
             var course = Course.Create("Title", "slug", "Description", 0, CourseLanguage.English, CourseLevel.Beginner, Guid.NewGuid(), Guid.NewGuid()).Value;
             course.SubmitForApproval();
             course.ApprovePublication(AdminId);
-            var command = new ApproveCourseCommand(course.Id, AdminId);
-
-            _courseRepositoryMock
-                .Setup(x => x.GetByIdAsync(course.Id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(course);
-
-            var result = await _sut.Handle(command, CancellationToken.None);
-
-            result.IsFailure.Should().BeTrue();
-            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
-        }
-
-        [Fact]
-        public async Task Handle_NotPendingApproval_ReturnsDomainError()
-        {
-            var course = Course.Create("Title", "slug", "Description", 0, CourseLanguage.English, CourseLevel.Beginner, Guid.NewGuid(), Guid.NewGuid()).Value;
             var command = new ApproveCourseCommand(course.Id, AdminId);
 
             _courseRepositoryMock

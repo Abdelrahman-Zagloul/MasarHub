@@ -1,8 +1,6 @@
 using FluentAssertions;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Abstractions.Persistence.Repositories;
-using MasarHub.Application.Common.Results;
-using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Categories.Commands.UpdateCategory;
 using MasarHub.Domain.Modules.Categories;
 using Moq;
@@ -74,6 +72,25 @@ namespace MasarHub.Application.UnitTests.Features.Categories.Commands.UpdateCate
             result.IsSuccess.Should().BeTrue();
             category.Description.Should().Be("New description");
             _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task Handle_DomainFailure_ReturnsFailure()
+        {
+            var category = Category.CreateRoot("Root", null, "root", 1).Value;
+            var command = new UpdateCategoryCommand(category.Id, null, null, null, true);
+
+            _categoryRepositoryMock
+                .Setup(x => x.GetByIdAsync(category.Id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(category);
+            _categoryQueryMock
+                .Setup(x => x.HasChildrenAsync(category.Id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(false);
+
+            var result = await _sut.Handle(command, CancellationToken.None);
+
+            result.IsFailure.Should().BeTrue();
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
         [Fact]

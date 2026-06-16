@@ -98,7 +98,7 @@ namespace MasarHub.Application.UnitTests.Features.Courses.Commands.SubmitCourseF
         }
 
         [Fact]
-        public async Task Handle_AlreadySubmitted_ReturnsDomainError()
+        public async Task Handle_DomainFailure_ReturnsFailure()
         {
             var course = Course.Create("Title", "slug", "Description", 0, CourseLanguage.English, CourseLevel.Beginner, InstructorId, Guid.NewGuid()).Value;
             course.SubmitForApproval();

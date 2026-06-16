@@ -96,6 +96,22 @@ namespace MasarHub.Application.UnitTests.Features.Courses.Commands.UpdateCourse
         }
 
         [Fact]
+        public async Task Handle_DomainFailure_ReturnsFailure()
+        {
+            var course = Course.Create("Title", "slug", "Description", 0, CourseLanguage.English, CourseLevel.Beginner, InstructorId, Guid.NewGuid()).Value;
+            var command = new UpdateCourseCommand(course.Id, null, null, -10, null, null, null);
+
+            _courseRepositoryMock
+                .Setup(x => x.GetByIdAsync(course.Id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(course);
+
+            var result = await _sut.Handle(command, CancellationToken.None);
+
+            result.IsFailure.Should().BeTrue();
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
         public async Task Handle_UpdatePrice_UpdatesPrice()
         {
             var course = Course.Create("Title", "slug", "Description", 0, CourseLanguage.English, CourseLevel.Beginner, InstructorId, Guid.NewGuid()).Value;
