@@ -26,10 +26,11 @@ namespace MasarHub.Application.Features.Exams.Commands.CreateExam
                 .ValidMaxLength(2000, "Description");
 
             RuleFor(x => x.PassingScorePercentage)
-                .ValidRange(0, 100, "PassingScorePercentage");
+                .ValidRange(1, 100, "PassingScorePercentage");
 
             RuleFor(x => x.MaxAttempts)
-                .ValidRange(0, 100, "MaxAttempts");
+                .ValidRange(1, 100, "MaxAttempts");
+
 
             RuleFor(x => x.DurationMinutes)
                 .ValidGreaterThanZero("DurationMinutes");
