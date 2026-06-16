@@ -108,13 +108,14 @@ namespace MasarHub.Application.Common.Extensions
             string propertyName)
             where TProperty : struct, IComparable<TProperty>, IComparable
         {
-            return ApplyValidation(
-                ruleBuilder.Must(v =>
-                    !v.HasValue ||
-                    (v.Value.CompareTo(min) >= 0 &&
-                     v.Value.CompareTo(max) <= 0)),
-                "validation.invalid_range",
-                propertyName);
+            var rule = ruleBuilder.Must((_, value, context) =>
+            {
+                context.MessageFormatter.AppendArgument("From", min);
+                context.MessageFormatter.AppendArgument("To", max);
+                return !value.HasValue || (value.Value.CompareTo(min) >= 0 && value.Value.CompareTo(max) <= 0);
+            });
+
+            return ApplyValidation(rule, "validation.invalid_range", propertyName);
         }
 
         #endregion

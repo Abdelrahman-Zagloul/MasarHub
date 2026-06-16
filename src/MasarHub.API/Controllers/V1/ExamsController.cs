@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Exams.Commands.CreateExam;
+using MasarHub.Application.Features.Exams.Commands.UpdateExam;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,17 @@ namespace MasarHub.API.Controllers.V1
             return result.IsFailure
                 ? await HandleError(result)
                 : CreatedAtAction(nameof(GetExamById), new { id = result.Value.Id }, result.Value);
+        }
+
+        [HttpPut("{id:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Update exam details")]
+        [EndpointDescription("Updates the title, description, passing score, and/or duration of an exam. Instructor only.")]
+        public async Task<IActionResult> UpdateExam(Guid id, UpdateExamRequest request)
+        {
+            var command = new UpdateExamCommand(id, GetUserId(), request.Title, request.Description, request.MaxAttempts, request.PassingScorePercentage, request.DurationMinutes);
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
         }
 
         [HttpGet("{id:guid}")]

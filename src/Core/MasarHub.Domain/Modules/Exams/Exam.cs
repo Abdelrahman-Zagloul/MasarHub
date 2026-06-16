@@ -37,6 +37,7 @@ namespace MasarHub.Domain.Modules.Exams
             ModuleId = moduleId;
             Description = description;
             DurationInMinutes = durationMinutes;
+            IsPublished = false;
         }
 
         public static DomainResult<Exam> Create(
@@ -90,7 +91,6 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult UpdateDescription(string? description)
         {
             var draftResult = EnsureDraft();
@@ -101,8 +101,21 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
+        public DomainResult UpdateMaxAttempts(int maxAttempts)
+        {
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
 
-        public DomainResult SetPassingScore(int passingScorePercentage)
+            var error = Guard.AgainstNegativeOrZero(maxAttempts, nameof(maxAttempts));
+            if (error != DomainError.None)
+                return error;
+
+            MaxAttempts = maxAttempts;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult UpdatePassingScore(int passingScorePercentage)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -115,8 +128,7 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
-        public DomainResult SetDuration(int? durationMinutes)
+        public DomainResult UpdateDuration(int? durationMinutes)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
