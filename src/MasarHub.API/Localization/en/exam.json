@@ -1,0 +1,7 @@
+{
+  "PassingScorePercentage": "Passing score percentage",
+  "MaxAttempts": "Maximum attempts",
+  "DurationMinutes": "Duration (minutes)",
+
+  "exam.invalid_passing_score": "Passing score must be between 0 and 100."
+}

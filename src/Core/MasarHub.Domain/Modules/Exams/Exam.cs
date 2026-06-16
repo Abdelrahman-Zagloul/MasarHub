@@ -59,14 +59,14 @@ namespace MasarHub.Domain.Modules.Exams
             if (moduleId.HasValue)
             {
                 var moduleError = Guard.AgainstEmptyGuid(moduleId.Value, nameof(moduleId));
-                if (error != DomainError.None)
+                if (moduleError != DomainError.None)
                     return moduleError;
             }
 
             if (durationMinutes.HasValue)
             {
                 var durationError = Guard.AgainstNegativeOrZero(durationMinutes.Value, nameof(durationMinutes));
-                if (error != DomainError.None)
+                if (durationError != DomainError.None)
                     return durationError;
             }
 
