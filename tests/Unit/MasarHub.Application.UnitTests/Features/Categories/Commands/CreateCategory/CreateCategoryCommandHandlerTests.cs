@@ -108,7 +108,7 @@ namespace MasarHub.Application.UnitTests.Features.Categories.Commands.CreateCate
         }
 
         [Fact]
-        public async Task Handle_CreateSubCategoryOnLevel3Parent_ReturnsDomainError()
+        public async Task Handle_DomainFailure_ReturnsFailure()
         {
             var root = Category.CreateRoot("Root", null, "root", 1).Value;
             var l2 = Category.CreateSubCategory("L2", null, "l2", 1, root).Value;

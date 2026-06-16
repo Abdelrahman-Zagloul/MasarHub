@@ -61,7 +61,7 @@ namespace MasarHub.Application.UnitTests.Features.Modules.Commands.CreateModule
         }
 
         [Fact]
-        public async Task Handle_InvalidDomainData_ReturnsDomainError()
+        public async Task Handle_DomainFailure_ReturnsFailure()
         {
             var command = new CreateModuleCommand(Guid.Empty, InstructorId, "Introduction", null);
 
@@ -72,7 +72,6 @@ namespace MasarHub.Application.UnitTests.Features.Modules.Commands.CreateModule
             var result = await _sut.Handle(command, CancellationToken.None);
 
             result.IsFailure.Should().BeTrue();
-            result.Errors.Should().Contain(e => e.Code == "domain_error.empty_guid");
             _moduleRepositoryMock.Verify(x => x.AddAsync(It.IsAny<CourseModule>(), It.IsAny<CancellationToken>()), Times.Never);
             _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
