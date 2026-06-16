@@ -15,7 +15,7 @@ namespace MasarHub.Application.Features.Courses.Commands.UpdateCoursePrerequisit
 
             RuleForEach(x => x.Prerequisites)
                 .Required("Prerequisite")
-                .MaxLengthValidation(500, "Prerequisite");
+                .ValidMaxLength(500, "Prerequisite");
         }
     }
 }

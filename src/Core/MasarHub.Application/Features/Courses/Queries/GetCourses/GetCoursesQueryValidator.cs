@@ -9,10 +9,10 @@ namespace MasarHub.Application.Features.Courses.Queries.GetCourses
         public GetCoursesQueryValidator()
         {
             RuleFor(x => x.CategoryId)
-                .ValidNullableGuid("CategoryId");
+                .ValidGuid("CategoryId");
 
             RuleFor(x => x.InstructorId)
-                .ValidNullableGuid("InstructorId");
+                .ValidGuid("InstructorId");
 
             RuleFor(x => x.Language)
                 .ValidEnum("Language");
@@ -21,10 +21,10 @@ namespace MasarHub.Application.Features.Courses.Queries.GetCourses
                 .ValidEnum("Level");
 
             RuleFor(x => x.MinPrice)
-                .ValidPrice("MinPrice", 0);
+                .ValidGreaterThanZero("MinPrice");
 
             RuleFor(x => x.MaxPrice)
-                .ValidPrice("MaxPrice", 0);
+                .ValidGreaterThanZero("MaxPrice");
 
             RuleFor(x => x)
                 .Must(x => x.MaxPrice >= x.MinPrice)

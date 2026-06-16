@@ -11,12 +11,12 @@ namespace MasarHub.Application.Features.Courses.Commands.UpdateCourse
                 .ValidGuid("CourseId");
 
             RuleFor(x => x.Title)
-                .MinLengthValidation(5, "Title")
-                .MaxLengthValidation(200, "Title");
+                .ValidMinLength(5, "Title")
+                .ValidMaxLength(200, "Title");
 
             RuleFor(x => x.Description)
-                .MinLengthValidation(10, "Description")
-                .MaxLengthValidation(2000, "Description");
+                .ValidMinLength(10, "Description")
+                .ValidMaxLength(2000, "Description");
 
             RuleFor(x => x.Language)
                 .ValidEnum("Language");
@@ -25,7 +25,7 @@ namespace MasarHub.Application.Features.Courses.Commands.UpdateCourse
                 .ValidEnum("Level");
 
             RuleFor(x => x.CategoryId)
-                .ValidNullableGuid("CategoryId");
+                .ValidGuid("CategoryId");
 
             RuleFor(x => x)
             .Must(HaveAtLeastOneUpdate)

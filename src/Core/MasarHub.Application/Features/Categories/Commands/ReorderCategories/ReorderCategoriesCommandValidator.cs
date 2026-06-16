@@ -8,7 +8,7 @@ namespace MasarHub.Application.Features.Categories.Commands.ReorderCategories
         public ReorderCategoriesCommandValidator()
         {
             RuleFor(x => x.ParentCategoryId)
-                .ValidNullableGuid("ParentCategoryId");
+                .ValidGuid("ParentCategoryId");
 
             RuleFor(x => x.OrderedCategoryIds)
                 .Cascade(CascadeMode.Stop)

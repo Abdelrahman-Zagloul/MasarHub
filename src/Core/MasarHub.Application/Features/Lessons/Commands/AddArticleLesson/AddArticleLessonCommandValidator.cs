@@ -9,16 +9,16 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddArticleLesson
         {
             RuleFor(x => x.Title)
                 .Required("Title")
-                .MinLengthValidation(10, "Title")
-                .MaxLengthValidation(200, "Title");
+                .ValidMinLength(10, "Title")
+                .ValidMaxLength(200, "Title");
 
             RuleFor(x => x.Description)
-                .MinLengthValidation(10, "Description")
-                .MaxLengthValidation(1000, "Description");
+                .ValidMinLength(10, "Description")
+                .ValidMaxLength(1000, "Description");
 
             RuleFor(x => x.Content)
                 .Required("Content")
-                .MinLengthValidation(10, "Content");
+                .ValidMinLength(10, "Content");
         }
     }
 }

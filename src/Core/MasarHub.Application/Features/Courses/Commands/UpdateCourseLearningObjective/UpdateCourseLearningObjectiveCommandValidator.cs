@@ -15,7 +15,7 @@ namespace MasarHub.Application.Features.Courses.Commands.UpdateCourseLearningObj
 
             RuleForEach(x => x.LearningObjectives)
                 .Required("LearningObjective")
-                .MaxLengthValidation(500, "LearningObjective");
+                .ValidMaxLength(500, "LearningObjective");
         }
     }
 }

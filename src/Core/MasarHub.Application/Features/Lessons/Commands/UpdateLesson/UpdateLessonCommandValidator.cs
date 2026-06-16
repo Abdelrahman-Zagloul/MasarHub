@@ -14,11 +14,11 @@ namespace MasarHub.Application.Features.Lessons.Commands.UpdateLesson
                 .ValidGuid("LessonId");
 
             RuleFor(x => x.Title)
-                .MinLengthValidation(10, "Title")
-                .MaxLengthValidation(200, "Title");
+                .ValidMinLength(10, "Title")
+                .ValidMaxLength(200, "Title");
 
             RuleFor(x => x.Description)
-                .MaxLengthValidation(2000, "Description");
+                .ValidMaxLength(2000, "Description");
 
             RuleFor(x => x)
                 .Must(x => x.Title != null || x.Description != null)

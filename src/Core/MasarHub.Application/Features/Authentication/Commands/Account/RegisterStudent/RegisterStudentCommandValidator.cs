@@ -9,7 +9,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.Register
         {
             RuleFor(x => x.FullName)
                 .Required("FullName")
-                .MaxLengthValidation(100, "FullName");
+                .ValidMaxLength(100, "FullName");
 
             RuleFor(x => x.Email)
                 .Required("Email")
@@ -23,7 +23,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.Register
 
             RuleFor(x => x.PhoneNumber)
                 .Required("PhoneNumber")
-                .LengthValidation(11, "PhoneNumber");
+                .ValidLength(11, "PhoneNumber");
         }
     }
 }
