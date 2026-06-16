@@ -57,11 +57,12 @@ namespace MasarHub.Application.Features.Exams.Commands.UpdateExam
                 if (scoreResult.IsFailure)
                     return scoreResult.Error;
             }
-
-            var durationResult = exam.UpdateDuration(request.DurationMinutes);
-            if (durationResult.IsFailure)
-                return durationResult.Error;
-
+            if (request.DurationMinutes.HasValue)
+            {
+                var durationResult = exam.UpdateDuration(request.DurationMinutes);
+                if (durationResult.IsFailure)
+                    return durationResult.Error;
+            }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
             return Result.Success();
