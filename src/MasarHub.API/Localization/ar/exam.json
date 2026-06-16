@@ -4,5 +4,5 @@
   "DurationMinutes": "مدة الاختبار (بالدقائق)",
 
   "exam.invalid_passing_score": "يجب أن تكون نسبة النجاح بين 0 و100.",
-  "exam.cannot_modify_published_exam": "لا يمكن تعديل الاختبارات المنشورة."
-}
+  "exam.cannot_modify_published_exam": "لا يمكن تعديل الاختبارات المنشورة.",
+  "exam.cannot_delete_after_attempts": "عذراً، لا يمكن حذف هذا الامتحان بسبب وجود سجلات ومحاولات سابقة للطلاب."

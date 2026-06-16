@@ -178,12 +178,12 @@ namespace MasarHub.Domain.Modules.Exams
             return DomainResult.Success();
         }
 
-        public DomainResult Unpublish(bool hasSubmissions)
+        public DomainResult Unpublish(bool hasAttempts)
         {
             if (!IsPublished)
                 return DomainResult.Success();
 
-            if (hasSubmissions)
+            if (hasAttempts)
                 return ExamErrors.CannotUnpublishAfterAttempts;
 
             IsPublished = false;
@@ -197,7 +197,17 @@ namespace MasarHub.Domain.Modules.Exams
 
         public bool CanAttempt(int currentAttempts) => currentAttempts < MaxAttempts;
 
-        public DomainResult Delete() => MarkAsDeleted();
+        public DomainResult Delete(bool hasAttempts)
+        {
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
+
+            if (hasAttempts)
+                return ExamErrors.CannotDeleteExamWithSubmissions;
+
+            return MarkAsDeleted();
+        }
 
         private DomainResult EnsureDraft()
         {

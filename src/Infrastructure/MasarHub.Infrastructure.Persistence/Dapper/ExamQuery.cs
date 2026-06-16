@@ -48,5 +48,28 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { examId, instructorId }, cancellationToken: ct);
             return await connection.QuerySingleOrDefaultAsync<ExamUpdateData>(command) ?? new ExamUpdateData(false, false);
         }
+
+        public async Task<ExamDeleteData> GetDeleteDataAsync(Guid examId, Guid instructorId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT
+                    CAST(1 AS BIT) AS ExamExists,
+                    CAST(CASE WHEN c.InstructorId = @InstructorId THEN 1 ELSE 0 END AS BIT) AS IsOwner,
+                    CAST(CASE WHEN EXISTS (
+                        SELECT 1 FROM exams.ExamAttempts ea
+                        WHERE ea.ExamId = e.Id 
+                            AND ea.Status = 'Submitted' 
+                            AND ea.IsDeleted = 0
+                    ) THEN 1 ELSE 0 END AS BIT) AS HasAttempts
+                FROM exams.Exams e
+                LEFT JOIN courses.Courses c ON c.Id = e.CourseId AND c.IsDeleted = 0
+                WHERE e.Id = @ExamId AND e.IsDeleted = 0;";
+
+            using var connection = _connectionFactory.CreateConnection();
+
+            var command = new CommandDefinition(sql, new { examId, instructorId }, cancellationToken: ct);
+            var result = await connection.QuerySingleOrDefaultAsync<ExamDeleteData>(command);
+            return result ?? new ExamDeleteData(false, false, false);
+        }
     }
 }

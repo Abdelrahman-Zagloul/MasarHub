@@ -6,8 +6,10 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
     {
         Task<ExamCreationData> GetCreationDataAsync(Guid courseId, Guid? moduleId, Guid instructorId, CancellationToken ct = default);
         Task<ExamUpdateData> GetUpdateDataAsync(Guid examId, Guid instructorId, CancellationToken ct = default);
+        Task<ExamDeleteData> GetDeleteDataAsync(Guid examId, Guid instructorId, CancellationToken ct = default);
     }
 }
 
 public sealed record ExamCreationData(bool CourseExists, bool IsOwner, bool ModuleExists);
 public sealed record ExamUpdateData(bool ExamExists, bool IsOwner);
+public sealed record ExamDeleteData(bool ExamExists, bool IsOwner, bool HasAttempts);

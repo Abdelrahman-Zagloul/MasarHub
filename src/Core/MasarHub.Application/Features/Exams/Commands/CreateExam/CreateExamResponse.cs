@@ -8,6 +8,7 @@ namespace MasarHub.Application.Features.Exams.Commands.CreateExam
         int PassingScorePercentage,
         int MaxAttempts,
         int? DurationMinutes,
+        bool IsPublished,
         Guid CourseId,
         Guid? ModuleId
     );

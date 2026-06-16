@@ -8,6 +8,7 @@ namespace MasarHub.Domain.Modules.Exams
         public static readonly DomainError InvalidQuestionExamRelation = new("exam.invalid_question_exam_relation", "ExamId");
         public static readonly DomainError MissingQuestions = new("exam.missing_questions", "Questions");
         public static readonly DomainError CannotUnpublishAfterAttempts = new("exam.cannot_unpublish_after_attempts");
+        public static readonly DomainError CannotDeleteExamWithSubmissions = new("exam.cannot_delete_has_submission");
         public static readonly DomainError CannotModifyPublishedExam = new("exam.cannot_modify_published_exam");
         public static readonly DomainError NoAnswersSubmitted = new("exam.no_answers_submitted", "Answers");
         public static readonly DomainError QuestionMustHaveOptions = new("exam.question_must_have_options", "Options");

@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Exams.Commands.CreateExam;
+using MasarHub.Application.Features.Exams.Commands.DeleteExam;
 using MasarHub.Application.Features.Exams.Commands.UpdateExam;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -45,6 +46,16 @@ namespace MasarHub.API.Controllers.V1
         {
             var command = new UpdateExamCommand(id, GetUserId(), request.Title, request.Description, request.MaxAttempts, request.PassingScorePercentage, request.DurationMinutes);
             var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpDelete("{id:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Delete an exam")]
+        [EndpointDescription("Soft-deletes an exam. Instructor only.")]
+        public async Task<IActionResult> DeleteExam(Guid id)
+        {
+            var result = await _sender.Send(new DeleteExamCommand(id, GetUserId()));
             return await ToNoContentResultAsync(result);
         }
 

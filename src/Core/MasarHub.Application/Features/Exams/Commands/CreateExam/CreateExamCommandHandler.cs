@@ -56,6 +56,7 @@ namespace MasarHub.Application.Features.Exams.Commands.CreateExam
                 exam.PassingScorePercentage,
                 exam.MaxAttempts,
                 exam.DurationInMinutes,
+                exam.IsPublished,
                 exam.CourseId,
                 exam.ModuleId);
         }

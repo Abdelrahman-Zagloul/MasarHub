@@ -4,5 +4,6 @@
   "DurationMinutes": "Duration (minutes)",
 
   "exam.invalid_passing_score": "Passing score must be between 0 and 100.",
-  "exam.cannot_modify_published_exam": "Published exams cannot be modified."
+  "exam.cannot_modify_published_exam": "Published exams cannot be modified.",
+  "exam.cannot_delete_after_attempts": "Cannot delete the exam because it already has student submissions."
 }
