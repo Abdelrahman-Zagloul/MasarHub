@@ -2,11 +2,10 @@
 using MasarHub.Application.Abstractions.Persistence.Repositories;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
-using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Domain.Modules.Courses.Lessons;
 using MediatR;
 
-namespace MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson
+namespace MasarHub.Application.Features.Lessons.Commands.AddArticleLesson
 {
     public sealed class AddArticleLessonCommandHandler : IRequestHandler<AddArticleLessonCommand, Result<AddArticleLessonResponse>>
     {

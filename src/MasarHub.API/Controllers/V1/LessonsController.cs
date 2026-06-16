@@ -5,7 +5,6 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.AddVideoLesson;
-using MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson;
 using MasarHub.Application.Features.Lessons.Commands.DeleteLesson;
 using MasarHub.Application.Features.Lessons.Commands.ReorderLessons;
 using MasarHub.Application.Features.Lessons.Commands.ToggleLessonArchive;

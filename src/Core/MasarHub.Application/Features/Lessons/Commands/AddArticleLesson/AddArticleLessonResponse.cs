@@ -1,4 +1,4 @@
-﻿namespace MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson
+﻿namespace MasarHub.Application.Features.Lessons.Commands.AddArticleLesson
 {
     public record AddArticleLessonResponse
     (
