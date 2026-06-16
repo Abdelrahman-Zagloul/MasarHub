@@ -1,8 +1,7 @@
 ﻿using FluentValidation;
 using MasarHub.Application.Common.Extensions;
-using MasarHub.Application.Features.Lessons.Commands.AddArticleLesson;
 
-namespace MasarHub.Application.Features.Lessons.Commands.CreateArticleLesson
+namespace MasarHub.Application.Features.Lessons.Commands.AddArticleLesson
 {
     public sealed class AddArticleLessonCommandValidator : AbstractValidator<AddArticleLessonCommand>
     {
