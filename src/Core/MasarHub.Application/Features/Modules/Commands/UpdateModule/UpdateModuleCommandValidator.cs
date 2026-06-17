@@ -11,11 +11,11 @@ namespace MasarHub.Application.Features.Modules.Commands.UpdateModule
                 .ValidGuid("ModuleId");
 
             RuleFor(x => x.Title)
-                .MinLengthValidation(3, "Title")
-                .MaxLengthValidation(200, "Title");
+                .ValidMinLength(3, "Title")
+                .ValidMaxLength(200, "Title");
 
             RuleFor(x => x.Description)
-                .MaxLengthValidation(2000, "Description");
+                .ValidMaxLength(2000, "Description");
         }
     }
 }

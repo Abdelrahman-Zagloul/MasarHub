@@ -9,17 +9,17 @@ namespace MasarHub.Application.Features.Lessons.Commands.AddVideoLesson
         {
             RuleFor(x => x.Title)
               .Required("Title")
-              .MinLengthValidation(10, "Title")
-              .MaxLengthValidation(200, "Title");
+              .ValidMinLength(10, "Title")
+              .ValidMaxLength(200, "Title");
 
             RuleFor(x => x.Description)
-                .MinLengthValidation(10, "Description")
-                .MaxLengthValidation(1000, "Description");
+                .ValidMinLength(10, "Description")
+                .ValidMaxLength(1000, "Description");
 
             RuleFor(x => x.FileKey)
                 .Required("FileKey")
-                .MinLengthValidation(10, "FileKey")
-                .MaxLengthValidation(200, "FileKey");
+                .ValidMinLength(10, "FileKey")
+                .ValidMaxLength(200, "FileKey");
         }
     }
 }

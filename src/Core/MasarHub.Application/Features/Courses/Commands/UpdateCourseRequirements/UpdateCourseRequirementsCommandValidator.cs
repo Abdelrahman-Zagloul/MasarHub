@@ -15,7 +15,7 @@ namespace MasarHub.Application.Features.Courses.Commands.UpdateCourseRequirement
 
             RuleForEach(x => x.Requirements)
                 .Required("Requirement")
-                .MaxLengthValidation(500, "Requirement");
+                .ValidMaxLength(500, "Requirement");
         }
     }
 }

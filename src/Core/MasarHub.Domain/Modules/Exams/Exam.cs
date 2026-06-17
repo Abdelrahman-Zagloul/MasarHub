@@ -37,6 +37,7 @@ namespace MasarHub.Domain.Modules.Exams
             ModuleId = moduleId;
             Description = description;
             DurationInMinutes = durationMinutes;
+            IsPublished = false;
         }
 
         public static DomainResult<Exam> Create(
@@ -59,14 +60,14 @@ namespace MasarHub.Domain.Modules.Exams
             if (moduleId.HasValue)
             {
                 var moduleError = Guard.AgainstEmptyGuid(moduleId.Value, nameof(moduleId));
-                if (error != DomainError.None)
+                if (moduleError != DomainError.None)
                     return moduleError;
             }
 
             if (durationMinutes.HasValue)
             {
                 var durationError = Guard.AgainstNegativeOrZero(durationMinutes.Value, nameof(durationMinutes));
-                if (error != DomainError.None)
+                if (durationError != DomainError.None)
                     return durationError;
             }
 
@@ -90,7 +91,6 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult UpdateDescription(string? description)
         {
             var draftResult = EnsureDraft();
@@ -101,8 +101,21 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
+        public DomainResult UpdateMaxAttempts(int maxAttempts)
+        {
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
 
-        public DomainResult SetPassingScore(int passingScorePercentage)
+            var error = Guard.AgainstNegativeOrZero(maxAttempts, nameof(maxAttempts));
+            if (error != DomainError.None)
+                return error;
+
+            MaxAttempts = maxAttempts;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult UpdatePassingScore(int passingScorePercentage)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -115,8 +128,7 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
-        public DomainResult SetDuration(int? durationMinutes)
+        public DomainResult UpdateDuration(int? durationMinutes)
         {
             var draftResult = EnsureDraft();
             if (draftResult.IsFailure)
@@ -154,9 +166,8 @@ namespace MasarHub.Domain.Modules.Exams
 
         public DomainResult Publish()
         {
-            var draftResult = EnsureDraft();
-            if (draftResult.IsFailure)
-                return draftResult;
+            if (IsPublished)
+                return ExamErrors.AlreadyPublished;
 
             if (!_questions.Any())
                 return ExamErrors.MissingQuestions;
@@ -166,12 +177,15 @@ namespace MasarHub.Domain.Modules.Exams
             return DomainResult.Success();
         }
 
-        public DomainResult Unpublish(bool hasSubmissions)
+        public DomainResult Unpublish(bool hasAttempts)
         {
-            if (!IsPublished)
-                return DomainResult.Success();
+            if (IsDeleted)
+                return DomainError.AlreadyDeleted();
 
-            if (hasSubmissions)
+            if (!IsPublished)
+                return ExamErrors.AlreadyUnpublished;
+
+            if (hasAttempts)
                 return ExamErrors.CannotUnpublishAfterAttempts;
 
             IsPublished = false;
@@ -185,7 +199,17 @@ namespace MasarHub.Domain.Modules.Exams
 
         public bool CanAttempt(int currentAttempts) => currentAttempts < MaxAttempts;
 
-        public DomainResult Delete() => MarkAsDeleted();
+        public DomainResult Delete(bool hasAttempts)
+        {
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
+
+            if (hasAttempts)
+                return ExamErrors.CannotDeleteExamWithSubmissions;
+
+            return MarkAsDeleted();
+        }
 
         private DomainResult EnsureDraft()
         {

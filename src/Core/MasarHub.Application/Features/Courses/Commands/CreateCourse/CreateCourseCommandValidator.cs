@@ -9,16 +9,16 @@ namespace MasarHub.Application.Features.Courses.Commands.CreateCourse
         {
             RuleFor(x => x.Title)
                 .Required("Title")
-                .MinLengthValidation(5, "Title")
-                .MaxLengthValidation(200, "Title");
+                .ValidMinLength(5, "Title")
+                .ValidMaxLength(200, "Title");
 
             RuleFor(x => x.Description)
                 .Required("Description")
-                .MinLengthValidation(10, "Description")
-                .MaxLengthValidation(2000, "Description");
+                .ValidMinLength(10, "Description")
+                .ValidMaxLength(2000, "Description");
 
             RuleFor(x => x.Price)
-               .ValidPrice("Price", 0);
+               .ValidGreaterThanZero("Price");
 
             RuleFor(x => x.CategoryId)
                 .ValidGuid("CategoryId");

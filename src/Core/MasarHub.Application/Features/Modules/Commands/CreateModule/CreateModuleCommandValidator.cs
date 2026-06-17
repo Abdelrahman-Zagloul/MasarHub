@@ -12,11 +12,11 @@ namespace MasarHub.Application.Features.Modules.Commands.CreateModule
 
             RuleFor(x => x.Title)
                 .Required("Title")
-                .MinLengthValidation(3, "Title")
-                .MaxLengthValidation(200, "Title");
+                .ValidMinLength(3, "Title")
+                .ValidMaxLength(200, "Title");
 
             RuleFor(x => x.Description)
-                .MaxLengthValidation(2000, "Description");
+                .ValidMaxLength(2000, "Description");
         }
     }
 }

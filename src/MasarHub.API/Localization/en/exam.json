@@ -1,0 +1,16 @@
+{
+  "ExamId": "Exam ID",
+  "PassingScorePercentage": "Passing score percentage",
+  "MaxAttempts": "Maximum attempts",
+  "DurationMinutes": "Duration (minutes)",
+  "IsPublished": "Published",
+
+  "exam.not_found": "Exam not found.",
+  "exam.invalid_passing_score": "Passing score must be between 0 and 100.",
+  "exam.cannot_modify_published_exam": "Published exams cannot be modified.",
+  "exam.cannot_unpublish_after_attempts": "Cannot unpublish the exam because it already has student submissions.",
+  "exam.cannot_delete_has_submission": "Cannot delete the exam because it already has student submissions.",
+  "exam.already_published": "The exam is already published.",
+  "exam.already_unpublished": "The exam is already unpublished.",
+  "exam.missing_questions": "Cannot publish an exam that contains no questions"
+}

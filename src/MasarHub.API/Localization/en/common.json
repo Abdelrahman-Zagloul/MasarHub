@@ -12,9 +12,12 @@
   "validation.max_length": "{PropertyName} must not exceed {MaxLength} characters",
   "validation.min_length": "{PropertyName} must be at least {MinLength} characters",
   "validation.length": "{PropertyName} must contain {MaxLength} digits",
+
+  "validation.greater_than_zero": "{PropertyName} must be Grather than Zero.",
+  "validation.invalid_range": "{PropertyName} must be between {From} and {To}.",
+
   "validation.invalid_enum": "{PropertyName} is invalid",
   "validation.invalid_guid": "{PropertyName} is invalid",
-  "validation.invalid_price": "{PropertyName} must be greater than {ComparisonValue}",
   "validation.invalid_url": "The URL format is invalid.",
   "validation.page_number_invalid": "Page number must be greater than 0.",
   "validation.page_size_invalid": "Page size must be greater than 0.",

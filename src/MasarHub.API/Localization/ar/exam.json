@@ -1,0 +1,16 @@
+{
+  "ExamId": "معرف الاختبار",
+  "PassingScorePercentage": "نسبة النجاح",
+  "MaxAttempts": "الحد الأقصى للمحاولات",
+  "DurationMinutes": "مدة الاختبار (بالدقائق)",
+  "IsPublished": "منشور",
+
+  "exam.not_found": "الاختبار غير موجود.",
+  "exam.invalid_passing_score": "يجب أن تكون نسبة النجاح بين 0 و100.",
+  "exam.cannot_modify_published_exam": "لا يمكن تعديل الاختبارات المنشورة.",
+  "exam.cannot_unpublish_after_attempts": "لا يمكن إلغاء نشر الاختبار لوجود محاولات سابقة للطلاب.",
+  "exam.cannot_delete_has_submission": "لا يمكن حذف هذا الاختبار لوجود محاولات سابقة للطلاب.",
+  "exam.already_published": "الاختبار منشور بالفعل.",
+  "exam.already_unpublished": "الاختبار غير منشور بالفعل.",
+  "exam.missing_questions": "لا يمكن نشر امتحان لا يحتوي علي اسئلة."
+}
