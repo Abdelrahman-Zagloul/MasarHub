@@ -5,6 +5,7 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Questions.Commands.CreateQuestion;
 using MasarHub.Application.Features.Questions.Commands.DeleteQuestion;
 using MasarHub.Application.Features.Questions.Commands.UpdateQuestion;
+using MasarHub.Application.Features.Questions.Queries.GetQuestionById;
 using MasarHub.Domain.Modules.Exams;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -66,11 +67,13 @@ namespace MasarHub.API.Controllers.V1
         }
 
         [HttpGet("{id:guid}")]
-        [EndpointSummary("Get question by ID (Not Implemented Now)")]
-        [EndpointDescription("Retrieves a specific question by its ID. Currently a Not Implemented endpoint returning OK.")]
-        public IActionResult GetQuestionById(Guid examId, Guid id)
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Get question by ID")]
+        [EndpointDescription("Retrieves a specific question with its options by ID. Instructor only.")]
+        public async Task<IActionResult> GetQuestionById(Guid examId, Guid id)
         {
-            return Ok("Not Implemented");
+            var result = await _sender.Send(new GetQuestionByIdQuery(examId, id, GetUserId()));
+            return await ToOkResultAsync(result);
         }
     }
 }
