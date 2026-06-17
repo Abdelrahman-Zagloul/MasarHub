@@ -22,17 +22,19 @@ namespace MasarHub.Application.Features.Exams.Commands.DeleteExam
 
         public async Task<Result> Handle(DeleteExamCommand request, CancellationToken cancellationToken)
         {
-            var deleteData = await _examQuery.GetDeleteDataAsync(request.ExamId, request.InstructorId, cancellationToken);
+            var examState = await _examQuery.GetExamStateAsync(request.ExamId, request.InstructorId, cancellationToken);
 
-            if (!deleteData.ExamExists)
+            if (!examState.ExamExists)
                 return Error.NotFound("exam.not_found");
 
-            if (!deleteData.IsOwner)
+            if (!examState.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
             var exam = await _examRepository.GetByIdAsync(request.ExamId, cancellationToken);
+            if (exam == null)
+                return Error.NotFound("exam.not_found");
 
-            var deleteResult = exam!.Delete(deleteData.HasAttempts);
+            var deleteResult = exam.Delete(examState.HasAttempts);
             if (deleteResult.IsFailure)
                 return Error.Conflict(deleteResult.Error.Code);
 

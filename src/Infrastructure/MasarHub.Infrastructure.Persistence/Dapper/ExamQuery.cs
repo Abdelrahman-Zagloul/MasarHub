@@ -49,7 +49,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             return await connection.QuerySingleOrDefaultAsync<ExamUpdateData>(command) ?? new ExamUpdateData(false, false);
         }
 
-        public async Task<ExamDeleteData> GetDeleteDataAsync(Guid examId, Guid instructorId, CancellationToken ct = default)
+        public async Task<ExamState> GetExamStateAsync(Guid examId, Guid instructorId, CancellationToken ct = default)
         {
             const string sql = @"
                 SELECT
@@ -68,8 +68,8 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             using var connection = _connectionFactory.CreateConnection();
 
             var command = new CommandDefinition(sql, new { examId, instructorId }, cancellationToken: ct);
-            var result = await connection.QuerySingleOrDefaultAsync<ExamDeleteData>(command);
-            return result ?? new ExamDeleteData(false, false, false);
+            var result = await connection.QuerySingleOrDefaultAsync<ExamState>(command);
+            return result ?? new ExamState(false, false, false);
         }
     }
 }
