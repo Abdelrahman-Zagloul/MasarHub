@@ -166,9 +166,8 @@ namespace MasarHub.Domain.Modules.Exams
 
         public DomainResult Publish()
         {
-            var draftResult = EnsureDraft();
-            if (draftResult.IsFailure)
-                return draftResult;
+            if (IsPublished)
+                return ExamErrors.AlreadyPublished;
 
             if (!_questions.Any())
                 return ExamErrors.MissingQuestions;
@@ -180,8 +179,11 @@ namespace MasarHub.Domain.Modules.Exams
 
         public DomainResult Unpublish(bool hasAttempts)
         {
+            if (IsDeleted)
+                return DomainError.AlreadyDeleted();
+
             if (!IsPublished)
-                return DomainResult.Success();
+                return ExamErrors.AlreadyUnpublished;
 
             if (hasAttempts)
                 return ExamErrors.CannotUnpublishAfterAttempts;

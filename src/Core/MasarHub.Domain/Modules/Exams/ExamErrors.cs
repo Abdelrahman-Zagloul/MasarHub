@@ -10,6 +10,8 @@ namespace MasarHub.Domain.Modules.Exams
         public static readonly DomainError CannotUnpublishAfterAttempts = new("exam.cannot_unpublish_after_attempts");
         public static readonly DomainError CannotDeleteExamWithSubmissions = new("exam.cannot_delete_has_submission");
         public static readonly DomainError CannotModifyPublishedExam = new("exam.cannot_modify_published_exam");
+        public static readonly DomainError AlreadyPublished = new("exam.already_published");
+        public static readonly DomainError AlreadyUnpublished = new("exam.already_unpublished");
         public static readonly DomainError NoAnswersSubmitted = new("exam.no_answers_submitted", "Answers");
         public static readonly DomainError QuestionMustHaveOptions = new("exam.question_must_have_options", "Options");
         public static readonly DomainError TrueFalseMaxOptions = new("exam.true_false_max_options", "Options");

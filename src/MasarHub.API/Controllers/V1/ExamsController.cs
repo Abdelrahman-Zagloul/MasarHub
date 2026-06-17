@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Exams.Commands.CreateExam;
 using MasarHub.Application.Features.Exams.Commands.DeleteExam;
+using MasarHub.Application.Features.Exams.Commands.ToggleExamPublished;
 using MasarHub.Application.Features.Exams.Commands.UpdateExam;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -45,6 +46,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> UpdateExam(Guid id, UpdateExamRequest request)
         {
             var command = new UpdateExamCommand(id, GetUserId(), request.Title, request.Description, request.MaxAttempts, request.PassingScorePercentage, request.DurationMinutes);
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpPatch("{id:guid}/published")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Toggle exam published state")]
+        [EndpointDescription("Toggles the published state of an exam (published/unpublished). Instructor only.")]
+        public async Task<IActionResult> ToggleExamPublished(Guid id, ToggleExamPublishedRequest request)
+        {
+            var command = new ToggleExamPublishedCommand(id, GetUserId(), request.IsPublished);
             var result = await _sender.Send(command);
             return await ToNoContentResultAsync(result);
         }
