@@ -1,5 +1,6 @@
 using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Features.Questions.Queries.GetAllQuestionsByExamId;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -49,9 +50,24 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             return question with { Options = options };
         }
 
-        public async Task<IReadOnlyList<QuestionQueryResult>> GetAllQuestionsByExamIdAsync(Guid examId, Guid instructorId, CancellationToken ct = default)
+        public async Task<IReadOnlyList<QuestionQueryResult>> GetAllQuestionsByExamIdAsync(GetAllQuestionsByExamIdQuery query, CancellationToken ct = default)
         {
-            const string sql = @"
+            var conditions = new List<string>();
+            var parameters = new DynamicParameters();
+
+            parameters.Add("ExamId", query.ExamId);
+            parameters.Add("InstructorId", query.InstructorId);
+            if (query.QuestionType.HasValue)
+            {
+                conditions.Add("QuestionType = @QuestionType");
+                parameters.Add("QuestionType", query.QuestionType.Value.ToString());
+            }
+
+            var questionTypeFilter = conditions.Count > 0
+            ? $" AND {string.Join(" AND ", conditions)}"
+            : string.Empty;
+
+            var sql = $@"
                 SELECT
                     q.Id,
                     q.ExamId,
@@ -62,7 +78,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 INNER JOIN exams.Exams e ON e.Id = q.ExamId AND e.IsDeleted = 0
                 INNER JOIN courses.Courses c ON c.Id = e.CourseId AND c.IsDeleted = 0
                 WHERE q.ExamId = @ExamId
-                  AND c.InstructorId = @InstructorId
+                  AND c.InstructorId = @InstructorId {questionTypeFilter}
                 ORDER BY q.CreatedAt;
 
                 SELECT
@@ -72,16 +88,16 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                     o.IsCorrect
                 FROM exams.Options o
                 INNER JOIN exams.Questions q ON q.Id = o.QuestionId
-                WHERE q.ExamId = @ExamId
+                WHERE q.ExamId = @ExamId {questionTypeFilter}
                 ORDER BY o.CreatedAt;
             ";
 
             using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, parameters, cancellationToken: ct);
 
-            var command = new CommandDefinition(sql, new { ExamId = examId, InstructorId = instructorId }, cancellationToken: ct);
             using var multi = await connection.QueryMultipleAsync(command);
-
             var questions = (await multi.ReadAsync<QuestionQueryResult>()).ToList();
+
             if (questions.Count == 0)
                 return questions;
 

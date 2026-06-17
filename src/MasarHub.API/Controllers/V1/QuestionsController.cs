@@ -5,6 +5,7 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Questions.Commands.CreateQuestion;
 using MasarHub.Application.Features.Questions.Commands.DeleteQuestion;
 using MasarHub.Application.Features.Questions.Commands.UpdateQuestion;
+using MasarHub.Application.Features.Questions.Queries.GetAllQuestionsByExamId;
 using MasarHub.Application.Features.Questions.Queries.GetQuestionById;
 using MasarHub.Domain.Modules.Exams;
 using MediatR;
@@ -73,6 +74,16 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> GetQuestionById(Guid examId, Guid id)
         {
             var result = await _sender.Send(new GetQuestionByIdQuery(examId, id, GetUserId()));
+            return await ToOkResultAsync(result);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Get all questions by exam ID")]
+        [EndpointDescription("Retrieves all questions with their options for an exam. Instructor only.")]
+        public async Task<IActionResult> GetAllQuestionsByExamId(Guid examId, QuestionType? questionType)
+        {
+            var result = await _sender.Send(new GetAllQuestionsByExamIdQuery(examId, GetUserId(), questionType));
             return await ToOkResultAsync(result);
         }
     }
