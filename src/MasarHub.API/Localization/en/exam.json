@@ -31,6 +31,7 @@
   "exam.multiple_choice_must_have_at_least_two_correct": "A multiple-choice question must have at least two correct options.",
   "exam.single_choice_must_have_between_3_and_6": "Single choice questions must have between 3 and 6 options.",
   "exam.multiple_choice_must_have_between_3_and_10": "Multiple choice questions must have between 3 and 10 options.",
-  "exam.option_not_found": "Option with ID {OptionId} not found."
+  "exam.option_not_found": "Option with ID {OptionId} not found.",
+  "exam.question_not_found": "Question not found in the exam."
 
 }

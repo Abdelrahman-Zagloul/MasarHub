@@ -145,7 +145,33 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
+        public DomainResult Publish()
+        {
+            if (IsPublished)
+                return ExamErrors.AlreadyPublished;
 
+            if (!_questions.Any())
+                return ExamErrors.MissingQuestions;
+
+            IsPublished = true;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult Unpublish(bool hasAttempts)
+        {
+            if (IsDeleted)
+                return DomainError.AlreadyDeleted();
+
+            if (!IsPublished)
+                return ExamErrors.AlreadyUnpublished;
+
+            if (hasAttempts)
+                return ExamErrors.CannotUnpublishAfterAttempts;
+
+            IsPublished = false;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
         public DomainResult AddQuestion(Question question)
         {
             var draftResult = EnsureDraft();
@@ -163,42 +189,20 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
-        public DomainResult Publish()
+        public DomainResult RemoveQuestion(Guid questionId)
         {
-            if (IsPublished)
-                return ExamErrors.AlreadyPublished;
+            var draftResult = EnsureDraft();
+            if (draftResult.IsFailure)
+                return draftResult;
 
-            if (!_questions.Any())
-                return ExamErrors.MissingQuestions;
+            var question = _questions.FirstOrDefault(q => q.Id == questionId);
+            if (question == null)
+                return ExamErrors.QuestionNotFound;
 
-            IsPublished = true;
+            _questions.Remove(question);
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
-        public DomainResult Unpublish(bool hasAttempts)
-        {
-            if (IsDeleted)
-                return DomainError.AlreadyDeleted();
-
-            if (!IsPublished)
-                return ExamErrors.AlreadyUnpublished;
-
-            if (hasAttempts)
-                return ExamErrors.CannotUnpublishAfterAttempts;
-
-            IsPublished = false;
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public decimal TotalMarks() => _questions.Sum(q => q.QuestionMark);
-
-        public decimal GetPassingScore() => TotalMarks() * PassingScorePercentage / 100m;
-
-        public bool CanAttempt(int currentAttempts) => currentAttempts < MaxAttempts;
-
         public DomainResult Delete(bool hasAttempts)
         {
             var draftResult = EnsureDraft();
@@ -211,13 +215,16 @@ namespace MasarHub.Domain.Modules.Exams
             return MarkAsDeleted();
         }
 
+        public decimal TotalMarks() => _questions.Sum(q => q.QuestionMark);
+        public decimal GetPassingScore() => TotalMarks() * PassingScorePercentage / 100m;
+        public bool CanAttempt(int currentAttempts) => currentAttempts < MaxAttempts;
+
         private DomainResult EnsureDraft()
         {
             return IsPublished
                 ? ExamErrors.CannotModifyPublishedExam
                 : DomainResult.Success();
         }
-
         private static bool IsValidPassingScore(int passingScorePercentage)
             => passingScorePercentage is >= 0 and <= 100;
     }

@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Questions.Commands.CreateQuestion;
+using MasarHub.Application.Features.Questions.Commands.DeleteQuestion;
 using MasarHub.Application.Features.Questions.Commands.UpdateQuestion;
 using MasarHub.Domain.Modules.Exams;
 using MediatR;
@@ -47,6 +48,18 @@ namespace MasarHub.API.Controllers.V1
         {
             var options = request.Options?.Select(o => new Question.OptionUpdateInput(o.OptionId, o.Text, o.IsCorrect)).ToList();
             var command = new UpdateQuestionCommand(examId, questionId, GetUserId(), request.QuestionText, request.QuestionMark, options);
+            var result = await _sender.Send(command);
+
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpDelete("{questionId:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Delete a question")]
+        [EndpointDescription("Deletes a question from an exam. Instructor only.")]
+        public async Task<IActionResult> Delete(Guid examId, Guid questionId)
+        {
+            var command = new DeleteQuestionCommand(examId, questionId, GetUserId());
             var result = await _sender.Send(command);
 
             return await ToNoContentResultAsync(result);

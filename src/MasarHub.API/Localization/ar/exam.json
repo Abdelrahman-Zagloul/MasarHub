@@ -31,5 +31,6 @@
   "exam.multiple_choice_must_have_at_least_two_correct": "يجب أن يحتوي سؤال الاختيارات المتعددة على إجابتين صحيحتين على الأقل.",
   "exam.single_choice_must_have_between_3_and_6": "يجب أن يحتوي سؤال الاختيار الواحد على 3 إلى 6 اختيارات.",
   "exam.multiple_choice_must_have_between_3_and_10": "يجب أن يحتوي سؤال الاختيارات المتعددة على 3 إلى 10 اختيارات.",
-  "exam.option_not_found": "الاختيار ذو المعرف {OptionId} غير موجود."
+  "exam.option_not_found": "الاختيار ذو المعرف {OptionId} غير موجود.",
+  "exam.question_not_found": "السؤال غير موجود في هذا الاختبار."
 }
