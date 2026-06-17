@@ -4,6 +4,13 @@
   "MaxAttempts": "Maximum attempts",
   "DurationMinutes": "Duration (minutes)",
   "IsPublished": "Published",
+  "QuestionId": "Question Id",
+  "OptionId": "Option Id",
+  "QuestionText": "Question text",
+  "QuestionMark": "Question mark",
+  "QuestionType": "Question type",
+  "Options": "Options",
+  "OptionText": "Option text",
 
   "exam.not_found": "Exam not found.",
   "exam.invalid_passing_score": "Passing score must be between 0 and 100.",
@@ -12,5 +19,19 @@
   "exam.cannot_delete_has_submission": "Cannot delete the exam because it already has student submissions.",
   "exam.already_published": "The exam is already published.",
   "exam.already_unpublished": "The exam is already unpublished.",
-  "exam.missing_questions": "Cannot publish an exam that contains no questions"
+  "exam.missing_questions": "Cannot publish an exam that contains no question s",
+  "question.not_found": "Question not found.",
+  "exam.invalid_question_exam_relation": "The question does not belong to the specified exam.",
+
+  "exam.invalid_question_type": "The specified question type is invalid.",
+  "exam.question_must_have_options": "A question must have at least one option.",
+  "exam.true_false_must_have_two_options": "A True/False question must have exactly two options.",
+  "exam.true_false_must_have_one_correct": "A True/False question must have exactly one correct option.",
+  "exam.single_choice_must_have_one_correct": "A single-choice question must have exactly one correct option.",
+  "exam.multiple_choice_must_have_at_least_two_correct": "A multiple-choice question must have at least two correct options.",
+  "exam.single_choice_must_have_between_3_and_6": "Single choice questions must have between 3 and 6 options.",
+  "exam.multiple_choice_must_have_between_3_and_10": "Multiple choice questions must have between 3 and 10 options.",
+  "exam.option_not_found": "Option with ID {OptionId} not found.",
+  "exam.question_not_found": "Question not found in the exam.",
+  "exam.duplicate_option_text": "Option texts must be unique within the same question."
 }

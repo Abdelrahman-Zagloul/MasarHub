@@ -4,6 +4,13 @@
   "MaxAttempts": "الحد الأقصى للمحاولات",
   "DurationMinutes": "مدة الاختبار (بالدقائق)",
   "IsPublished": "منشور",
+  "QuestionId": "معرف السؤال",
+  "OptionId": "معرف الاختيار",
+  "QuestionText": "نص السؤال",
+  "QuestionMark": "درجة السؤال",
+  "QuestionType": "نوع السؤال",
+  "Options": "الاختيارات",
+  "OptionText": "نص الخيار",
 
   "exam.not_found": "الاختبار غير موجود.",
   "exam.invalid_passing_score": "يجب أن تكون نسبة النجاح بين 0 و100.",
@@ -12,5 +19,19 @@
   "exam.cannot_delete_has_submission": "لا يمكن حذف هذا الاختبار لوجود محاولات سابقة للطلاب.",
   "exam.already_published": "الاختبار منشور بالفعل.",
   "exam.already_unpublished": "الاختبار غير منشور بالفعل.",
-  "exam.missing_questions": "لا يمكن نشر امتحان لا يحتوي علي اسئلة."
+  "exam.missing_questions": "لا يمكن نشر امتحان لا يحتوي علي اسئلة.",
+  "question.not_found": "السؤال غير موجود.",
+  "exam.invalid_question_exam_relation": "السؤال لا ينتمي إلى الامتحان المحدد.",
+
+  "exam.invalid_question_type": "نوع السؤال المحدد غير صالح.",
+  "exam.question_must_have_options": "يجب أن يحتوي السؤال على خيار واحد على الأقل.",
+  "exam.true_false_must_have_two_options": "يجب أن يحتوي سؤال الصح أو الخطأ على خيارين فقط.",
+  "exam.true_false_must_have_one_correct": "يجب أن يحتوي سؤال الصح أو الخطأ على إجابة صحيحة واحدة فقط.",
+  "exam.single_choice_must_have_one_correct": "يجب أن يحتوي سؤال الاختيار الواحد على إجابة صحيحة واحدة فقط.",
+  "exam.multiple_choice_must_have_at_least_two_correct": "يجب أن يحتوي سؤال الاختيارات المتعددة على إجابتين صحيحتين على الأقل.",
+  "exam.single_choice_must_have_between_3_and_6": "يجب أن يحتوي سؤال الاختيار الواحد على 3 إلى 6 اختيارات.",
+  "exam.multiple_choice_must_have_between_3_and_10": "يجب أن يحتوي سؤال الاختيارات المتعددة على 3 إلى 10 اختيارات.",
+  "exam.option_not_found": "الاختيار ذو المعرف {OptionId} غير موجود.",
+  "exam.question_not_found": "السؤال غير موجود في هذا الاختبار.",
+  "exam.duplicate_option_text": "يجب أن تكون نصوص الخيارات فريدة داخل السؤال نفسه."
 }

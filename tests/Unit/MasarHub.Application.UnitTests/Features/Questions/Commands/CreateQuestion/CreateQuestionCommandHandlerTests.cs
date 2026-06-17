@@ -1,33 +1,35 @@
 using FluentAssertions;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Abstractions.Persistence.Repositories;
-using MasarHub.Application.Features.Exams.Commands.UpdateExam;
+using MasarHub.Application.Features.Questions.Commands.CreateQuestion;
 using MasarHub.Domain.Modules.Exams;
 using Moq;
 
-namespace MasarHub.Application.UnitTests.Features.Exams.Commands.UpdateExam
+namespace MasarHub.Application.UnitTests.Features.Questions.Commands.CreateQuestion
 {
-    [Trait("UnitTests.Feature.Exams", "UpdateExam")]
-    public sealed class UpdateExamCommandHandlerTests
+    [Trait("UnitTests.Feature.Questions", "CreateQuestion")]
+    public sealed class CreateQuestionCommandHandlerTests
     {
         private readonly Mock<IExamQuery> _examQueryMock;
         private readonly Mock<IRepository<Exam>> _examRepositoryMock;
+        private readonly Mock<IRepository<Question>> _questionRepositoryMock;
         private readonly Mock<IUnitOfWork> _unitOfWorkMock;
-        private readonly UpdateExamCommandHandler _sut;
+        private readonly CreateQuestionCommandHandler _sut;
         private static readonly Guid InstructorId = Guid.NewGuid();
 
-        public UpdateExamCommandHandlerTests()
+        public CreateQuestionCommandHandlerTests()
         {
             _examQueryMock = new Mock<IExamQuery>();
             _examRepositoryMock = new Mock<IRepository<Exam>>();
+            _questionRepositoryMock = new Mock<IRepository<Question>>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _sut = new UpdateExamCommandHandler(_examQueryMock.Object, _examRepositoryMock.Object, _unitOfWorkMock.Object);
+            _sut = new CreateQuestionCommandHandler(_examQueryMock.Object, _examRepositoryMock.Object, _unitOfWorkMock.Object, _questionRepositoryMock.Object);
         }
 
         [Fact]
         public async Task Handle_ExamNotFound_ReturnsNotFoundError()
         {
-            var command = new UpdateExamCommand(Guid.NewGuid(), InstructorId, "New Title", null, null, null, null);
+            var command = CreateValidCommand();
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(command.ExamId, InstructorId, It.IsAny<CancellationToken>()))
@@ -43,7 +45,7 @@ namespace MasarHub.Application.UnitTests.Features.Exams.Commands.UpdateExam
         [Fact]
         public async Task Handle_NotOwner_ReturnsForbiddenError()
         {
-            var command = new UpdateExamCommand(Guid.NewGuid(), InstructorId, "New Title", null, null, null, null);
+            var command = CreateValidCommand();
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(command.ExamId, InstructorId, It.IsAny<CancellationToken>()))
@@ -59,7 +61,7 @@ namespace MasarHub.Application.UnitTests.Features.Exams.Commands.UpdateExam
         [Fact]
         public async Task Handle_ExamNotFoundAfterCheck_ReturnsNotFoundError()
         {
-            var command = new UpdateExamCommand(Guid.NewGuid(), InstructorId, "New Title", null, null, null, null);
+            var command = CreateValidCommand();
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(command.ExamId, InstructorId, It.IsAny<CancellationToken>()))
@@ -76,131 +78,15 @@ namespace MasarHub.Application.UnitTests.Features.Exams.Commands.UpdateExam
         }
 
         [Fact]
-        public async Task Handle_UpdateTitle_UpdatesTitle()
+        public async Task Handle_InvalidQuestionMark_ReturnsDomainError()
         {
-            var exam = CreateExam();
-            var command = new UpdateExamCommand(exam.Id, InstructorId, "New Title", null, null, null, null);
-
-            _examQueryMock
-                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true, false));
-            _examRepositoryMock
-                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(exam);
-
-            var result = await _sut.Handle(command, CancellationToken.None);
-
-            result.IsSuccess.Should().BeTrue();
-            exam.Title.Should().Be("New Title");
-            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_UpdateDescription_UpdatesDescription()
-        {
-            var exam = CreateExam();
-            var command = new UpdateExamCommand(exam.Id, InstructorId, null, "New description", null, null, null);
-
-            _examQueryMock
-                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true, false));
-            _examRepositoryMock
-                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(exam);
-
-            var result = await _sut.Handle(command, CancellationToken.None);
-
-            result.IsSuccess.Should().BeTrue();
-            exam.Description.Should().Be("New description");
-            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_UpdateMaxAttempts_UpdatesMaxAttempts()
-        {
-            var exam = CreateExam();
-            var command = new UpdateExamCommand(exam.Id, InstructorId, null, null, 3, null, null);
-
-            _examQueryMock
-                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true, false));
-            _examRepositoryMock
-                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(exam);
-
-            var result = await _sut.Handle(command, CancellationToken.None);
-
-            result.IsSuccess.Should().BeTrue();
-            exam.MaxAttempts.Should().Be(3);
-            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_UpdatePassingScore_UpdatesPassingScore()
-        {
-            var exam = CreateExam();
-            var command = new UpdateExamCommand(exam.Id, InstructorId, null, null, null, 80, null);
-
-            _examQueryMock
-                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true, false));
-            _examRepositoryMock
-                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(exam);
-
-            var result = await _sut.Handle(command, CancellationToken.None);
-
-            result.IsSuccess.Should().BeTrue();
-            exam.PassingScorePercentage.Should().Be(80);
-            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_UpdateDuration_UpdatesDuration()
-        {
-            var exam = CreateExam();
-            var command = new UpdateExamCommand(exam.Id, InstructorId, null, null, null, null, 90);
-
-            _examQueryMock
-                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true, false));
-            _examRepositoryMock
-                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(exam);
-
-            var result = await _sut.Handle(command, CancellationToken.None);
-
-            result.IsSuccess.Should().BeTrue();
-            exam.DurationInMinutes.Should().Be(90);
-            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_DurationNotProvided_DoesNotUpdateDuration()
-        {
-            var exam = CreateExam();
-            var originalDuration = exam.DurationInMinutes;
-            var command = new UpdateExamCommand(exam.Id, InstructorId, null, null, null, null, null);
-
-            _examQueryMock
-                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true, false));
-            _examRepositoryMock
-                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(exam);
-
-            var result = await _sut.Handle(command, CancellationToken.None);
-
-            result.IsSuccess.Should().BeTrue();
-            exam.DurationInMinutes.Should().Be(originalDuration);
-            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-        }
-
-        [Fact]
-        public async Task Handle_InvalidDuration_ReturnsDomainError()
-        {
-            var exam = CreateExam();
-            var command = new UpdateExamCommand(exam.Id, InstructorId, null, null, null, null, 0);
+            var exam = CreateDraftExam();
+            var command = new CreateQuestionCommand(exam.Id, InstructorId, "Sample question?", 0, QuestionType.SingleChoice,
+            [
+                new Question.OptionInput("Wrong A", false),
+                new Question.OptionInput("Correct", true),
+                new Question.OptionInput("Wrong B", false)
+            ]);
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
@@ -216,10 +102,15 @@ namespace MasarHub.Application.UnitTests.Features.Exams.Commands.UpdateExam
         }
 
         [Fact]
-        public async Task Handle_ClearDescription_ClearsDescription()
+        public async Task Handle_ValidSingleChoiceQuestion_ReturnsSuccessResponse()
         {
-            var exam = CreateExam();
-            var command = new UpdateExamCommand(exam.Id, InstructorId, null, string.Empty, null, null, null);
+            var exam = CreateDraftExam();
+            var command = new CreateQuestionCommand(exam.Id, InstructorId, "What is the capital of France?", 10, QuestionType.SingleChoice,
+            [
+                new Question.OptionInput("Paris", true),
+                new Question.OptionInput("London", false),
+                new Question.OptionInput("Berlin", false)
+            ]);
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
@@ -231,11 +122,103 @@ namespace MasarHub.Application.UnitTests.Features.Exams.Commands.UpdateExam
             var result = await _sut.Handle(command, CancellationToken.None);
 
             result.IsSuccess.Should().BeTrue();
-            exam.Description.Should().BeEmpty();
+            result.Value.QuestionText.Should().Be("What is the capital of France?");
+            result.Value.QuestionMark.Should().Be(10);
+            result.Value.QuestionType.Should().Be(QuestionType.SingleChoice);
+            result.Value.Options.Should().HaveCount(3);
+            result.Value.Options.Should().Contain(o => o.Text == "Paris" && o.IsCorrect);
             _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
         }
 
-        private static Exam CreateExam()
-            => Exam.Create(Guid.NewGuid(), "Original Title", 70, 2, null, "Original description", 60).Value;
+        [Fact]
+        public async Task Handle_ValidTrueFalseQuestion_ReturnsSuccessResponse()
+        {
+            var exam = CreateDraftExam();
+            var command = new CreateQuestionCommand(exam.Id, InstructorId, "The sky is blue.", 5, QuestionType.TrueFalse,
+            [
+                new Question.OptionInput("True", true),
+                new Question.OptionInput("False", false)
+            ]);
+
+            _examQueryMock
+                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
+            _examRepositoryMock
+                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(exam);
+
+            var result = await _sut.Handle(command, CancellationToken.None);
+
+            result.IsSuccess.Should().BeTrue();
+            result.Value.QuestionType.Should().Be(QuestionType.TrueFalse);
+            result.Value.Options.Should().HaveCount(2);
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        [Fact]
+        public async Task Handle_DuplicateOptionText_ReturnsDomainError()
+        {
+            var exam = CreateDraftExam();
+            var command = new CreateQuestionCommand(exam.Id, InstructorId, "Duplicate test?", 10, QuestionType.SingleChoice,
+            [
+                new Question.OptionInput("Same", true),
+                new Question.OptionInput("Same", false),
+            ]);
+
+            _examQueryMock
+                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
+            _examRepositoryMock
+                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(exam);
+
+            var result = await _sut.Handle(command, CancellationToken.None);
+
+            result.IsFailure.Should().BeTrue();
+            result.Errors.Should().Contain(e => e.Code == ExamErrors.DuplicateOptionText.Code);
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Handle_ValidMultipleChoiceQuestion_ReturnsSuccessResponse()
+        {
+            var exam = CreateDraftExam();
+            var command = new CreateQuestionCommand(exam.Id, InstructorId, "Select programming languages.", 15, QuestionType.MultipleChoice,
+            [
+                new Question.OptionInput("C#", true),
+                new Question.OptionInput("Java", true),
+                new Question.OptionInput("HTML", false),
+                new Question.OptionInput("Python", true)
+            ]);
+
+            _examQueryMock
+                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
+            _examRepositoryMock
+                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(exam);
+
+            var result = await _sut.Handle(command, CancellationToken.None);
+
+            result.IsSuccess.Should().BeTrue();
+            result.Value.QuestionType.Should().Be(QuestionType.MultipleChoice);
+            result.Value.Options.Should().HaveCount(4);
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
+        }
+
+        private static CreateQuestionCommand CreateValidCommand()
+        {
+            return new CreateQuestionCommand(Guid.NewGuid(), InstructorId, "Sample question?", 10, QuestionType.SingleChoice,
+            [
+                new Question.OptionInput("Wrong A", false),
+                new Question.OptionInput("Correct", true),
+                new Question.OptionInput("Wrong B", false)
+            ]);
+        }
+
+        private static Exam CreateDraftExam()
+        {
+            return Exam.Create(Guid.NewGuid(), "Test Exam", 70, 3).Value;
+        }
     }
 }

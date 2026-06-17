@@ -38,7 +38,8 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             const string sql = @"
                 SELECT
                     CAST(1 AS BIT) AS ExamExists,
-                    CAST(CASE WHEN c.InstructorId = @InstructorId THEN 1 ELSE 0 END AS BIT) AS IsOwner
+                    CAST(CASE WHEN c.InstructorId = @InstructorId THEN 1 ELSE 0 END AS BIT) AS IsOwner,
+                    e.IsPublished
                 FROM exams.Exams e
                 INNER JOIN courses.Courses c ON c.Id = e.CourseId AND c.IsDeleted = 0
                 WHERE e.Id = @ExamId AND e.IsDeleted = 0;";
@@ -46,7 +47,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             using var connection = _connectionFactory.CreateConnection();
 
             var command = new CommandDefinition(sql, new { examId, instructorId }, cancellationToken: ct);
-            return await connection.QuerySingleOrDefaultAsync<ExamUpdateData>(command) ?? new ExamUpdateData(false, false);
+            return await connection.QuerySingleOrDefaultAsync<ExamUpdateData>(command) ?? new ExamUpdateData(false, false, false);
         }
 
         public async Task<ExamState> GetExamStateAsync(Guid examId, Guid instructorId, CancellationToken ct = default)

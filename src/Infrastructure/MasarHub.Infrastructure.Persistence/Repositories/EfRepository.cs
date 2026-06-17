@@ -19,8 +19,17 @@ namespace MasarHub.Infrastructure.Persistence.Repositories
 
         public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken ct = default)
             => await _dbSet.FindAsync(id, ct);
-        public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default)
-            => await _dbSet.Where(predicate).FirstOrDefaultAsync(ct);
+        public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>>? filter = null, CancellationToken ct = default, params Expression<Func<TEntity, object>>[] includes)
+        {
+            IQueryable<TEntity> query = _dbSet.AsQueryable();
+            if (includes != null)
+                foreach (var include in includes)
+                    query = query.Include(include);
+
+            if (filter != null)
+                query = query.Where(filter);
+            return await query.FirstOrDefaultAsync(ct);
+        }
 
         public async Task AddAsync(TEntity entity, CancellationToken ct = default)
             => await _dbSet.AddAsync(entity, ct);

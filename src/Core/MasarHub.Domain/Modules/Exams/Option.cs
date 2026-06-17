@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -32,15 +33,21 @@ namespace MasarHub.Domain.Modules.Exams
             return new Option(questionId, text, isCorrect);
         }
 
-        public DomainResult UpdateOptionText(string optiontext)
+        public DomainResult UpdateOptionText(string optionText)
         {
-            var error = Guard.AgainstNullOrWhiteSpace(optiontext, nameof(optiontext));
-            if (error is not null)
+            var error = Guard.AgainstNullOrWhiteSpace(optionText, nameof(optionText));
+            if (error != DomainError.None)
                 return error;
 
-            Text = optiontext;
+            Text = optionText;
             MarkAsUpdated();
             return DomainResult.Success();
+        }
+
+        public void SetIsCorrect(bool isCorrect)
+        {
+            IsCorrect = isCorrect;
+            MarkAsUpdated();
         }
     }
 }
