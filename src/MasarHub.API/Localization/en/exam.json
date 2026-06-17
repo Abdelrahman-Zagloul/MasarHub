@@ -4,6 +4,8 @@
   "MaxAttempts": "Maximum attempts",
   "DurationMinutes": "Duration (minutes)",
   "IsPublished": "Published",
+  "QuestionId": "Question Id",
+  "OptionId": "Option Id",
   "QuestionText": "Question text",
   "QuestionMark": "Question mark",
   "QuestionType": "Question type",
@@ -18,6 +20,8 @@
   "exam.already_published": "The exam is already published.",
   "exam.already_unpublished": "The exam is already unpublished.",
   "exam.missing_questions": "Cannot publish an exam that contains no question s",
+  "question.not_found": "Question not found.",
+  "exam.invalid_question_exam_relation": "The question does not belong to the specified exam.",
 
   "exam.invalid_question_type": "The specified question type is invalid.",
   "exam.question_must_have_options": "A question must have at least one option.",
@@ -26,6 +30,7 @@
   "exam.single_choice_must_have_one_correct": "A single-choice question must have exactly one correct option.",
   "exam.multiple_choice_must_have_at_least_two_correct": "A multiple-choice question must have at least two correct options.",
   "exam.single_choice_must_have_between_3_and_6": "Single choice questions must have between 3 and 6 options.",
-  "exam.multiple_choice_must_have_between_3_and_10": "Multiple choice questions must have between 3 and 10 options."
+  "exam.multiple_choice_must_have_between_3_and_10": "Multiple choice questions must have between 3 and 10 options.",
+  "exam.option_not_found": "Option with ID {OptionId} not found."
 
 }

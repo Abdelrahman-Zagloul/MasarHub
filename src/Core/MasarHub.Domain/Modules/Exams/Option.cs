@@ -43,5 +43,11 @@ namespace MasarHub.Domain.Modules.Exams
             MarkAsUpdated();
             return DomainResult.Success();
         }
+
+        public void SetIsCorrect(bool isCorrect)
+        {
+            IsCorrect = isCorrect;
+            MarkAsUpdated();
+        }
     }
 }

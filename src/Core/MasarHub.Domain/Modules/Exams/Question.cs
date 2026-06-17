@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -7,8 +8,8 @@ namespace MasarHub.Domain.Modules.Exams
     public sealed class Question : BaseEntity
     {
         private readonly List<Option> _options = new();
-
         public sealed record OptionInput(string Text, bool IsCorrect);
+        public sealed record OptionUpdateInput(Guid OptionId, string? Text, bool? IsCorrect);
 
         public Guid ExamId { get; private set; }
         public string QuestionText { get; private set; } = null!;
@@ -45,75 +46,97 @@ namespace MasarHub.Domain.Modules.Exams
                 return error;
 
             var question = new Question(examId, questionText, questionMark, questionType);
-            var setOptionsResult = question.SetOptions(options);
+            var setOptionsResult = question.InitializeOptions(options);
 
             return setOptionsResult.IsFailure
                 ? setOptionsResult.Error
                 : question;
         }
-
-        private DomainResult SetOptions(IEnumerable<OptionInput> options)
+        public DomainResult UpdateQuestionText(string questionText)
         {
-            var optionInputs = options.ToList();
-            if (!optionInputs.Any())
+            var error = Guard.AgainstNullOrWhiteSpace(questionText, nameof(questionText));
+            if (error != DomainError.None)
+                return error;
+
+            QuestionText = questionText;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult UpdateQuestionMark(decimal questionMark)
+        {
+            var error = Guard.AgainstNegativeOrZero(questionMark, nameof(questionMark));
+            if (error != DomainError.None)
+                return error;
+
+            QuestionMark = questionMark;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult UpdateOptions(IEnumerable<OptionUpdateInput> optionInputs)
+        {
+            var inputs = optionInputs.ToList();
+            if (inputs.Count == 0)
                 return ExamErrors.QuestionMustHaveOptions;
 
-            _options.Clear();
-            int correctCount = 0;
-            foreach (var optionInput in optionInputs)
+            var optionsMap = _options.ToDictionary(o => o.Id);
+            foreach (var input in inputs)
             {
-                var optionResult = Option.Create(Id, optionInput.Text, optionInput.IsCorrect);
+                if (!optionsMap.TryGetValue(input.OptionId, out var option))
+                    return ExamErrors.OptionNotFound(input.OptionId);
+
+                if (input.Text != null)
+                {
+                    var updatedResult = option.UpdateOptionText(input.Text);
+                    if (updatedResult.IsFailure)
+                        return updatedResult;
+                }
+
+                if (input.IsCorrect.HasValue)
+                    option.SetIsCorrect(input.IsCorrect.Value);
+            }
+
+            var result = EnsureValidQuestion();
+            if (result.IsFailure)
+                return result;
+
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        private DomainResult InitializeOptions(IEnumerable<OptionInput> options)
+        {
+            var inputs = options.ToList();
+            if (inputs.Count == 0)
+                return ExamErrors.QuestionMustHaveOptions;
+
+            foreach (var input in inputs)
+            {
+                var optionResult = Option.Create(Id, input.Text, input.IsCorrect);
                 if (optionResult.IsFailure)
                     return optionResult.Error;
-
-                if (optionInput.IsCorrect)
-                    correctCount++;
 
                 _options.Add(optionResult.Value);
             }
 
-            return EnsureValidQuestion(correctCount);
+            return EnsureValidQuestion();
         }
-
-        private DomainResult EnsureValidQuestion(int correctCount)
+        private DomainResult EnsureValidQuestion()
         {
             var optionsCount = _options.Count;
+            var correctCount = _options.Count(o => o.IsCorrect);
 
-            switch (QuestionType)
+            return QuestionType switch
             {
-                case QuestionType.TrueFalse:
-                    if (optionsCount != 2)
-                        return ExamErrors.TrueFalseMustHaveTwoOptions;
+                QuestionType.TrueFalse when optionsCount != 2 => ExamErrors.TrueFalseMustHaveTwoOptions,
+                QuestionType.TrueFalse when correctCount != 1 => ExamErrors.TrueFalseMustHaveOneCorrect,
 
-                    if (correctCount != 1)
-                        return ExamErrors.TrueFalseMustHaveOneCorrect;
+                QuestionType.SingleChoice when optionsCount is < 3 or > 6 => ExamErrors.SingleChoiceMustHaveBetween3And6,
+                QuestionType.SingleChoice when correctCount != 1 => ExamErrors.SingleChoiceMustHaveOneCorrect,
 
-                    break;
+                QuestionType.MultipleChoice when optionsCount is < 3 or > 10 => ExamErrors.MultipleChoiceMustHaveBetween3And10,
+                QuestionType.MultipleChoice when correctCount < 2 => ExamErrors.MultipleChoiceMustHaveAtLeastTwoCorrect,
 
-                case QuestionType.SingleChoice:
-                    if (optionsCount < 3 || optionsCount > 6)
-                        return ExamErrors.SingleChoiceMustHaveBetween3And6;
-
-                    if (correctCount != 1)
-                        return ExamErrors.SingleChoiceMustHaveOneCorrect;
-
-                    break;
-
-                case QuestionType.MultipleChoice:
-                    if (optionsCount < 3 || optionsCount > 10)
-                        return ExamErrors.MultipleChoiceMustHaveBetween3And10;
-
-                    if (correctCount < 2)
-                        return ExamErrors.MultipleChoiceMustHaveAtLeastTwoCorrect;
-
-                    break;
-
-                default:
-                    return ExamErrors.InvalidQuestionType;
-            }
-
-            return DomainResult.Success();
+                _ => DomainResult.Success()
+            };
         }
-
     }
 }

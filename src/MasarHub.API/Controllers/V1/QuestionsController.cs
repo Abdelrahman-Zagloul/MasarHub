@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Questions.Commands.CreateQuestion;
+using MasarHub.Application.Features.Questions.Commands.UpdateQuestion;
 using MasarHub.Domain.Modules.Exams;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +39,18 @@ namespace MasarHub.API.Controllers.V1
                 : CreatedAtAction(nameof(GetQuestionById), new { examId = examId, id = result.Value.Id }, result.Value);
         }
 
+        [HttpPut("{questionId:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Update a question")]
+        [EndpointDescription("Updates the text, mark, and/or options of a question. Instructor only.")]
+        public async Task<IActionResult> Update(Guid examId, Guid questionId, UpdateQuestionRequest request)
+        {
+            var options = request.Options?.Select(o => new Question.OptionUpdateInput(o.OptionId, o.Text, o.IsCorrect)).ToList();
+            var command = new UpdateQuestionCommand(examId, questionId, GetUserId(), request.QuestionText, request.QuestionMark, options);
+            var result = await _sender.Send(command);
+
+            return await ToNoContentResultAsync(result);
+        }
 
         [HttpGet("{id:guid}")]
         [EndpointSummary("Get question by ID (Not Implemented Now)")]

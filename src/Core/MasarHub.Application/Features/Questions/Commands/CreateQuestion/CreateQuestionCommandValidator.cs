@@ -13,7 +13,7 @@ namespace MasarHub.Application.Features.Questions.Commands.CreateQuestion
 
             RuleFor(x => x.QuestionText)
                 .Required("QuestionText")
-                .ValidMinLength(1, "QuestionText")
+                .ValidMinLength(10, "QuestionText")
                 .ValidMaxLength(1000, "QuestionText");
 
             RuleFor(x => x.QuestionMark)
