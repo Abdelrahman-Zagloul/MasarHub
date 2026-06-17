@@ -127,9 +127,12 @@ namespace MasarHub.Application.UnitTests.Features.Exams.Commands.DeleteExam
             => Exam.Create(Guid.NewGuid(), "Original Title", 70, 2, null, "Original description", 60).Value;
         private static Question CreateQuestion(Guid examId)
         {
-            var option1 = new Question.OptionInput("Option 1", true);
-            var option2 = new Question.OptionInput("Option 2", false);
-            var options = new List<Question.OptionInput> { option1, option2 };
+            var options = new List<Question.OptionInput>
+            {
+                new Question.OptionInput("Option 1", false),
+                new Question.OptionInput("Option 2", true),
+                new Question.OptionInput("Option 3", false)
+            };
             var questionResult = Question.Create(examId, "Question 1", 1m, QuestionType.SingleChoice, options);
             return questionResult.Value;
         }
