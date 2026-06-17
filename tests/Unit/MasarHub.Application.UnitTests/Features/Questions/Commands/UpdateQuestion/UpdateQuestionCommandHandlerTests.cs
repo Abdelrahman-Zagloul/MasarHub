@@ -32,7 +32,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(command.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(false, false));
+                .ReturnsAsync(new ExamUpdateData(false, false, false));
 
             var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -48,12 +48,28 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(command.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, false));
+                .ReturnsAsync(new ExamUpdateData(true, false, false));
 
             var result = await _sut.Handle(command, CancellationToken.None);
 
             result.IsFailure.Should().BeTrue();
             result.Errors.Should().Contain(e => e.Code == "course.access_denied");
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
+        public async Task Handle_ExamIsPublished_ReturnsBadRequestError()
+        {
+            var command = CreateValidCommand();
+
+            _examQueryMock
+                .Setup(x => x.GetUpdateDataAsync(command.ExamId, InstructorId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ExamUpdateData(true, true, true));
+
+            var result = await _sut.Handle(command, CancellationToken.None);
+
+            result.IsFailure.Should().BeTrue();
+            result.Errors.Should().Contain(e => e.Code == "exam.cannot_modify_published_exam");
             _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
         }
 
@@ -64,7 +80,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(command.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -87,7 +103,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -110,7 +126,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -139,7 +155,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -170,7 +186,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -200,7 +216,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -226,7 +242,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -248,7 +264,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -274,7 +290,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),
@@ -303,7 +319,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
 
             _examQueryMock
                 .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new ExamUpdateData(true, true));
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
             _questionRepositoryMock
                 .Setup(x => x.GetAsync(
                     It.IsAny<Expression<Func<Question, bool>>>(),

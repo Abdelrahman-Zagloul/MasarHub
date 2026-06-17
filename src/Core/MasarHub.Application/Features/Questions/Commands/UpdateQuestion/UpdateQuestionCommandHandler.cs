@@ -30,6 +30,9 @@ namespace MasarHub.Application.Features.Questions.Commands.UpdateQuestion
             if (!examData.IsOwner)
                 return Error.Forbidden("course.access_denied");
 
+            if (examData.IsPublished)
+                return Error.BadRequest(ExamErrors.CannotModifyPublishedExam.Code);
+
             var question = await _questionRepository
                 .GetAsync(x => x.Id == request.QuestionId && x.ExamId == request.ExamId, cancellationToken, x => x.Options);
             if (question == null)

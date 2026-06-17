@@ -11,5 +11,5 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
 }
 
 public sealed record ExamCreationData(bool CourseExists, bool IsOwner, bool ModuleExists);
-public sealed record ExamUpdateData(bool ExamExists, bool IsOwner);
+public sealed record ExamUpdateData(bool ExamExists, bool IsOwner, bool IsPublished);
 public sealed record ExamState(bool ExamExists, bool IsOwner, bool HasAttempts);
