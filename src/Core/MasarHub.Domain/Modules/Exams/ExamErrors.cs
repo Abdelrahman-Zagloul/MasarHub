@@ -13,13 +13,18 @@ namespace MasarHub.Domain.Modules.Exams
         public static readonly DomainError AlreadyPublished = new("exam.already_published");
         public static readonly DomainError AlreadyUnpublished = new("exam.already_unpublished");
         public static readonly DomainError NoAnswersSubmitted = new("exam.no_answers_submitted", "Answers");
+
         public static readonly DomainError QuestionMustHaveOptions = new("exam.question_must_have_options", "Options");
-        public static readonly DomainError TrueFalseMaxOptions = new("exam.true_false_max_options", "Options");
-        public static readonly DomainError MultipleCorrectOptionsNotAllowed = new("exam.multiple_correct_options_not_allowed", "Options");
         public static readonly DomainError InvalidQuestionType = new("exam.invalid_question_type", "QuestionType");
+
+        public static readonly DomainError TrueFalseMaxOptions = new("exam.true_false_max_options", "Options");
         public static readonly DomainError TrueFalseMustHaveTwoOptions = new("exam.true_false_must_have_two_options", "Options");
         public static readonly DomainError TrueFalseMustHaveOneCorrect = new("exam.true_false_must_have_one_correct", "Options");
+
         public static readonly DomainError SingleChoiceMustHaveOneCorrect = new("exam.single_choice_must_have_one_correct", "Options");
+        public static readonly DomainError SingleChoiceMustHaveBetween3And6 = new("exam.single_choice_must_have_between_3_and_6", "Options");
+
         public static readonly DomainError MultipleChoiceMustHaveAtLeastTwoCorrect = new("exam.multiple_choice_must_have_at_least_two_correct", "Options");
+        public static readonly DomainError MultipleChoiceMustHaveBetween3And10 = new("exam.multiple_choice_must_have_between_3_and_10", "Options");
     }
 }

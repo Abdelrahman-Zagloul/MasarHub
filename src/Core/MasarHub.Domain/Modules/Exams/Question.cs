@@ -59,42 +59,53 @@ namespace MasarHub.Domain.Modules.Exams
                 return ExamErrors.QuestionMustHaveOptions;
 
             _options.Clear();
+            int correctCount = 0;
             foreach (var optionInput in optionInputs)
             {
                 var optionResult = Option.Create(Id, optionInput.Text, optionInput.IsCorrect);
                 if (optionResult.IsFailure)
                     return optionResult.Error;
 
-                var ruleResult = ValidateOptionRules(optionResult.Value!);
-                if (ruleResult.IsFailure)
-                    return ruleResult;
+                if (optionInput.IsCorrect)
+                    correctCount++;
 
-                _options.Add(optionResult.Value!);
+                _options.Add(optionResult.Value);
             }
 
-            return EnsureValid();
+            return EnsureValidQuestion(correctCount);
         }
 
-        private DomainResult ValidateOptionRules(Option option)
+        private DomainResult EnsureValidQuestion(int correctCount)
         {
+            var optionsCount = _options.Count;
+
             switch (QuestionType)
             {
                 case QuestionType.TrueFalse:
-                    if (_options.Count >= 2)
-                        return ExamErrors.TrueFalseMaxOptions;
+                    if (optionsCount != 2)
+                        return ExamErrors.TrueFalseMustHaveTwoOptions;
 
-                    if (option.IsCorrect && HasCorrectOption())
-                        return ExamErrors.MultipleCorrectOptionsNotAllowed;
+                    if (correctCount != 1)
+                        return ExamErrors.TrueFalseMustHaveOneCorrect;
 
                     break;
 
                 case QuestionType.SingleChoice:
-                    if (option.IsCorrect && HasCorrectOption())
-                        return ExamErrors.MultipleCorrectOptionsNotAllowed;
+                    if (optionsCount < 3 || optionsCount > 6)
+                        return ExamErrors.SingleChoiceMustHaveBetween3And6;
+
+                    if (correctCount != 1)
+                        return ExamErrors.SingleChoiceMustHaveOneCorrect;
 
                     break;
 
                 case QuestionType.MultipleChoice:
+                    if (optionsCount < 3 || optionsCount > 10)
+                        return ExamErrors.MultipleChoiceMustHaveBetween3And10;
+
+                    if (correctCount < 2)
+                        return ExamErrors.MultipleChoiceMustHaveAtLeastTwoCorrect;
+
                     break;
 
                 default:
@@ -104,38 +115,5 @@ namespace MasarHub.Domain.Modules.Exams
             return DomainResult.Success();
         }
 
-        private DomainResult EnsureValid()
-        {
-            if (!_options.Any())
-                return ExamErrors.QuestionMustHaveOptions;
-
-            switch (QuestionType)
-            {
-                case QuestionType.TrueFalse:
-                    if (_options.Count != 2)
-                        return ExamErrors.TrueFalseMustHaveTwoOptions;
-
-                    if (_options.Count(o => o.IsCorrect) != 1)
-                        return ExamErrors.TrueFalseMustHaveOneCorrect;
-
-                    break;
-
-                case QuestionType.SingleChoice:
-                    if (_options.Count(o => o.IsCorrect) != 1)
-                        return ExamErrors.SingleChoiceMustHaveOneCorrect;
-
-                    break;
-
-                case QuestionType.MultipleChoice:
-                    if (_options.Count(o => o.IsCorrect) < 2)
-                        return ExamErrors.MultipleChoiceMustHaveAtLeastTwoCorrect;
-
-                    break;
-            }
-
-            return DomainResult.Success();
-        }
-
-        private bool HasCorrectOption() => _options.Any(o => o.IsCorrect);
     }
 }
