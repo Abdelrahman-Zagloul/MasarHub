@@ -1,6 +1,5 @@
 using FluentValidation;
 using MasarHub.Application.Common.Extensions;
-using MasarHub.Domain.Modules.Exams;
 
 namespace MasarHub.Application.Features.Questions.Commands.UpdateQuestion
 {
@@ -21,27 +20,22 @@ namespace MasarHub.Application.Features.Questions.Commands.UpdateQuestion
             RuleFor(x => x.QuestionMark)
                 .ValidGreaterThanZero("QuestionMark");
 
-            When(x => x.Options is not null, () =>
+            When(x => x.Options != null, () =>
             {
                 RuleFor(x => x.Options)
                     .RequiredNonEmptyCollection("Options");
 
                 RuleForEach(x => x.Options)
-                    .SetValidator(new OptionUpdateInputValidator());
+                   .ChildRules(option =>
+                   {
+                       option.RuleFor(x => x.OptionId)
+                           .ValidGuid("OptionId");
+
+                       option.RuleFor(x => x.Text)
+                           .ValidMinLength(2, "OptionText")
+                           .ValidMaxLength(500, "OptionText");
+                   });
             });
-        }
-    }
-
-    public sealed class OptionUpdateInputValidator : AbstractValidator<Question.OptionUpdateInput>
-    {
-        public OptionUpdateInputValidator()
-        {
-            RuleFor(x => x.OptionId)
-                .ValidGuid("OptionId");
-
-            RuleFor(x => x.Text)
-                .ValidMinLength(2, "OptionText")
-                .ValidMaxLength(500, "OptionText");
         }
     }
 }

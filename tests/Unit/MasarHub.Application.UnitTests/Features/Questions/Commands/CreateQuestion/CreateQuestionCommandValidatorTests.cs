@@ -124,7 +124,36 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.CreateQuest
 
             result.IsValid.Should().BeFalse();
             result.Errors.Should().Contain(e => e.ErrorCode == "validation.required");
+        }
+
+        [Fact]
+        public void Validate_DuplicateOptionText_ReturnsValidationError()
+        {
+            var command = new CreateQuestionCommand(Guid.NewGuid(), InstructorId, "Sample question?", 10, QuestionType.SingleChoice,
+            [
+                new Question.OptionInput("Same Text", true),
+                new Question.OptionInput("Same Text", false),
+            ]);
+
+            var result = _sut.Validate(command);
+
             result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(e => e.ErrorCode == "validation.duplicate_option_text");
+        }
+
+        [Fact]
+        public void Validate_DuplicateOptionText_DifferentCase_ReturnsValidationError()
+        {
+            var command = new CreateQuestionCommand(Guid.NewGuid(), InstructorId, "Sample question?", 10, QuestionType.SingleChoice,
+            [
+                new Question.OptionInput("Option A", true),
+                new Question.OptionInput("option a", false),
+            ]);
+
+            var result = _sut.Validate(command);
+
+            result.IsValid.Should().BeFalse();
+            result.Errors.Should().Contain(e => e.ErrorCode == "validation.duplicate_option_text");
         }
     }
 }

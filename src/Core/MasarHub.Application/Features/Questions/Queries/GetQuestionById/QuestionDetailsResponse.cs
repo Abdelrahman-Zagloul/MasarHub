@@ -2,7 +2,7 @@ namespace MasarHub.Application.Features.Questions.Queries.GetQuestionById
 {
     public sealed record QuestionDetailsResponse
     (
-        Guid Id,
+        Guid QuestionId,
         Guid ExamId,
         string QuestionText,
         decimal QuestionMark,
@@ -10,5 +10,5 @@ namespace MasarHub.Application.Features.Questions.Queries.GetQuestionById
         IReadOnlyList<OptionResponse> Options
     );
 
-    public sealed record OptionResponse(Guid Id, string Text, bool IsCorrect);
+    public sealed record OptionResponse(Guid OptionId, Guid QuestionId, string Text, bool IsCorrect);
 }

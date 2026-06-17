@@ -30,6 +30,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
                 SELECT
                     o.Id,
+                    o.QuestionId,
                     o.Text,
                     o.IsCorrect
                 FROM exams.Options o
@@ -46,6 +47,51 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             var options = (await multi.ReadAsync<OptionQueryResult>()).ToList();
             return question with { Options = options };
+        }
+
+        public async Task<IReadOnlyList<QuestionQueryResult>> GetAllQuestionsByExamIdAsync(Guid examId, Guid instructorId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT
+                    q.Id,
+                    q.ExamId,
+                    q.QuestionText,
+                    q.QuestionMark,
+                    q.QuestionType
+                FROM exams.Questions q
+                INNER JOIN exams.Exams e ON e.Id = q.ExamId AND e.IsDeleted = 0
+                INNER JOIN courses.Courses c ON c.Id = e.CourseId AND c.IsDeleted = 0
+                WHERE q.ExamId = @ExamId
+                  AND c.InstructorId = @InstructorId
+                ORDER BY q.CreatedAt;
+
+                SELECT
+                    o.Id,
+                    o.QuestionId,
+                    o.Text,
+                    o.IsCorrect
+                FROM exams.Options o
+                INNER JOIN exams.Questions q ON q.Id = o.QuestionId
+                WHERE q.ExamId = @ExamId
+                ORDER BY o.CreatedAt;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+
+            var command = new CommandDefinition(sql, new { ExamId = examId, InstructorId = instructorId }, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var questions = (await multi.ReadAsync<QuestionQueryResult>()).ToList();
+            if (questions.Count == 0)
+                return questions;
+
+            var options = await multi.ReadAsync<OptionQueryResult>();
+            var optionsByQuestion = options.ToLookup(o => o.QuestionId);
+
+            for (int i = 0; i < questions.Count; i++)
+                questions[i] = questions[i] with { Options = optionsByQuestion[questions[i].Id].ToList() };
+
+            return questions;
         }
     }
 }

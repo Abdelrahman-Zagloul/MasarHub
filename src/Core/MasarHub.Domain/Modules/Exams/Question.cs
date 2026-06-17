@@ -124,6 +124,11 @@ namespace MasarHub.Domain.Modules.Exams
             var optionsCount = _options.Count;
             var correctCount = _options.Count(o => o.IsCorrect);
 
+            var uniqueOptions = new HashSet<string>(_options.Select(o => o.Text.Trim()), StringComparer.OrdinalIgnoreCase);
+            if (uniqueOptions.Count != optionsCount)
+                return ExamErrors.DuplicateOptionText;
+
+
             return QuestionType switch
             {
                 QuestionType.TrueFalse when optionsCount != 2 => ExamErrors.TrueFalseMustHaveTwoOptions,

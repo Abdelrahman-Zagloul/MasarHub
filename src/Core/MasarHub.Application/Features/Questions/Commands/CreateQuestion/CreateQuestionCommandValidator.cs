@@ -25,18 +25,30 @@ namespace MasarHub.Application.Features.Questions.Commands.CreateQuestion
             RuleFor(x => x.Options)
                 .RequiredNonEmptyCollection("Options");
 
-            RuleForEach(x => x.Options)
-                .SetValidator(new OptionInputValidator());
-        }
-    }
+            RuleFor(x => x.Options)
+                .Must(HaveUniqueOptionTexts)
+                .WithErrorCode("validation.duplicate_option_text")
+                .WithName("Options");
 
-    public sealed class OptionInputValidator : AbstractValidator<Question.OptionInput>
-    {
-        public OptionInputValidator()
+            RuleForEach(x => x.Options)
+                .ChildRules(rule =>
+                {
+                    rule.RuleFor(x => x.Text)
+                        .Required("OptionText")
+                        .ValidMaxLength(500, "OptionText");
+                });
+
+
+        }
+        private static bool HaveUniqueOptionTexts(IEnumerable<Question.OptionInput>? options)
         {
-            RuleFor(x => x.Text)
-                .Required("OptionText")
-                .ValidMaxLength(500, "OptionText");
+            if (options is null)
+                return true;
+
+            return options
+                .Select(o => o.Text.Trim())
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Count() == options.Count();
         }
     }
 }

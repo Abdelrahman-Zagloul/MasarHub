@@ -27,7 +27,7 @@ namespace MasarHub.Application.Features.Questions.Queries.GetQuestionById
                 question.QuestionText,
                 question.QuestionMark,
                 question.QuestionType,
-                question.Options.Select(o => new OptionResponse(o.Id, o.Text, o.IsCorrect)).ToList()
+                question.Options.Select(o => new OptionResponse(o.Id, request.QuestionId, o.Text, o.IsCorrect)).ToList()
             );
         }
     }

@@ -26,6 +26,7 @@ namespace MasarHub.Domain.Modules.Exams
 
         public static readonly DomainError MultipleChoiceMustHaveAtLeastTwoCorrect = new("exam.multiple_choice_must_have_at_least_two_correct", "Options");
         public static readonly DomainError MultipleChoiceMustHaveBetween3And10 = new("exam.multiple_choice_must_have_between_3_and_10", "Options");
+        public static readonly DomainError DuplicateOptionText = new("exam.duplicate_option_text", "Options");
         public static readonly DomainError QuestionNotFound = new("exam.question_not_found", "Question");
         public static DomainError OptionNotFound(Guid optionId) => new("exam.option_not_found", $"Option:{optionId}");
     }

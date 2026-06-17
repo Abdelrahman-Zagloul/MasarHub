@@ -306,6 +306,34 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.UpdateQuest
         }
 
         [Fact]
+        public async Task Handle_DuplicateOptionText_ReturnsDomainError()
+        {
+            var question = CreateTrueFalseQuestion(Guid.NewGuid());
+            var existingOptions = question.Options.ToList();
+            var updatedOptions = new List<Question.OptionUpdateInput>
+            {
+                new(existingOptions[0].Id, existingOptions[1].Text, true),
+            };
+            var command = new UpdateQuestionCommand(question.ExamId, question.Id, InstructorId, null, null, updatedOptions);
+
+            _examQueryMock
+                .Setup(x => x.GetUpdateDataAsync(question.ExamId, InstructorId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
+            _questionRepositoryMock
+                .Setup(x => x.GetAsync(
+                    It.IsAny<Expression<Func<Question, bool>>>(),
+                    It.IsAny<CancellationToken>(),
+                    It.IsAny<Expression<Func<Question, object>>[]>()))
+                .ReturnsAsync(question);
+
+            var result = await _sut.Handle(command, CancellationToken.None);
+
+            result.IsFailure.Should().BeTrue();
+            result.Errors.Should().Contain(e => e.Code == ExamErrors.DuplicateOptionText.Code);
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
         public async Task Handle_InvalidOptionsAfterUpdate_ReturnsDomainError()
         {
             var question = CreateTrueFalseQuestion(Guid.NewGuid());

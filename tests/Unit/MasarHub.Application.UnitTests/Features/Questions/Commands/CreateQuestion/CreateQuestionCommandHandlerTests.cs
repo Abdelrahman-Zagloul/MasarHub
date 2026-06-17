@@ -156,6 +156,30 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Commands.CreateQuest
         }
 
         [Fact]
+        public async Task Handle_DuplicateOptionText_ReturnsDomainError()
+        {
+            var exam = CreateDraftExam();
+            var command = new CreateQuestionCommand(exam.Id, InstructorId, "Duplicate test?", 10, QuestionType.SingleChoice,
+            [
+                new Question.OptionInput("Same", true),
+                new Question.OptionInput("Same", false),
+            ]);
+
+            _examQueryMock
+                .Setup(x => x.GetUpdateDataAsync(exam.Id, InstructorId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new ExamUpdateData(true, true, false));
+            _examRepositoryMock
+                .Setup(x => x.GetByIdAsync(exam.Id, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(exam);
+
+            var result = await _sut.Handle(command, CancellationToken.None);
+
+            result.IsFailure.Should().BeTrue();
+            result.Errors.Should().Contain(e => e.Code == ExamErrors.DuplicateOptionText.Code);
+            _unitOfWorkMock.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Never);
+        }
+
+        [Fact]
         public async Task Handle_ValidMultipleChoiceQuestion_ReturnsSuccessResponse()
         {
             var exam = CreateDraftExam();

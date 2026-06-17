@@ -41,8 +41,8 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Queries.GetQuestionB
             {
                 Options =
                 [
-                    new OptionQueryResult(Guid.NewGuid(), "True", true),
-                    new OptionQueryResult(Guid.NewGuid(), "False", false)
+                    new OptionQueryResult(Guid.NewGuid(),query.QuestionId, "True", true),
+                    new OptionQueryResult(Guid.NewGuid(), query.QuestionId,"False", false)
                 ]
             };
 
@@ -59,7 +59,7 @@ namespace MasarHub.Application.UnitTests.Features.Questions.Queries.GetQuestionB
                 "Test question?",
                 10,
                 "TrueFalse",
-                queryResult.Options.Select(o => new OptionResponse(o.Id, o.Text, o.IsCorrect)).ToList()));
+                queryResult.Options.Select(o => new OptionResponse(o.Id, query.QuestionId, o.Text, o.IsCorrect)).ToList()));
         }
     }
 }
