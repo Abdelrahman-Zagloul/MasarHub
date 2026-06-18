@@ -130,7 +130,7 @@ Complete authentication suite including register, login, 2FA, external auth, pas
 
 ### Caching & Background Jobs
 
-- Redis cache service with hybrid memory/Redis fallback
+- Redis cache service with hybrid memory/Redis fallback for better performance and fault tolerance
 - Hangfire dashboard & job processing
 - Background email and notification workflows
 
@@ -236,11 +236,13 @@ Serilog (Console, File, Seq)
 
 ## Testing
 
+🔹 Testing total **817** test cases (unit + Architecture + integration)  
+
 | Project | Type | Tests | Scope |
 |---------|------|:-----:|-------|
 | `MasarHub.ArchitectureTests` | Architecture | 9 | Layer dependencies, naming conventions |
-| `MasarHub.Application.UnitTests` | Unit | 475 | Handler + validator tests for all features |
-| `MasarHub.Domain.UnitTests` | Unit | 99 | Entity behavior (categories, courses, lessons, exams) |
+| `MasarHub.Application.UnitTests` | Unit | 535 | Handler + validator tests for all features |
+| `MasarHub.Domain.UnitTests` | Unit | 273 | Entity behavior (categories, courses, lessons, exams) |
 | `MasarHub.Infrastructure.UnitTests` | Unit | — | Infrastructure services |
 | `MasarHub.API.IntegrationTests` | Integration | — | API endpoint integration |
 | `MasarHub.Infrastructure.IntegrationTests` | Integration | — | Persistence integration |

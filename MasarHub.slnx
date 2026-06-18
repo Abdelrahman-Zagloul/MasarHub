@@ -2,6 +2,7 @@
   <Folder Name="/Solution Items/">
     <File Path=".gitignore" />
     <File Path="LICENSE" />
+    <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/MasarHub.API/MasarHub.API.csproj" />
@@ -23,6 +24,7 @@
     <Project Path="tests/Integration/MasarHub.Infrastructure.IntegrationTests/MasarHub.Infrastructure.IntegrationTests.csproj" />
     <Project Path="tests/Integration/MasarHub.API.IntegrationTests/MasarHub.API.IntegrationTests.csproj" />
   </Folder>
+  <Folder Name="/tests/" />
   <Folder Name="/tests/Architecture/">
     <Project Path="tests/Architecture/MasarHub.ArchitectureTests/MasarHub.ArchitectureTests.csproj" />
   </Folder>
