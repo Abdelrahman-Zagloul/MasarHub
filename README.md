@@ -1,371 +1,274 @@
 # MasarHub API
 
-[![.NET 10](https://img.shields.io/badge/.NET-10.0-blueviolet?logo=dotnet)](https://learn.microsoft.com/en-us/aspnet/core/)
-[![Swagger](https://img.shields.io/badge/Swagger-API%20Docs-green?logo=swagger)](https://masarhub.runasp.net/swagger/index.html)
-[![Scalar](https://img.shields.io/badge/Scalar-API%20Reference-black)](https://masarhub.runasp.net/scalar)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-Abdelrahman%20Zagloul-blue?logo=linkedin)](https://www.linkedin.com/in/abdelrahman-zagloul/)
+<a href="https://learn.microsoft.com/en-us/aspnet/core/" target="_blank"><img src="https://img.shields.io/badge/.NET-10.0-blueviolet?logo=dotnet" alt=".NET 10" /></a>
+<a href="https://masarhub.runasp.net/swagger/index.html" target="_blank"><img src="https://img.shields.io/badge/Swagger-API%20Docs-green?logo=swagger" alt="Swagger" /></a>
+<a href="https://masarhub.runasp.net/scalar" target="_blank"><img src="https://img.shields.io/badge/Scalar-API%20Reference-black" alt="Scalar" /></a>
+<a href="https://opensource.org/licenses/MIT" target="_blank"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT" /></a>
+<a href="https://www.linkedin.com/in/abdelrahman-zagloul/" target="_blank"><img src="https://img.shields.io/badge/LinkedIn-Abdelrahman%20Zagloul-blue?logo=linkedin" alt="LinkedIn" /></a>
 
-A work-in-progress **ASP.NET Core Web API** for an online learning platform built using
-**Clean Architecture**, **CQRS with MediatR**, and a modular Ritch domain model.
-
-MasarHub is designed to support students, instructors, courses, exams, certificates,
-orders, payments, notifications, localization, and secure account management. The current
-implementation focuses mainly on the authentication foundation, infrastructure setup,
-domain modeling, persistence, background processing, and real-time notification support.
-
----
-
-## Quick Overview
-
-- **Architecture:** Clean Architecture + CQRS (MediatR)
-- **Authentication:** JWT + Refresh Tokens (HttpOnly cookies)
-- **Identity:** ASP.NET Core Identity with role-based users
-- **Two-Factor Authentication:** Email, SMS, authenticator app, and recovery codes
-- **External Login:** Google, GitHub, LinkedIn, and Facebook provider support
-- **Persistence:** EF Core, SQL Server, Repository, Unit of Work, and Dapper
-- **Caching:** Redis cache service
-- **Background Jobs:** Hangfire with SQL Server storage
-- **Realtime:** SignalR notification hub
-- **Localization:** JSON-based localization for English and Arabic
-- **API Documentation:** Swagger and Scalar in development
-- **Logging:** Serilog with Console, File, and Seq sinks
+A **modular ASP.NET Core Web API** for an online learning platform, built with **Clean Architecture**, **DDD principles**, **CQRS with MediatR**, **Rich Domain Model**, and **Domain Events**.
 
 ---
 
 ## Table of Contents
 
-- [Features](#features)
-  - [Authentication & Authorization](#authentication--authorization)
-  - [Two-Factor Authentication](#two-factor-authentication)
-  - [External Authentication](#external-authentication)
-  - [Learning Platform Modules](#learning-platform-modules)
-  - [Notifications & Realtime](#notifications--realtime)
-  - [Localization](#localization)
-  - [Caching & Background Jobs](#caching--background-jobs)
-- [Architecture](#architecture)
-- [API & Platform Features](#api--platform-features)
-- [Tech Stack](#tech-stack)
-- [API Endpoints](#api-endpoints)
-- [Setup & Run](#setup--run)
-  - [Run Locally](#run-locally)
-  - [Database Migrations](#database-migrations)
-  - [Run Test Cases](#run-test-cases)
+- [Overview](#overview)
 - [Project Status](#project-status)
-- [Author](#author)
+- [Key Features](#key-features)
+  - [Authentication System](#authentication-system)
+  - [Localization](#localization)
+  - [Notifications & Realtime](#notifications-and-realtime)
+  - [Caching & Background Jobs](#caching--background-jobs)
+  - [Storage](#storage)
+  - [API Infrastructure](#api-infrastructure)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Testing](#testing)
+- [API Features](#api-features)
+- [API Documentation](#api-documentation)
+- [Setup & Run](#setup--run)
 
 ---
 
-## Features
+## Overview
 
-### Authentication & Authorization
+- **Architecture:** Clean Architecture + DDD + CQRS (MediatR) with Rich Domain Model & Domain Events
+- **Authentication:** JWT + Refresh Tokens (HttpOnly cookies)
+- **Identity:** ASP.NET Core Identity with role-based users (Admin, Instructor, Student)
+- **2FA:** Email, SMS, authenticator app, and recovery codes
+- **External Login:** Google, GitHub, LinkedIn, Facebook
+- **Persistence:** EF Core + SQL Server + Dapper
+- **Caching:** Redis with hybrid cache fallback
+- **Background Jobs:** Hangfire (SQL Server storage)
+- **Realtime:** SignalR notification hub
+- **Localization:** JSON-based (English / Arabic)
+- **API Docs:** Swagger + Scalar
+- **Logging:** Serilog (Console, File, Seq)
 
-- Student registration
-- Instructor registration
-- User login and logout
-- JWT access token generation
-- Refresh token rotation using secure HttpOnly cookies
-- Refresh token revocation
-- Email confirmation and resend confirmation support
-- Password management:
-  - Change password
-  - Forget password
-  - Reset password
-  - Verify password
-- Role-based users:
-  - Admin
-  - Instructor
-  - Student
+---
 
-### Two-Factor Authentication
+## Project Status
 
-- Enable and disable two-factor authentication
-- Send two-factor verification code
-- Verify two-factor code
-- Authenticator app setup
-- Authenticator code verification
-- Generate recovery codes
-- Verify recovery codes
-- Email templates for two-factor events
+The project is in **active development**. Instructor features are complete, student features are pending.
 
-### External Authentication
+### ✅ Instructor — Complete
 
-- Google login provider support
-- GitHub login provider support
-- LinkedIn login provider support
-- Facebook login provider support
-- External auth settings are isolated in configuration
+| Area | Status |
+|------|--------|
+| Authentication & account management | ✅ Complete |
+| Two-factor authentication (email, SMS, authenticator, recovery codes) | ✅ Complete |
+| External OAuth login (Google, GitHub, LinkedIn, Facebook) | ✅ Complete |
+| Category management (CRUD, reorder, parent/child hierarchy) | ✅ Complete |
+| Course management (CRUD, approval workflow, thumbnail, filters, instructor query) | ✅ Complete |
+| Module management (CRUD, reorder, background announcements) | ✅ Complete |
+| Lesson management (article/video, archive/preview, reorder, attachments, thumbnail) | ✅ Complete |
+| Exam management (CRUD, publish/unpublish) | ✅ Complete |
+| Question management (CRUD, get by ID, get by exam with QuestionType filter) | ✅ Complete |
+| File storage (Cloudinary with upload signature + auto cleanup) | ✅ Complete |
+| Real-time notifications (SignalR hub with user groups) | ✅ Complete |
+| Background jobs (Hangfire for email, notifications, cleanup) | ✅ Complete |
+| Unit test coverage (handler + validator for every feature) | ✅ Complete |
 
-### Learning Platform Modules
+### ⬜ Student & Admin — Pending
 
-The domain layer already contains the main learning platform modules:
+| Area | Status |
+|------|--------|
+| Enrollments & course enrollment | ⬜ Pending |
+| Course browsing & search | ⬜ Pending |
+| Lesson viewing & progress tracking | ⬜ Pending |
+| Exam attempts & answers | ⬜ Pending |
+| Certificates module | ⬜ Pending |
+| Orders & payments | ⬜ Pending |
+| Coupons & discounts | ⬜ Pending |
+| Course reviews & ratings | ⬜ Pending |
+| Instructor profiles & social links | ⬜ Pending |
+| Wishlist | ⬜ Pending |
+| Admin dashboard & analytics | ⬜ Pending |
+| User management | ⬜ Pending |
+| Content moderation | ⬜ Pending |
+| Platform settings | ⬜ Pending |
 
-- Courses
-- Course modules
-- Lessons:
-  - Video lessons
-  - Article lessons
-  - Resource lessons
-- Lesson attachments
-- Course progress
-- Lesson progress
-- Course reviews
-- Course announcements
-- Enrollments
-- Categories
-- Exams
-- Questions and options
-- Exam attempts and answers
-- Certificates
-- Certificate downloads
-- Orders
-- Payments
-- Coupons and coupon usage
-- Instructor profiles and social links
+---
 
-### Notifications & Realtime
+## Key Features
 
-- Notification domain model
-- Notification priorities and types
-- Background notification creation job
-- SignalR notification hub
-- Realtime notification service
-- User group mapping for admins, instructors, and students
+### Authentication System
+
+Complete authentication suite including register, login, 2FA, external auth, password management, email confirmation, and token management.
+
+#### Authentication & Authorization
+- Student & instructor registration
+- Login / logout with JWT + refresh tokens
+- Email confirmation & resend confirmation
+- Password management (change, forget, reset, verify)
+- Role-based authorization (Admin, Instructor, Student)
+
+#### Two-Factor Authentication
+- Enable / disable 2FA
+- Email & SMS verification codes
+- Authenticator app setup & verification
+- Recovery codes generation & verification
+
+#### External Authentication
+- Google, GitHub, LinkedIn, Facebook OAuth login
+- Isolated external auth configuration
+
+---
 
 ### Localization
 
-- JSON-based localization provider
-- Supported cultures:
-  - English (`en`)
-  - Arabic (`ar`)
-- Culture middleware
-- Localized API messages
+- JSON-based provider (English / Arabic)
+- Culture middleware with `Accept-Language` header
 - Cached localization resources
+
+### Notifications and Realtime
+
+- Notification domain model with priorities and types
+- Background notification creation via Hangfire
+- SignalR hub for real-time delivery
+- User group mapping (admins, instructors, students)
 
 ### Caching & Background Jobs
 
-- Redis cache service
-- Fail-isolated infrastructure service abstractions
-- Hangfire background job processing
-- Hangfire dashboard registration
+- Redis cache service with hybrid memory/Redis fallback
+- Hangfire dashboard & job processing
 - Background email and notification workflows
+
+### Storage
+
+- Cloudinary integration for file uploads
+- Upload signature generation
+- Automatic cleanup of stale resources (thumbnails, attachments, videos)
+
+### API Infrastructure
+
+- Hybrid URL + header API versioning
+- Rate limiting (global, sensitive, OTP, strict)
+- CORS for development and production
+- Custom JWT challenge & forbidden responses
+- Problem Details for consistent error responses
 
 ---
 
 ## Architecture
 
-This project follows **Clean Architecture** principles with a modular structure.
+Clean Architecture with 4 layers + tests:
 
 ```text
 MasarHub.slnx
-|-- src
-|   |-- MasarHub.API
-|   |   |-- Controllers
-|   |   |-- Extensions
-|   |   |-- Filters
-|   |   |-- Middlewares
-|   |   |-- Resources
-|   |   |-- SignalR
-|   |   `-- wwwroot/EmailTemplates
-|   |
-|   |-- Core
-|   |   |-- MasarHub.Application
-|   |   |   |-- Abstractions
-|   |   |   |-- Common
-|   |   |   |-- Features
-|   |   |   |-- Settings
-|   |   |   `-- Extensions
-|   |   |
-|   |   `-- MasarHub.Domain
-|   |       |-- Common
-|   |       `-- Modules
-|   |
-|   `-- Infrastructure
-|       |-- MasarHub.Infrastructure
-|       |   |-- ExternalServices
-|       |   |-- Identity
-|       |   |-- Jobs
-|       |   |-- Localization
-|       |   `-- Services
-|       |
-|       `-- MasarHub.Infrastructure.Persistence
-|           |-- Configurations
-|           |-- Contexts
-|           |-- Dapper
-|           |-- Identity
-|           |-- Migrations
-|           |-- Repositories
-|           `-- SeedData
-|
-`-- tests
+├── src/
+│   ├── MasarHub.API/                  # Presentation layer
+│   │   ├── Controllers/V1/            # API endpoints
+│   │   ├── Middlewares/                # Global exception handler, etc.
+│   │   ├── Filters/                   # Authorization filters
+│   │   ├── SignalR/                   # Real-time hubs
+│   │   ├── Localization/              # ar.json, en.json
+│   │   └── wwwroot/EmailTemplates/    # HTML email templates
+│   │
+│   ├── Core/
+│   │   ├── MasarHub.Application/      # CQRS commands/queries, handlers, validators
+│   │   │   ├── Features/              # Per-feature modules
+│   │   │   ├── Common/                # Behaviors, extensions, pagination, results
+│   │   │   └── Abstractions/          # Interfaces (queries, repositories, services)
+│   │   │
+│   │   └── MasarHub.Domain/           # Entities, value objects, domain events
+│   │       ├── Common/                # Base classes, guards, results, errors
+│   │       └── Modules/               # Categories, Courses, Exams, etc.
+│   │
+│   └── Infrastructure/
+│       ├── MasarHub.Infrastructure/   # External services, identity, jobs
+│       └── MasarHub.Infrastructure.Persistence/  # EF Core, Dapper, migrations
+│
+└── tests/
+    ├── Architecture/
+    │   └── MasarHub.ArchitectureTests/          # Layer dependency tests
+    ├── Integration/
+    │   ├── MasarHub.API.IntegrationTests/       # API endpoint integration
+    │   └── MasarHub.Infrastructure.IntegrationTests/  # Persistence integration
+    └── Unit/
+        ├── MasarHub.Application.UnitTests/      # Handler + validator tests
+        ├── MasarHub.Domain.UnitTests/           # Entity behavior tests
+        └── MasarHub.Infrastructure.UnitTests/   # Infrastructure service tests
 ```
 
 ### Architecture Highlights
 
-- Clean separation between API, Application, Domain, Infrastructure, and Persistence
-- CQRS pattern using MediatR
-- FluentValidation pipeline behavior
-- Domain entities isolated from web/API concerns
-- Infrastructure concerns hidden behind application abstractions
-- EF Core configurations separated by module
-- Repository and Unit of Work abstractions
-- Dapper connection factory for query-focused data access
-- Result pattern for predictable success/error handling
-- Dependency injection split by layer
-
----
-
-## API & Platform Features
-
-- API versioning using the `api-version` header
-- Swagger UI with JWT bearer support
-- Scalar API reference in development
-- Global problem details setup
-- Sliding window rate limiting policies:
-  - Global
-  - Sensitive
-  - OTP
-  - Strict
-- CORS configuration for development and production
-- Forwarded headers support for reverse proxies
-- Static files support for email templates
-- Serilog request logging
-- JSON enum serialization as strings
+- **CQRS** with MediatR for clean command/query separation
+- **FluentValidation** pipeline behavior for automatic validation
+- **Result pattern** for predictable error handling
+- **Dapper** for read queries (performance), **EF Core** for writes (consistency)
+- **Repository + Unit of Work** for data access abstraction
+- **Domain events** for side-effect separation
+- **Dependency injection** organized per layer
 
 ---
 
 ## Tech Stack
 
 ### Core & Architecture
-
-- ASP.NET Core (.NET 10)
-- Clean Architecture
-- CQRS Pattern
-- MediatR
-- FluentValidation
-- Result Pattern
+ASP.NET Core (.NET 10), Clean Architecture, CQRS, MediatR, FluentValidation, Result Pattern
 
 ### Data & Persistence
-
-- Entity Framework Core
-- SQL Server
-- ASP.NET Core Identity
-- Dapper
-- Generic Repository
-- Unit of Work
-- EF Core Migrations
+Entity Framework Core, SQL Server, ASP.NET Core Identity, Dapper, Generic Repository, Unit of Work
 
 ### Authentication & Security
+JWT Authentication, Refresh Tokens, HttpOnly Cookies, Role-Based Authorization, 2FA, External OAuth
 
-- JWT Authentication
-- Refresh Tokens
-- HttpOnly Secure Cookies
-- Role-Based Authorization
-- Two-Factor Authentication
-- External OAuth login providers
-
-### Caching & Background Processing
-
-- Redis
-- StackExchange.Redis
-- Hangfire
-- Hangfire SQL Server storage
+### Caching & Background
+Redis, StackExchange.Redis, Hangfire + SQL Server storage
 
 ### API & Documentation
-
-- Swagger / OpenAPI
-- Scalar API Reference
-- API Versioning
-- Rate Limiting
-- CORS
-- Problem Details
+Swagger / OpenAPI, Scalar, API Versioning, Rate Limiting, CORS, Problem Details
 
 ### Realtime & Notifications
-
-- SignalR
-- Notification Hub
-- Background notification jobs
+SignalR, Notification Hub, Background notification jobs
 
 ### Email & SMS
+SMTP, HTML templates, Twilio SMS
 
-- SMTP email service
-- HTML email templates
-- Twilio SMS service
+### File Storage
+Cloudinary (images, videos, attachments)
 
-### Logging & Diagnostics
-
-- Serilog
-- Console sink
-- File sink
-- Seq sink
+### Logging
+Serilog (Console, File, Seq)
 
 ---
 
-## API Endpoints
+## Testing
 
-**Local Base URL:**
+| Project | Type | Tests | Scope |
+|---------|------|:-----:|-------|
+| `MasarHub.ArchitectureTests` | Architecture | 9 | Layer dependencies, naming conventions |
+| `MasarHub.Application.UnitTests` | Unit | 475 | Handler + validator tests for all features |
+| `MasarHub.Domain.UnitTests` | Unit | 99 | Entity behavior (categories, courses, lessons, exams) |
+| `MasarHub.Infrastructure.UnitTests` | Unit | — | Infrastructure services |
+| `MasarHub.API.IntegrationTests` | Integration | — | API endpoint integration |
+| `MasarHub.Infrastructure.IntegrationTests` | Integration | — | Persistence integration |
 
-```text
-https://localhost:7232
-```
+---
 
-**Swagger UI:**
+## API Features
 
-```text
-https://localhost:7232/swagger
-```
+- Hybrid URL + header API versioning (`/api/v1/...` or `api-version` header)
+- Swagger UI & Scalar with JWT bearer authentication
+- AutoResponseType filter (infers success types from MediatR, auto-adds response schemas)
+- Global Problem Details error handling
+- Sliding window rate limiting (Global, Sensitive, OTP, Strict)
+- CORS for development & production
+- Forwarded headers for reverse proxies
+- Serilog request logging
+- JSON enum serialization as strings
 
-**Scalar API Reference:**
+---
 
-```text
-https://localhost:7232/scalar
-```
+## API Documentation
 
-### Authentication
+Interactive API docs are available at:
 
-| Method | Endpoint                        | Description                  |
-| ------ | ------------------------------- | ---------------------------- |
-| POST   | `/api/auth/student/register`    | Register student account     |
-| POST   | `/api/auth/instructor/register` | Register instructor account  |
-| POST   | `/api/auth/login`               | User login                   |
-| POST   | `/api/auth/external/login`      | Login using external provider |
-| POST   | `/api/auth/logout`              | User logout                  |
+- **Swagger** — [`https://masarhub.runasp.net/swagger/index.html`](https://masarhub.runasp.net/swagger/index.html)
+- **Scalar** — [`https://masarhub.runasp.net/scalar`](https://masarhub.runasp.net/scalar)
 
-### Email
-
-| Method | Endpoint                              | Description               |
-| ------ | ------------------------------------- | ------------------------- |
-| POST   | `/api/auth/email/confirm`             | Confirm email address     |
-| POST   | `/api/auth/email/resend-confirmation` | Resend confirmation email |
-
-### Tokens
-
-| Method | Endpoint                  | Description          |
-| ------ | ------------------------- | -------------------- |
-| POST   | `/api/auth/token/refresh` | Refresh access token |
-| POST   | `/api/auth/token/revoke`  | Revoke refresh token |
-
-### Password
-
-| Method | Endpoint                    | Description            |
-| ------ | --------------------------- | ---------------------- |
-| POST   | `/api/auth/password/change` | Change password        |
-| POST   | `/api/auth/password/forget` | Request password reset |
-| POST   | `/api/auth/password/reset`  | Reset password         |
-| POST   | `/api/auth/password/verify` | Verify password        |
-
-### Two-Factor Authentication
-
-| Method | Endpoint                                  | Description                    |
-| ------ | ----------------------------------------- | ------------------------------ |
-| POST   | `/api/auth/2fa/enable`                    | Enable two-factor auth         |
-| POST   | `/api/auth/2fa/disable`                   | Disable two-factor auth        |
-| POST   | `/api/auth/2fa/send-code`                 | Send two-factor code           |
-| POST   | `/api/auth/2fa/verify`                    | Verify two-factor code         |
-| POST   | `/api/auth/2fa/authenticator/setup`       | Setup authenticator app        |
-| POST   | `/api/auth/2fa/authenticator/verify`      | Verify authenticator code      |
-| POST   | `/api/auth/2fa/recovery-codes/generate`   | Generate recovery codes        |
-| POST   | `/api/auth/2fa/recovery-codes/verify`     | Verify recovery code           |
+For a complete endpoint reference, explore Swagger or Scalar.
 
 ---
 
@@ -397,10 +300,23 @@ dotnet run --project src/MasarHub.API
 ```
 
 The API will start on:
+- `https://localhost:7232`
+- `http://localhost:5266`
 
-```text
-https://localhost:7232
-http://localhost:5266
+### Database Migrations
+
+```bash
+dotnet ef database update --project src/Infrastructure/MasarHub.Infrastructure.Persistence --startup-project src/MasarHub.API
+```
+
+### Run Tests
+
+```bash
+# Run all tests
+dotnet test
+
+# Run specific test project
+dotnet test tests/Unit/MasarHub.Application.UnitTests
 ```
 
 ---
@@ -411,23 +327,9 @@ http://localhost:5266
 Software Engineer | Back End .NET Developer
 
 <p align="center">
-  <a href="mailto:abdelrahman.zagloul.dev@gmail.com">
-    <img height="75" src="https://go-skill-icons.vercel.app/api/icons?i=gmail" alt="Gmail"/>
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://github.com/Abdelrahman-Zagloul">
-    <img height="75" src="https://go-skill-icons.vercel.app/api/icons?i=github" alt="GitHub"/>
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://www.linkedin.com/in/abdelrahman-zagloul/">
-    <img height="75" src="https://go-skill-icons.vercel.app/api/icons?i=linkedin" alt="LinkedIn"/>
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://wa.me/0201285168885">
-    <img height="75" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"/>
-  </a>
-  &nbsp;&nbsp;
-  <a href="https://www.facebook.com/bdalrhmnzghlwl.291648">
-    <img height="75" src="https://go-skill-icons.vercel.app/api/icons?i=facebook" alt="Facebook"/>
-  </a>
+  <a href="mailto:abdelrahman.zagloul.dev@gmail.com" target="_blank"><img height="75" src="https://go-skill-icons.vercel.app/api/icons?i=gmail" alt="Gmail"/></a>&nbsp;&nbsp;
+  <a href="https://github.com/Abdelrahman-Zagloul" target="_blank"><img height="75" src="https://go-skill-icons.vercel.app/api/icons?i=github" alt="GitHub"/></a>&nbsp;&nbsp;
+  <a href="https://www.linkedin.com/in/abdelrahman-zagloul/" target="_blank"><img height="75" src="https://go-skill-icons.vercel.app/api/icons?i=linkedin" alt="LinkedIn"/></a>&nbsp;&nbsp;
+  <a href="https://wa.me/0201285168885" target="_blank"><img height="75" src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp"/></a>&nbsp;&nbsp;
+  <a href="https://www.facebook.com/bdalrhmnzghlwl.291648" target="_blank"><img height="75" src="https://go-skill-icons.vercel.app/api/icons?i=facebook" alt="Facebook"/></a>
 </p>
