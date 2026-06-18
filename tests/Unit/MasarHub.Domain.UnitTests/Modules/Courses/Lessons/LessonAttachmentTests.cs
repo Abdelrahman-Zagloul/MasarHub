@@ -3,6 +3,7 @@ using MasarHub.Domain.Modules.Courses.Lessons;
 
 namespace MasarHub.Domain.UnitTests.Modules.Courses.Lessons
 {
+    [Trait("UnitTests.Domain.Lessons", "LessonAttachment")]
     public sealed class LessonAttachmentTests
     {
         private static readonly Guid LessonId = Guid.NewGuid();

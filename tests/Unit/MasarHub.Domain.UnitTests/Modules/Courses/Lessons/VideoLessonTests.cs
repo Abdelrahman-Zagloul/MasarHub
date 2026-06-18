@@ -5,6 +5,7 @@ using MasarHub.Domain.Modules.Courses.Lessons;
 
 namespace MasarHub.Domain.UnitTests.Modules.Courses.Lessons
 {
+    [Trait("UnitTests.Domain.Lessons", "VideoLesson")]
     public sealed class VideoLessonTests
     {
         private static readonly Guid ModuleId = Guid.NewGuid();
