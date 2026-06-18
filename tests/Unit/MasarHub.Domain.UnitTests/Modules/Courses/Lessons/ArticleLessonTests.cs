@@ -4,6 +4,7 @@ using MasarHub.Domain.Modules.Courses.Lessons;
 
 namespace MasarHub.Domain.UnitTests.Modules.Courses.Lessons
 {
+    [Trait("UnitTests.Domain.Lessons", "ArticleLesson")]
     public sealed class ArticleLessonTests
     {
         private static readonly Guid ModuleId = Guid.NewGuid();

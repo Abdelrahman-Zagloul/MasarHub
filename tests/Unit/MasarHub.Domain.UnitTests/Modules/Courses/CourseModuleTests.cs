@@ -4,6 +4,7 @@ using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.UnitTests.Modules.Courses
 {
+    [Trait("UnitTests.Domain.Courses", "CourseModule")]
     public sealed class CourseModuleTests
     {
         private static readonly Guid ValidCourseId = Guid.NewGuid();

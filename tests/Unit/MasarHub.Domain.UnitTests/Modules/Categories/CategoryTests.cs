@@ -2,6 +2,7 @@ using MasarHub.Domain.Modules.Categories;
 
 namespace MasarHub.Domain.UnitTests.Modules.Categories
 {
+    [Trait("UnitTests.Domain.Categories", "Category")]
     public sealed class CategoryTests
     {
         private const string Name = "Programming";

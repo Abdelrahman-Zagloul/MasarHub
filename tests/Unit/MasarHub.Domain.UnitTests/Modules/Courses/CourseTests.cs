@@ -4,6 +4,7 @@ using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.UnitTests.Modules.Courses
 {
+    [Trait("UnitTests.Domain.Courses", "Course")]
     public sealed class CourseTests
     {
         private const string ValidTitle = "Advanced C# Programming";
