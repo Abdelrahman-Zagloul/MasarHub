@@ -5,6 +5,7 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Carts.Commands.AddToCart;
 using MasarHub.Application.Features.Carts.Commands.ClearCart;
 using MasarHub.Application.Features.Carts.Commands.RemoveFromCart;
+using MasarHub.Application.Features.Carts.Queries.GetCart;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,6 +22,16 @@ namespace MasarHub.API.Controllers.V1
         public CartsController(ILocalizationService localizationService, ISender sender) : base(localizationService)
         {
             _sender = sender;
+        }
+
+        [HttpGet]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Get cart")]
+        [EndpointDescription("Returns the current user's cart with all items.")]
+        public async Task<IActionResult> GetCart()
+        {
+            var result = await _sender.Send(new GetCartQuery(GetUserId()));
+            return await ToOkResultAsync(result);
         }
 
         [HttpPut("items/{courseId:guid}")]
