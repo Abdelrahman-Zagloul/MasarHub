@@ -295,5 +295,21 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return await connection.QuerySingleAsync<CourseAccessData>(command);
         }
+        public async Task<CourseCartData?> GetCourseCartDataAsync(Guid courseId, CancellationToken ct)
+        {
+            const string sql = @"
+                SELECT
+                    Id,
+                    Title,
+                    Price,
+                    ThumbnailPublicId,
+                    CAST(CASE WHEN Status = 'Published' THEN 1 ELSE 0 END AS BIT) AS IsPublished
+                FROM courses.Courses
+                WHERE Id = @CourseId AND IsDeleted = 0";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: ct);
+            return await connection.QuerySingleOrDefaultAsync<CourseCartData>(command);
+        }
     }
 }
