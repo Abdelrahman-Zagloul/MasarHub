@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Carts.Commands.AddToCart;
+using MasarHub.Application.Features.Carts.Commands.RemoveFromCart;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,16 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> AddToCart(Guid courseId)
         {
             var result = await _sender.Send(new AddToCartCommand(courseId, GetUserId()));
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpDelete("items/{courseId:guid}")]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Remove course from cart")]
+        [EndpointDescription("Removes a course from the current user's cart.")]
+        public async Task<IActionResult> RemoveFromCart(Guid courseId)
+        {
+            var result = await _sender.Send(new RemoveFromCartCommand(courseId, GetUserId()));
             return await ToNoContentResultAsync(result);
         }
     }

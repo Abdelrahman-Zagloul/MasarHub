@@ -5,8 +5,6 @@ namespace MasarHub.Application.Features.Carts.Models
 {
     public sealed class Cart
     {
-        // set as public for redis sterilize 
-
         public Guid UserId { get; set; }
         public List<CartItem> Items { get; set; } = [];
         public DateTimeOffset LastModifiedAt { get; set; }
@@ -32,7 +30,7 @@ namespace MasarHub.Application.Features.Carts.Models
         public Result RemoveItem(Guid courseId)
         {
             var item = Items.FirstOrDefault(i => i.CourseId == courseId);
-            if (item is null)
+            if (item == null)
                 return Error.NotFound("cart.course_not_found");
 
             Items.Remove(item);
