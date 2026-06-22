@@ -35,8 +35,8 @@ namespace MasarHub.Application.UnitTests.Features.Coupons.Commands.DeleteCoupon
             var command = new DeleteCouponCommand(Guid.NewGuid(), Guid.NewGuid(), UserId);
 
             _couponQueryMock
-                .Setup(x => x.GetDeleteCouponDataAsync(command.CouponId, UserId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync((DeleteCouponData?)null);
+                .Setup(x => x.GetCouponDataAsync(command.CouponId, UserId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync((CouponData?)null);
 
             var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -53,8 +53,8 @@ namespace MasarHub.Application.UnitTests.Features.Coupons.Commands.DeleteCoupon
             var command = new DeleteCouponCommand(courseId, Guid.NewGuid(), UserId);
 
             _couponQueryMock
-                .Setup(x => x.GetDeleteCouponDataAsync(command.CouponId, UserId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DeleteCouponData(courseId, false));
+                .Setup(x => x.GetCouponDataAsync(command.CouponId, UserId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CouponData(courseId, false));
 
             var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -72,8 +72,8 @@ namespace MasarHub.Application.UnitTests.Features.Coupons.Commands.DeleteCoupon
             var command = new DeleteCouponCommand(Guid.NewGuid(), couponId, UserId);
 
             _couponQueryMock
-                .Setup(x => x.GetDeleteCouponDataAsync(couponId, UserId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DeleteCouponData(otherCourseId, true));
+                .Setup(x => x.GetCouponDataAsync(couponId, UserId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CouponData(otherCourseId, true));
 
             var result = await _sut.Handle(command, CancellationToken.None);
 
@@ -92,8 +92,8 @@ namespace MasarHub.Application.UnitTests.Features.Coupons.Commands.DeleteCoupon
             var coupon = Coupon.Create("DISCOUNT", 10m, DiscountType.Fixed, DateTimeOffset.UtcNow.AddDays(30), 100, courseId).Value;
 
             _couponQueryMock
-                .Setup(x => x.GetDeleteCouponDataAsync(couponId, UserId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(new DeleteCouponData(courseId, true));
+                .Setup(x => x.GetCouponDataAsync(couponId, UserId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(new CouponData(courseId, true));
             _couponRepositoryMock
                 .Setup(x => x.GetByIdAsync(couponId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(coupon);

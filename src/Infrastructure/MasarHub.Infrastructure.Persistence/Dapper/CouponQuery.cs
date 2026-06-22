@@ -36,7 +36,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             return await connection.QuerySingleAsync<CreateCouponData>(command);
         }
 
-        public async Task<DeleteCouponData?> GetDeleteCouponDataAsync(Guid couponId, Guid instructorId, CancellationToken ct)
+        public async Task<CouponData?> GetCouponDataAsync(Guid couponId, Guid instructorId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT
@@ -49,7 +49,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             using var connection = _connectionFactory.CreateConnection();
             var command = new CommandDefinition(sql, new { Id = couponId, InstructorId = instructorId }, cancellationToken: ct);
-            return await connection.QueryFirstOrDefaultAsync<DeleteCouponData>(command);
+            return await connection.QueryFirstOrDefaultAsync<CouponData>(command);
         }
     }
 }

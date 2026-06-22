@@ -12,6 +12,7 @@
   "Coupon.NotApplicableToCourse": "This coupon is not applicable to this course.",
   "Coupon.InvalidPercentage": "Percentage value must be between 1 and 100.",
   "Coupon.InvalidExpiration": "Expiration date must be in the future.",
+  "Coupon.UsageLimitBelowUsedCount": "Usage limit cannot be less than the current number of used coupons.",
 
   "coupon.code_already_exists": "A coupon with this code already exists.",
   "coupon.not_found": "Coupon not found.",
