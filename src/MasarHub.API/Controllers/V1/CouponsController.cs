@@ -5,6 +5,8 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Coupons.Commands.CreateCoupon;
 using MasarHub.Application.Features.Coupons.Commands.DeleteCoupon;
 using MasarHub.Application.Features.Coupons.Commands.UpdateCoupon;
+using MasarHub.Application.Features.Coupons.Queries.GetCoupons;
+using MasarHub.Domain.Modules.Payments;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -61,7 +63,18 @@ namespace MasarHub.API.Controllers.V1
             return await ToNoContentResultAsync(result);
         }
 
+
         [HttpGet]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("List coupons")]
+        [EndpointDescription("Returns a paginated list of coupons for the specified course. Instructor only.")]
+        public async Task<IActionResult> GetCoupons(Guid courseId, CouponStatus? status = null)
+        {
+            var result = await _sender.Send(new GetCouponsQuery(courseId, GetUserId(), status));
+            return await ToOkResultAsync(result);
+        }
+
+        [HttpGet("{couponId:guid}")]
         public IActionResult GetCouponById(Guid courseId, Guid couponId)
         {
             return Ok();

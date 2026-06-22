@@ -1,10 +1,9 @@
 {
-  "Code": "Code",
   "Value": "Value",
   "Type": "Type",
   "ExpirationDate": "Expiration Date",
   "UsageLimit": "Usage Limit",
-  "CourseId": "Course ID",
+  "Status": "Status",
   "CouponId": "Coupon ID",
 
   "Coupon.Expired": "This coupon has expired.",
