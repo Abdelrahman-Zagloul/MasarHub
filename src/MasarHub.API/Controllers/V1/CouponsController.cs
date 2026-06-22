@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Coupons.Commands.CreateCoupon;
+using MasarHub.Application.Features.Coupons.Commands.DeleteCoupon;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace MasarHub.API.Controllers.V1
             _sender = sender;
         }
 
-        [HttpPost]
+        [HttpPost()]
         [Authorize(Roles = Roles.Instructor)]
         [EndpointSummary("Create a coupon")]
         [EndpointDescription("Creates a new coupon for a specific course. Instructor only.")]
@@ -36,6 +37,18 @@ namespace MasarHub.API.Controllers.V1
 
         }
 
+
+        [HttpDelete("{couponId:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Delete a coupon")]
+        [EndpointDescription("Deletes a coupon by ID. Instructor must own the associated course.")]
+        public async Task<IActionResult> DeleteCoupon(Guid courseId, Guid couponId)
+        {
+            var result = await _sender.Send(new DeleteCouponCommand(courseId, couponId, GetUserId()));
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpGet]
         public IActionResult GetCouponById(Guid courseId, Guid couponId)
         {
             return Ok();

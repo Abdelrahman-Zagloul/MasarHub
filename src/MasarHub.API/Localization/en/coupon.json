@@ -14,5 +14,6 @@
   "Coupon.InvalidExpiration": "Expiration date must be in the future.",
 
   "coupon.code_already_exists": "A coupon with this code already exists.",
-  "coupon.not_found": "Coupon not found."
+  "coupon.not_found": "Coupon not found.",
+  "coupon.course_mismatch": "The coupon does not belong to the specified course."
 }

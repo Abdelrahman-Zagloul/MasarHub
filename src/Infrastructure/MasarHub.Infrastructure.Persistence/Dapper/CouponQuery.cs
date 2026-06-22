@@ -36,5 +36,20 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             return await connection.QuerySingleAsync<CreateCouponData>(command);
         }
 
+        public async Task<DeleteCouponData?> GetDeleteCouponDataAsync(Guid couponId, Guid instructorId, CancellationToken ct)
+        {
+            const string sql = @"
+                SELECT
+                    c.CourseId,
+                    CASE WHEN co.InstructorId = @InstructorId THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsOwner
+                FROM payments.Coupons c
+                INNER JOIN courses.Courses co ON c.CourseId = co.Id
+                WHERE c.Id = @Id;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { Id = couponId, InstructorId = instructorId }, cancellationToken: ct);
+            return await connection.QueryFirstOrDefaultAsync<DeleteCouponData>(command);
+        }
     }
 }

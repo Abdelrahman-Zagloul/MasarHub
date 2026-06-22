@@ -14,5 +14,7 @@
   "Coupon.InvalidExpiration": "تاريخ الانتهاء يجب أن يكون في المستقبل.",
 
   "coupon.code_already_exists": "يوجد كوبون بهذا الكود بالفعل.",
-  "coupon.not_found": "الكوبون غير موجود."
+  "coupon.not_found": "الكوبون غير موجود.",
+  "coupon.course_mismatch": "الكوبون لا ينتمي إلى الدورة المحددة."
+
 }
