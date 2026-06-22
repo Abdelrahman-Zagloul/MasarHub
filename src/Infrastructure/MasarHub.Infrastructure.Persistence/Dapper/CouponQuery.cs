@@ -54,6 +54,31 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             return await connection.QueryFirstOrDefaultAsync<CouponData>(command);
         }
 
+        public async Task<CouponDetails> GetByIdAsync(Guid couponId, Guid courseId, Guid userId, CancellationToken ct)
+        {
+            const string sql = @"
+                SELECT CAST(1 AS BIT) AS IsOwner
+                FROM payments.Coupons c
+                INNER JOIN courses.Courses co ON c.CourseId = co.Id
+                WHERE c.Id = @CouponId AND c.CourseId = @CourseId AND co.IsDeleted = 0;
+
+                SELECT Id, Code, Value, Type, CourseId, ExpirationDate, UsageLimit, UsedCount, CreatedAt
+                FROM payments.Coupons
+                WHERE Id = @CouponId AND CourseId = @CourseId;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CouponId = couponId, CourseId = courseId, UserId = userId }, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var isOwner = await multi.ReadFirstOrDefaultAsync<bool?>();
+            if (isOwner == null)
+                return new CouponDetails(null, false);
+
+            var coupon = await multi.ReadFirstOrDefaultAsync<CouponResponse>();
+            return new CouponDetails(coupon, isOwner.Value);
+        }
+
         public async Task<CouponListResult> GetAllAsync(GetCouponsQuery query, Guid userId, CancellationToken ct)
         {
             var conditions = new List<string> { "c.CourseId = @CourseId" };

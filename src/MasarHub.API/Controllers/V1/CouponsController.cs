@@ -5,6 +5,7 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Coupons.Commands.CreateCoupon;
 using MasarHub.Application.Features.Coupons.Commands.DeleteCoupon;
 using MasarHub.Application.Features.Coupons.Commands.UpdateCoupon;
+using MasarHub.Application.Features.Coupons.Queries.GetCouponById;
 using MasarHub.Application.Features.Coupons.Queries.GetCoupons;
 using MasarHub.Domain.Modules.Payments;
 using MediatR;
@@ -75,9 +76,13 @@ namespace MasarHub.API.Controllers.V1
         }
 
         [HttpGet("{couponId:guid}")]
-        public IActionResult GetCouponById(Guid courseId, Guid couponId)
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Get coupon by ID")]
+        [EndpointDescription("Returns coupon details. Instructor must own the associated course.")]
+        public async Task<IActionResult> GetCouponById(Guid courseId, Guid couponId)
         {
-            return Ok();
+            var result = await _sender.Send(new GetCouponByIdQuery(courseId, couponId, GetUserId()));
+            return await ToOkResultAsync(result);
         }
     }
 }
