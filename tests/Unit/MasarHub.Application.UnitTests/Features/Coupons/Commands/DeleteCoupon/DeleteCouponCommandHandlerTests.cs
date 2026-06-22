@@ -1,8 +1,6 @@
 using FluentAssertions;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Abstractions.Persistence.Repositories;
-using MasarHub.Application.Common.Results;
-using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Coupons.Commands.DeleteCoupon;
 using MasarHub.Domain.Modules.Payments;
 using Moq;
