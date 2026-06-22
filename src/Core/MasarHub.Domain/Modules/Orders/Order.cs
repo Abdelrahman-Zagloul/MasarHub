@@ -87,7 +87,14 @@ namespace MasarHub.Domain.Modules.Orders
             MarkAsUpdated();
             return DomainResult.Success();
         }
-        public DomainResult Delete() => MarkAsDeleted();
+        public DomainResult Delete()
+        {
+            if (Status != OrderStatus.PendingPayment && Status != OrderStatus.Cancelled)
+                return OrderErrors.InvalidStatusForDeletion;
+
+            MarkAsDeleted();
+            return DomainResult.Success();
+        }
 
         private void RecalculateFinalAmount()
         {

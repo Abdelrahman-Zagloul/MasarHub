@@ -11,5 +11,6 @@ namespace MasarHub.Domain.Modules.Orders
         public static readonly DomainError InvalidStatusTransition = new("order.invalid_status_transition");
         public static readonly DomainError DuplicateCourse = new("order.duplicate_course", "CourseId");
         public static readonly DomainError EmptyOrder = new("order.empty_order");
+        public static readonly DomainError InvalidStatusForDeletion = new("order.invalid_status_for_deletion");
     }
 }

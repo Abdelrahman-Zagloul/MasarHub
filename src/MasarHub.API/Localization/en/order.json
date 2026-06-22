@@ -6,5 +6,6 @@
   "order.duplicate_course": "Course already exists in the order.",
   "order.empty_order": "Cannot place an order with no items.",
   "order.not_found": "Order not found.",
-  "order.not_owned": "You do not have permission to cancel this order."
+  "order.not_owned": "You do not have permission to cancel this order.",
+  "order.invalid_status_for_deletion": "Cannot delete order in this status."
 }

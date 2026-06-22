@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Orders.Commands.CancelOrder;
 using MasarHub.Application.Features.Orders.Commands.CreateOrder;
+using MasarHub.Application.Features.Orders.Commands.DeleteOrder;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,9 +43,17 @@ namespace MasarHub.API.Controllers.V1
         [EndpointDescription("Cancels a pending order.")]
         public async Task<IActionResult> CancelOrder(Guid orderId)
         {
-            var command = new CancelOrderCommand(GetUserId(), orderId);
-            var result = await _sender.Send(command);
+            var result = await _sender.Send(new CancelOrderCommand(GetUserId(), orderId));
+            return await ToNoContentResultAsync(result);
+        }
 
+        [HttpDelete("{orderId:guid}")]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Delete an order")]
+        [EndpointDescription("Delete a pending order.")]
+        public async Task<IActionResult> DeleteOrder(Guid orderId)
+        {
+            var result = await _sender.Send(new DeleteOrderCommand(GetUserId(), orderId));
             return await ToNoContentResultAsync(result);
         }
 
