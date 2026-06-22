@@ -51,10 +51,8 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Payments
                    .HasForeignKey(c => c.CourseId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasIndex(c => c.Code)
+            builder.HasIndex(c => new { c.Code, c.CourseId })
                    .IsUnique();
-
-            builder.HasIndex(c => c.CourseId);
         }
     }
 }

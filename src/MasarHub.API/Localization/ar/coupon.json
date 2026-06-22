@@ -1,0 +1,20 @@
+{
+  "Value": "القيمة",
+  "Type": "النوع",
+  "ExpirationDate": "تاريخ الانتهاء",
+  "UsageLimit": "الحد الأقصى للاستخدام",
+  "Status": "الحالة",
+  "CouponId": "معرف الكوبون",
+
+  "Coupon.Expired": "انتهت صلاحية هذا الكوبون.",
+  "Coupon.Exhausted": "تم استنفاد الحد الأقصى لاستخدام هذا الكوبون.",
+  "Coupon.NotApplicableToCourse": "هذا الكوبون غير قابل للتطبيق على هذا الكورس.",
+  "Coupon.InvalidPercentage": "قيمة النسبة المئوية يجب أن تكون بين 1 و 100.",
+  "Coupon.InvalidExpiration": "تاريخ الانتهاء يجب أن يكون في المستقبل.",
+  "Coupon.UsageLimitBelowUsedCount": "لا يمكن أن يكون حد الاستخدام أقل من عدد مرات الاستخدام الحالية.",
+
+  "coupon.code_already_exists": "يوجد كوبون بهذا الكود بالفعل.",
+  "coupon.not_found": "الكوبون غير موجود.",
+  "coupon.course_mismatch": "الكوبون لا ينتمي إلى الدورة المحددة."
+
+}

@@ -14,5 +14,6 @@ namespace MasarHub.Domain.Modules.Payments
         public static readonly DomainError NotApplicableToCourse = new("Coupon.NotApplicableToCourse", "CourseId");
         public static readonly DomainError InvalidPercentage = new("Coupon.InvalidPercentage", "Value");
         public static readonly DomainError InvalidExpiration = new("Coupon.InvalidExpiration", "ExpirationDate");
+        public static readonly DomainError UsageLimitBelowUsedCount = new("Coupon.UsageLimitBelowUsedCount", "UsageLimit");
     }
 }

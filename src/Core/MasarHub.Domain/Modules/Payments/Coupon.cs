@@ -96,6 +96,44 @@ namespace MasarHub.Domain.Modules.Payments
             return DomainResult.Success();
         }
 
+        public DomainResult UpdateValue(decimal newValue)
+        {
+            var error = Guard.AgainstNegativeOrZero(newValue, nameof(newValue));
+            if (error != DomainError.None)
+                return error;
+
+            if (Type == DiscountType.Percentage && newValue > 100)
+                return CouponErrors.InvalidPercentage;
+
+            Value = newValue;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+
+        public DomainResult UpdateExpirationDate(DateTimeOffset newExpirationDate)
+        {
+            if (newExpirationDate <= DateTimeOffset.UtcNow)
+                return CouponErrors.InvalidExpiration;
+
+            ExpirationDate = newExpirationDate;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+
+        public DomainResult UpdateUsageLimit(int newUsageLimit)
+        {
+            var error = Guard.AgainstNegativeOrZero(newUsageLimit, nameof(newUsageLimit));
+            if (error != DomainError.None)
+                return error;
+
+            if (newUsageLimit < UsedCount)
+                return CouponErrors.UsageLimitBelowUsedCount;
+
+            UsageLimit = newUsageLimit;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+
         public DomainResult MarkUsed()
         {
             if (IsExhausted())
