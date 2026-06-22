@@ -1,6 +1,10 @@
 {
-  "Order.InvalidDiscount": "Invalid discount amount.",
-  "Order.InvalidStatusTransition": "Cannot change order status in its current state.",
-  "Order.DuplicateCourse": "Course already exists in the order.",
-  "Order.EmptyOrder": "Cannot place an order with no items."
+  "OrderId": "Order Id",
+
+  "order.invalid_discount": "Invalid discount amount.",
+  "order.invalid_status_transition": "Cannot change order status in its current state.",
+  "order.duplicate_course": "Course already exists in the order.",
+  "order.empty_order": "Cannot place an order with no items.",
+  "order.not_found": "Order not found.",
+  "order.not_owned": "You do not have permission to cancel this order."
 }

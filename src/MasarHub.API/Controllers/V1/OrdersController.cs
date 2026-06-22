@@ -2,6 +2,7 @@ using Asp.Versioning;
 using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
+using MasarHub.Application.Features.Orders.Commands.CancelOrder;
 using MasarHub.Application.Features.Orders.Commands.CreateOrder;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -33,6 +34,18 @@ namespace MasarHub.API.Controllers.V1
             return result.IsFailure
                 ? await HandleError(result)
                 : CreatedAtAction(nameof(GetOrderById), new { orderId = result.Value.Id }, result.Value);
+        }
+
+        [HttpPut("{orderId:guid}/cancel")]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Cancel an order")]
+        [EndpointDescription("Cancels a pending order.")]
+        public async Task<IActionResult> CancelOrder(Guid orderId)
+        {
+            var command = new CancelOrderCommand(GetUserId(), orderId);
+            var result = await _sender.Send(command);
+
+            return await ToNoContentResultAsync(result);
         }
 
         [HttpGet("{orderId:guid}")]

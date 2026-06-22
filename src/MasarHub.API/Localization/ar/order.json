@@ -1,6 +1,10 @@
 {
-  "Order.InvalidDiscount": "مبلغ الخصم غير صالح.",
-  "Order.InvalidStatusTransition": "لا يمكن تغيير حالة الطلب في وضعه الحالي.",
-  "Order.DuplicateCourse": "الكورس موجود بالفعل في الطلب.",
-  "Order.EmptyOrder": "لا يمكن إنشاء طلب بدون عناصر."
+  "OrderId": "معرف الطلب",
+
+  "order.invalid_discount": "مبلغ الخصم غير صالح.",
+  "order.invalid_status_transition": "لا يمكن تغيير حالة الطلب في وضعه الحالي.",
+  "order.duplicate_course": "الكورس موجود بالفعل في الطلب.",
+  "order.empty_order": "لا يمكن إنشاء طلب بدون عناصر.",
+  "order.not_found": "الطلب غير موجود.",
+  "order.not_owned": "ليس لديك صلاحية إلغاء هذا الطلب."
 }
