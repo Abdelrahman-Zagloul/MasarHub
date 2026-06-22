@@ -1,0 +1,18 @@
+{
+  "Code": "Code",
+  "Value": "Value",
+  "Type": "Type",
+  "ExpirationDate": "Expiration Date",
+  "UsageLimit": "Usage Limit",
+  "CourseId": "Course ID",
+  "CouponId": "Coupon ID",
+
+  "Coupon.Expired": "This coupon has expired.",
+  "Coupon.Exhausted": "This coupon has reached its usage limit.",
+  "Coupon.NotApplicableToCourse": "This coupon is not applicable to this course.",
+  "Coupon.InvalidPercentage": "Percentage value must be between 1 and 100.",
+  "Coupon.InvalidExpiration": "Expiration date must be in the future.",
+
+  "coupon.code_already_exists": "A coupon with this code already exists.",
+  "coupon.not_found": "Coupon not found."
+}
