@@ -38,13 +38,10 @@ namespace MasarHub.Domain.Modules.Orders
                 Guard.AgainstNegative(discountAmount, nameof(discountAmount))
             );
 
-            if (error is not null)
+            if (error != null)
                 return error;
 
-            if (couponId == null && discountAmount != 0)
-                return OrderErrors.InvalidDiscount;
-
-            if (couponId != null && discountAmount == 0)
+            if ((couponId == null && discountAmount != 0) || (couponId != null && discountAmount == 0))
                 return OrderErrors.InvalidDiscount;
 
             if (discountAmount > originalPrice)

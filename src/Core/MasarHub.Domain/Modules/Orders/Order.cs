@@ -1,4 +1,5 @@
 using MasarHub.Domain.Common.Base;
+using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
 
@@ -17,32 +18,24 @@ namespace MasarHub.Domain.Modules.Orders
 
         private Order() { }
 
-        private Order(Guid userId)
+        private Order(Guid userId, string orderNumber)
         {
             UserId = userId;
+            OrderNumber = orderNumber;
             Status = OrderStatus.PendingPayment;
         }
 
-        public static DomainResult<Order> Create(Guid userId)
+        public static DomainResult<Order> Create(Guid userId, string orderNumber)
         {
-            var error = Guard.AgainstEmptyGuid(userId, nameof(userId));
-            if (error is not null)
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstNullOrWhiteSpace(orderNumber, nameof(orderNumber))
+            );
+            if (error != null)
                 return error;
 
-            return new Order(userId);
+            return new Order(userId, orderNumber);
         }
-
-        public DomainResult SetOrderNumber(string orderNumber)
-        {
-            var error = Guard.AgainstNullOrWhiteSpace(orderNumber, nameof(orderNumber));
-            if (error is not null)
-                return error;
-
-            OrderNumber = orderNumber;
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
         public DomainResult AddItem(OrderItem item)
         {
             var pendingResult = EnsurePendingPayment();
@@ -50,7 +43,7 @@ namespace MasarHub.Domain.Modules.Orders
                 return pendingResult;
 
             var error = Guard.AgainstNull(item, nameof(item));
-            if (error is not null)
+            if (error != DomainError.None)
                 return error;
 
             if (_items.Any(x => x.CourseId == item.CourseId))
@@ -61,7 +54,6 @@ namespace MasarHub.Domain.Modules.Orders
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult MarkPaid()
         {
             var pendingResult = EnsurePendingPayment();
@@ -75,7 +67,6 @@ namespace MasarHub.Domain.Modules.Orders
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult MarkFailed()
         {
             var pendingResult = EnsurePendingPayment();
@@ -86,7 +77,6 @@ namespace MasarHub.Domain.Modules.Orders
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult Cancel()
         {
             var pendingResult = EnsurePendingPayment();
@@ -97,14 +87,12 @@ namespace MasarHub.Domain.Modules.Orders
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult Delete() => MarkAsDeleted();
 
         private void RecalculateFinalAmount()
         {
             FinalAmount = _items.Sum(x => x.FinalPrice);
         }
-
         private DomainResult EnsurePendingPayment()
         {
             return Status == OrderStatus.PendingPayment

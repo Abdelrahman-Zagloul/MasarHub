@@ -1,0 +1,6 @@
+{
+  "Order.InvalidDiscount": "مبلغ الخصم غير صالح.",
+  "Order.InvalidStatusTransition": "لا يمكن تغيير حالة الطلب في وضعه الحالي.",
+  "Order.DuplicateCourse": "الكورس موجود بالفعل في الطلب.",
+  "Order.EmptyOrder": "لا يمكن إنشاء طلب بدون عناصر."
+}
