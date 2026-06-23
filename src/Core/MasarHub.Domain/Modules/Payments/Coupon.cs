@@ -61,24 +61,72 @@ namespace MasarHub.Domain.Modules.Payments
             return new Coupon(code, value, type, expirationDate, usageLimit, courseId);
         }
 
-        public DomainResult<decimal> ApplyCoupon(decimal price, Guid courseId)
+        public DomainResult ApplyCoupon(Guid courseId)
+        {
+            var applicableResult = EnsureApplicableToCourse(courseId);
+            if (applicableResult.IsFailure)
+                return applicableResult.Error;
+
+            var markResult = MarkUsed();
+            if (markResult.IsFailure)
+                return markResult.Error;
+
+            return DomainResult.Success();
+        }
+        public DomainResult<decimal> CalculateDiscount(decimal price, Guid courseId)
         {
             var error = Guard.AgainstNegative(price, nameof(price));
             if (error != DomainError.None)
                 return error;
 
-            var applicableResult = EnsureApplicableToCourse(courseId);
-            if (applicableResult.IsFailure)
-                return applicableResult.Error;
+            //var applicableResult = EnsureApplicableToCourse(courseId);
+            //if (applicableResult.IsFailure)
+            //    return applicableResult.Error;
 
-            var discounted = Type == DiscountType.Percentage
-                ? price - (price * Value / 100)
-                : price - Value;
+            decimal discountAmount =
+                Type == DiscountType.Percentage
+                    ? price * Value / 100
+                    : Value;
 
-            return discounted < 0 ? 0 : discounted;
+            return Math.Min(discountAmount, price);
+        }
+        public DomainResult UpdateValue(decimal newValue)
+        {
+            var error = Guard.AgainstNegativeOrZero(newValue, nameof(newValue));
+            if (error != DomainError.None)
+                return error;
+
+            if (Type == DiscountType.Percentage && newValue > 100)
+                return CouponErrors.InvalidPercentage;
+
+            Value = newValue;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult UpdateExpirationDate(DateTimeOffset newExpirationDate)
+        {
+            if (newExpirationDate <= DateTimeOffset.UtcNow)
+                return CouponErrors.InvalidExpiration;
+
+            ExpirationDate = newExpirationDate;
+            MarkAsUpdated();
+            return DomainResult.Success();
+        }
+        public DomainResult UpdateUsageLimit(int newUsageLimit)
+        {
+            var error = Guard.AgainstNegativeOrZero(newUsageLimit, nameof(newUsageLimit));
+            if (error != DomainError.None)
+                return error;
+
+            if (newUsageLimit < UsedCount)
+                return CouponErrors.UsageLimitBelowUsedCount;
+
+            UsageLimit = newUsageLimit;
+            MarkAsUpdated();
+            return DomainResult.Success();
         }
 
-        public DomainResult EnsureApplicableToCourse(Guid courseId)
+        private DomainResult EnsureApplicableToCourse(Guid courseId)
         {
             var error = Guard.AgainstEmptyGuid(courseId, nameof(courseId));
             if (error != DomainError.None)
@@ -95,46 +143,7 @@ namespace MasarHub.Domain.Modules.Payments
 
             return DomainResult.Success();
         }
-
-        public DomainResult UpdateValue(decimal newValue)
-        {
-            var error = Guard.AgainstNegativeOrZero(newValue, nameof(newValue));
-            if (error != DomainError.None)
-                return error;
-
-            if (Type == DiscountType.Percentage && newValue > 100)
-                return CouponErrors.InvalidPercentage;
-
-            Value = newValue;
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public DomainResult UpdateExpirationDate(DateTimeOffset newExpirationDate)
-        {
-            if (newExpirationDate <= DateTimeOffset.UtcNow)
-                return CouponErrors.InvalidExpiration;
-
-            ExpirationDate = newExpirationDate;
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public DomainResult UpdateUsageLimit(int newUsageLimit)
-        {
-            var error = Guard.AgainstNegativeOrZero(newUsageLimit, nameof(newUsageLimit));
-            if (error != DomainError.None)
-                return error;
-
-            if (newUsageLimit < UsedCount)
-                return CouponErrors.UsageLimitBelowUsedCount;
-
-            UsageLimit = newUsageLimit;
-            MarkAsUpdated();
-            return DomainResult.Success();
-        }
-
-        public DomainResult MarkUsed()
+        private DomainResult MarkUsed()
         {
             if (IsExhausted())
                 return CouponErrors.Exhausted;
@@ -143,9 +152,7 @@ namespace MasarHub.Domain.Modules.Payments
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         private bool IsExpired() => DateTimeOffset.UtcNow > ExpirationDate;
-
         private bool IsExhausted() => UsedCount >= UsageLimit;
     }
 }

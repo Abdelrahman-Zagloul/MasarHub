@@ -15,6 +15,7 @@
 
   "coupon.code_already_exists": "يوجد كوبون بهذا الكود بالفعل.",
   "coupon.not_found": "الكوبون غير موجود.",
+  "coupon.not_applicable_to_cart": "هذا الكوبون لا ينطبق على أي كورس في سلة التسوق الخاصة بك.",
+  "coupon.duplicate_for_course": "لا يمكن تطبيق أكثر من كوبون على نفس الكورس.",
   "coupon.course_mismatch": "الكوبون لا ينتمي إلى الدورة المحددة."
-
 }

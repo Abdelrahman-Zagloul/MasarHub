@@ -37,7 +37,7 @@ namespace MasarHub.API.Controllers.V1
 
             return result.IsFailure
                 ? await HandleError(result)
-                : CreatedAtAction(nameof(GetCouponById), new { courseId, result.Value.Id }, result.Value);
+                : CreatedAtAction(nameof(GetCouponById), new { courseId, couponId = result.Value.Id }, result.Value);
 
         }
 

@@ -15,5 +15,7 @@
 
   "coupon.code_already_exists": "A coupon with this code already exists.",
   "coupon.not_found": "Coupon not found.",
+  "coupon.not_applicable_to_cart": "This coupon does not apply to any course in your cart.",
+  "coupon.duplicate_for_course": "Multiple coupons cannot be applied to the same course.",
   "coupon.course_mismatch": "The coupon does not belong to the specified course."
 }
