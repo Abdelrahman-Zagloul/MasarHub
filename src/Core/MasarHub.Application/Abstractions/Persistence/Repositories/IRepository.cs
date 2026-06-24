@@ -10,6 +10,8 @@ namespace MasarHub.Application.Abstractions.Persistence.Repositories
         Task<List<TEntity>> GetAllAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken ct = default);
         Task AddAsync(TEntity entity, CancellationToken ct = default);
         void Update(TEntity entity);
+        void Attach(TEntity entity);
+        void AttachRange(IEnumerable<TEntity> entities);
         void Remove(TEntity entity);
 
 

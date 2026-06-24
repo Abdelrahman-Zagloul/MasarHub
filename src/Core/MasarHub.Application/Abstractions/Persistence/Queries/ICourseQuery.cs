@@ -23,5 +23,4 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
     public sealed record CourseThumbnailDetails(bool CourseExists, string? ThumbnailPublicId);
     public sealed record CourseAccessData(bool CourseExist, bool IsOwner);
     public sealed record CourseCartData(Guid Id, string Title, decimal Price, string? ThumbnailPublicId, bool IsPublished);
-
 }
