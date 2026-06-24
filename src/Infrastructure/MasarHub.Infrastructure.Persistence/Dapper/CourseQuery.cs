@@ -48,7 +48,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return new CourseCreationData(await multi.ReadFirstAsync<bool>(), await multi.ReadFirstAsync<int>());
         }
-        public async Task<InstructorInfo?> GetInstructorInfoAsync(Guid instructorId, CancellationToken ct)
+        public async Task<UserInfo?> GetUserInfoAsync(Guid instructorId, CancellationToken ct)
         {
             const string sql = @"
                 SELECT 
@@ -61,7 +61,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             using var connection = _connectionFactory.CreateConnection();
             var command = new CommandDefinition(sql, new { Id = instructorId }, cancellationToken: ct);
 
-            return await connection.QueryFirstOrDefaultAsync<InstructorInfo>(command);
+            return await connection.QueryFirstOrDefaultAsync<UserInfo>(command);
         }
         public async Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken ct)
         {

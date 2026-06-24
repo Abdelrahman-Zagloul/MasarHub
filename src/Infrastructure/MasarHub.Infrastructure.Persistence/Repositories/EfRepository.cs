@@ -37,6 +37,12 @@ namespace MasarHub.Infrastructure.Persistence.Repositories
         public void Update(TEntity entity)
             => _dbSet.Update(entity);
 
+        public void Attach(TEntity entity)
+            => _dbSet.Attach(entity);
+
+        public void AttachRange(IEnumerable<TEntity> entities)
+            => _context.AttachRange(entities);
+
         public void Remove(TEntity entity)
             => _dbSet.Remove(entity);
 

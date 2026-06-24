@@ -150,5 +150,32 @@ namespace MasarHub.Infrastructure.Services
 
             await _mailService.SendEmailAsync(email, "Course Rejected", emailBody, null);
         }
+
+        public async Task SendOrderCreatedEmailAsync(string fullName, string email, string orderNumber, string finalAmount, string actionUrl)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "OrderCreated.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{OrderNumber}", orderNumber)
+                .Replace("{FinalAmount}", finalAmount)
+                .Replace("{ActionUrl}", _settings.BaseURL + actionUrl);
+
+            await _mailService.SendEmailAsync(email, "Order Created Successfully", emailBody, null);
+        }
+
+        public async Task SendOrderCancelledEmailAsync(string fullName, string email, string orderNumber, string actionUrl)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "OrderCancelled.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{OrderNumber}", orderNumber)
+                .Replace("{ActionUrl}", _settings.BaseURL + actionUrl);
+
+            await _mailService.SendEmailAsync(email, "Order Cancelled", emailBody, null);
+        }
     }
 }
