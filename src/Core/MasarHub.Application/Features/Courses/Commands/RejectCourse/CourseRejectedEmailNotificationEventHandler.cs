@@ -22,7 +22,7 @@ namespace MasarHub.Application.Features.Courses.Commands.RejectCourse
         public async Task Handle(DomainEventNotification<CourseRejectedDomainEvent> notification, CancellationToken cancellationToken)
         {
             var domainEvent = notification.DomainEvent;
-            var instructorInfo = await _courseQuery.GetInstructorInfoAsync(domainEvent.InstructorId, cancellationToken);
+            var instructorInfo = await _courseQuery.GetUserInfoAsync(domainEvent.InstructorId, cancellationToken);
             if (instructorInfo == null)
                 return;
 

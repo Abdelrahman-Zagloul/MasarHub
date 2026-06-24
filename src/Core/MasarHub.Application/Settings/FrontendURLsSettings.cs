@@ -12,6 +12,15 @@ namespace MasarHub.Application.Settings
 
         [Required]
         public string ResetPasswordPath { get; set; } = null!;
+
+        [Required]
+        public string OrderPaymentPath { get; set; } = null!;
+
+        [Required]
+        public string OrderCreatedPath { get; set; } = null!;
+
+        [Required]
+        public string OrderCancelledPath { get; set; } = null!;
     }
 }
 

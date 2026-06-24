@@ -15,5 +15,7 @@ namespace MasarHub.Application.Abstractions.Services
         Task SendRecoveryCodeUsedEmailAsync(string fullName, string email);
         Task SendCourseApprovedEmailAsync(string fullName, string email, string courseTitle, string actionUrl);
         Task SendCourseRejectedEmailAsync(string fullName, string email, string courseTitle, string reason, string actionUrl);
+        Task SendOrderCreatedEmailAsync(string fullName, string email, string orderNumber, string finalAmount, string actionUrl);
+        Task SendOrderCancelledEmailAsync(string fullName, string email, string orderNumber, string actionUrl);
     }
 }

@@ -2,6 +2,7 @@ using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Orders.Events;
 
 namespace MasarHub.Domain.Modules.Orders
 {
@@ -34,7 +35,9 @@ namespace MasarHub.Domain.Modules.Orders
             if (error != null)
                 return error;
 
-            return new Order(userId, orderNumber);
+            var order = new Order(userId, orderNumber);
+            order.RaiseDomainEvent(new OrderCreatedDomainEvent(order.Id, userId, orderNumber, order.FinalAmount));
+            return order;
         }
         public DomainResult AddItem(OrderItem item)
         {
@@ -85,6 +88,7 @@ namespace MasarHub.Domain.Modules.Orders
 
             Status = OrderStatus.Cancelled;
             MarkAsUpdated();
+            RaiseDomainEvent(new OrderCancelledDomainEvent(Id, UserId, OrderNumber));
             return DomainResult.Success();
         }
         public DomainResult Delete()

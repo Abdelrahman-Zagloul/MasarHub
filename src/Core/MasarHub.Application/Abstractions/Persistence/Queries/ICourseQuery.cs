@@ -9,7 +9,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
     public interface ICourseQuery : IScopedService
     {
         Task<CourseCreationData> GetCreationDataAsync(string slug, Guid categoryId, CancellationToken ct = default);
-        Task<InstructorInfo?> GetInstructorInfoAsync(Guid instructorId, CancellationToken ct = default);
+        Task<UserInfo?> GetUserInfoAsync(Guid instructorId, CancellationToken ct = default);
         Task<bool> CategoryExistsAsync(Guid categoryId, CancellationToken ct = default);
         Task<bool> HasLecturesAsync(Guid courseId, CancellationToken ct = default);
         Task<CourseDetailsResponse?> GetDetailsByIdAsync(Guid courseId, CancellationToken ct = default);
@@ -19,7 +19,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<CourseCartData?> GetCourseCartDataAsync(Guid courseId, CancellationToken ct = default);
     }
     public sealed record CourseCreationData(bool CategoryExists, int SlugCount);
-    public sealed record InstructorInfo(string FullName, string Email);
+    public sealed record UserInfo(string FullName, string Email);
     public sealed record CourseThumbnailDetails(bool CourseExists, string? ThumbnailPublicId);
     public sealed record CourseAccessData(bool CourseExist, bool IsOwner);
     public sealed record CourseCartData(Guid Id, string Title, decimal Price, string? ThumbnailPublicId, bool IsPublished);

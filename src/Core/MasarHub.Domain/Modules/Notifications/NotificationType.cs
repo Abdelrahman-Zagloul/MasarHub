@@ -13,6 +13,7 @@
         CourseApproved,
         CourseRejected,
         OrderCreated,
+        OrderCancelled,
         PaymentReceived
     }
 }
