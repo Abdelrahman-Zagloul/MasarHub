@@ -1,6 +1,7 @@
 using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Features.Orders.Commands.CreateOrder;
+using MasarHub.Domain.Modules.Orders;
 using MasarHub.Domain.Modules.Payments;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
@@ -47,6 +48,26 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return new CreateOrderData(courses, coupons, usageIds);
         }
+        public async Task<OrderInitiateData> GetOrderInitiateDataAsync(Guid orderId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT Id, UserId, Status, FinalAmount
+                FROM orders.Orders
+                WHERE Id = @Id AND IsDeleted = 0;
 
+                SELECT CAST(CASE WHEN EXISTS (
+                    SELECT 1 FROM payments.Payments WHERE OrderId = @Id
+                ) THEN 1 ELSE 0 END AS BIT);
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { Id = orderId }, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var order = await multi.ReadFirstOrDefaultAsync<Order>();
+            var hasPayment = await multi.ReadFirstAsync<bool>();
+
+            return new OrderInitiateData(order, hasPayment);
+        }
     }
 }
