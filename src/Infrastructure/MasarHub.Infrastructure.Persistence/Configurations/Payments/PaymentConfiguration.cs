@@ -15,8 +15,8 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Payments
             builder.ToTable("Payments", "payments", tb =>
             {
                 tb.HasCheckConstraint("CK_Payments_Amount_Positive", "[Amount] > 0");
-                tb.HasCheckConstraint("CK_Payments_ExternalId_NotNull_WhenSucceeded",
-                    "[Status] <> 'Succeeded' OR [ExternalId] IS NOT NULL");
+                tb.HasCheckConstraint("CK_Payments_ProviderReference_NotNull_WhenSucceeded",
+                    "[Status] <> 'Succeeded' OR [ProviderReference] IS NOT NULL");
             });
 
             builder.Property(p => p.OrderId)
@@ -37,11 +37,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Payments
                    .HasMaxLength(50)
                    .IsRequired();
 
-            builder.Property(p => p.ExternalId)
-                   .HasMaxLength(200)
-                   .IsRequired(false);
-
-            builder.Property(p => p.IdempotencyKey)
+            builder.Property(p => p.ProviderReference)
                    .HasMaxLength(200)
                    .IsRequired(false);
 
@@ -56,11 +52,9 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Payments
 
 
             builder.HasIndex(p => p.OrderId);
-            builder.HasIndex(p => p.IdempotencyKey)
-                   .IsUnique().HasFilter("[IdempotencyKey] IS NOT NULL");
 
-            builder.HasIndex(p => new { p.Provider, p.ExternalId })
-                   .IsUnique().HasFilter("[ExternalId] IS NOT NULL");
+            builder.HasIndex(p => new { p.Provider, p.ProviderReference })
+                   .IsUnique().HasFilter("[ProviderReference] IS NOT NULL");
         }
     }
 }
