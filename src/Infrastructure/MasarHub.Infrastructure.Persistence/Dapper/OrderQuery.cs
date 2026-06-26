@@ -48,17 +48,29 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return new CreateOrderData(courses, coupons, usageIds);
         }
-        public async Task<Order?> GetOrderAsync(Guid orderId, Guid userId, CancellationToken ct = default)
+
+        public async Task<OrderWithItems?> GetOrderWithItemsAsync(Guid orderId, Guid userId, CancellationToken ct = default)
         {
             const string sql = @"
-                SELECT Id, UserId, Status, FinalAmount
+                SELECT Id, UserId, OrderNumber, FinalAmount, Status
                 FROM orders.Orders
                 WHERE Id = @Id AND UserId = @UserId AND IsDeleted = 0;
+
+                SELECT CourseId, CourseTitle, OriginalPrice, DiscountAmount, FinalPrice, CouponId
+                FROM orders.OrderItems
+                WHERE OrderId = @Id;
             ";
 
             using var connection = _connectionFactory.CreateConnection();
             var command = new CommandDefinition(sql, new { Id = orderId, UserId = userId }, cancellationToken: ct);
-            return await connection.QueryFirstOrDefaultAsync<Order>(command);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var order = await multi.ReadFirstOrDefaultAsync<Order>();
+            if (order is null)
+                return null;
+
+            var items = (await multi.ReadAsync<OrderItem>()).AsList();
+            return new OrderWithItems(order, items);
         }
     }
 }

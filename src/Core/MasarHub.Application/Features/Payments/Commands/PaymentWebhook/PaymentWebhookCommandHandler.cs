@@ -35,66 +35,78 @@ namespace MasarHub.Application.Features.Payments.Commands.PaymentWebhook
             if (webhookResult.IsFailure)
                 return webhookResult.Errors[0];
 
+            var paymentStatus = webhookResult.Value.Status;
             var payment = await _paymentRepository.GetAsync(p => p.ProviderReference == webhookResult.Value.ProviderReference && p.Provider == request.Provider, cancellationToken);
             if (payment == null)
                 return Error.NotFound("payment.not_found");
 
-            if (webhookResult.Value.Status == PaymentStatus.Succeeded)
+            if (paymentStatus == PaymentStatus.Pending)
+                return new PaymentWebhookResponse(payment.Id, payment.OrderId, paymentStatus);
+
+            var processResult = paymentStatus switch
             {
-                var order = await _orderRepository.GetAsync(x => x.Id == payment.OrderId, cancellationToken, x => x.Items);
-                if (order == null)
-                    return Error.NotFound(OrderErrors.NotFound);
+                PaymentStatus.Succeeded => await HandleSucceededPaymentAsync(payment, cancellationToken),
+                PaymentStatus.Failed or PaymentStatus.Cancelled => await HandleFailedPaymentAsync(payment, cancellationToken),
+                PaymentStatus.Expired => HandleExpiredPayment(payment),
+                _ => Result.Success()
+            };
 
-                var markResult = payment.MarkSucceeded(order.UserId, order.OrderNumber);
-                if (markResult.IsFailure)
-                {
-                    // handle Idempotency
-                    if (markResult.Error == PaymentErrors.CannotChangeFinalPaymentStatus && payment.Status == PaymentStatus.Succeeded)
-                        return new PaymentWebhookResponse(payment.Id, payment.OrderId, payment.Status);
-
-                    return markResult.Error;
-                }
-
-                var paidResult = order.MarkPaid();
-                if (paidResult.IsFailure)
-                    return paidResult.Error;
-
-                foreach (var item in order.Items)
-                {
-                    var enrollmentResult = CourseEnrollment.Create(order.UserId, item.CourseId, item.CourseTitle, order.Id, item.FinalPrice);
-                    if (enrollmentResult.IsFailure)
-                        return enrollmentResult.Error;
-
-                    await _enrollmentRepository.AddAsync(enrollmentResult.Value, cancellationToken);
-                }
-            }
-            else if (webhookResult.Value.Status == PaymentStatus.Expired)
-            {
-                var order = await _orderRepository.GetByIdAsync(payment.OrderId, cancellationToken);
-                if (order == null)
-                    return Error.NotFound(OrderErrors.NotFound);
-
-                var markResult = payment.MarkExpired();
-                if (markResult.IsFailure)
-                    return markResult.Error;
-
-                var failedResult = order.MarkFailed();
-                if (failedResult.IsFailure)
-                    return failedResult.Error;
-            }
-            else
-            {
-                var order = await _orderRepository.GetByIdAsync(payment.OrderId, cancellationToken);
-                if (order == null)
-                    return Error.NotFound(OrderErrors.NotFound);
-
-                var markResult = payment.MarkFailed(order.UserId, order.OrderNumber);
-                if (markResult.IsFailure)
-                    return markResult.Error;
-            }
+            if (processResult.IsFailure)
+                return processResult.Errors[0];
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-            return new PaymentWebhookResponse(payment.Id, payment.OrderId, webhookResult.Value.Status);
+            return new PaymentWebhookResponse(payment.Id, payment.OrderId, paymentStatus);
+        }
+
+        private async Task<Result> HandleSucceededPaymentAsync(Payment payment, CancellationToken cancellationToken)
+        {
+            var order = await _orderRepository.GetAsync(x => x.Id == payment.OrderId, cancellationToken, x => x.Items);
+            if (order == null)
+                return Error.NotFound(OrderErrors.NotFound);
+
+            var markSucceededResult = payment.MarkSucceeded(order.UserId, order.OrderNumber);
+            if (markSucceededResult.IsFailure)
+            {
+                // Handle Idempotency
+                if (markSucceededResult.Error == PaymentErrors.CannotChangeFinalPaymentStatus && payment.Status == PaymentStatus.Succeeded)
+                    return Result.Success();
+
+                return markSucceededResult.Error;
+            }
+
+            var paidResult = order.MarkPaid();
+            if (paidResult.IsFailure)
+                return paidResult.Error;
+
+            foreach (var item in order.Items)
+            {
+                var enrollmentResult = CourseEnrollment.Create(order.UserId, item.CourseId, item.CourseTitle, order.Id, item.FinalPrice);
+                if (enrollmentResult.IsFailure)
+                    return enrollmentResult.Error;
+
+                await _enrollmentRepository.AddAsync(enrollmentResult.Value, cancellationToken);
+            }
+            return Result.Success();
+        }
+        private async Task<Result> HandleFailedPaymentAsync(Payment payment, CancellationToken cancellationToken)
+        {
+            var order = await _orderRepository.GetByIdAsync(payment.OrderId, cancellationToken);
+            if (order == null)
+                return Error.NotFound(OrderErrors.NotFound);
+
+            var markFailedResult = payment.MarkFailed(order.UserId, order.OrderNumber);
+            if (markFailedResult.IsFailure)
+                return markFailedResult.Error;
+
+            return Result.Success();
+        }
+        private Result HandleExpiredPayment(Payment payment)
+        {
+            var markExpiredResult = payment.MarkExpired();
+            if (markExpiredResult.IsFailure)
+                return markExpiredResult.Error;
+
+            return Result.Success();
         }
     }
 }
