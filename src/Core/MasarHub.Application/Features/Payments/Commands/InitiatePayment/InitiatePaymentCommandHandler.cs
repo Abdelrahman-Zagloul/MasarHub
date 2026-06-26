@@ -26,11 +26,11 @@ namespace MasarHub.Application.Features.Payments.Commands.InitiatePayment
 
         public async Task<Result<InitiatePaymentResponse>> Handle(InitiatePaymentCommand request, CancellationToken cancellationToken)
         {
-            var order = await _orderQuery.GetOrderAsync(request.OrderId, request.UserId, cancellationToken);
-            if (order == null)
+            var orderWithItems = await _orderQuery.GetOrderWithItemsAsync(request.OrderId, request.UserId, cancellationToken);
+            if (orderWithItems == null)
                 return Error.NotFound("order.not_found");
 
-            if (order.Status != OrderStatus.PendingPayment)
+            if (orderWithItems.Order.Status != OrderStatus.PendingPayment)
                 return Error.Conflict("order.payment_not_allowed");
 
             var pendingPayment = await _paymentRepository.GetAsync(p => p.OrderId == request.OrderId && p.Status == PaymentStatus.Pending, cancellationToken);
@@ -45,12 +45,12 @@ namespace MasarHub.Application.Features.Payments.Commands.InitiatePayment
             if (gateway == null)
                 return Error.NotFound("payment.provider_not_supported");
 
-            var sessionResult = await gateway.CreateSessionAsync(request.OrderId, order.FinalAmount, request.UserId, cancellationToken);
+            var sessionResult = await gateway.CreateSessionAsync(orderWithItems.Order, orderWithItems.Items, cancellationToken);
             if (sessionResult.IsFailure)
                 return sessionResult.Errors[0];
 
             var session = sessionResult.Value;
-            var paymentResult = Payment.Create(request.OrderId, order.FinalAmount, request.Provider, session.ProviderReference);
+            var paymentResult = Payment.Create(request.OrderId, orderWithItems.Order.FinalAmount, request.Provider, session.ProviderReference);
             if (paymentResult.IsFailure)
                 return paymentResult.Error;
 

@@ -1,6 +1,7 @@
 using MasarHub.Application.Abstractions.Services;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Settings;
+using MasarHub.Domain.Modules.Orders;
 using MasarHub.Domain.Modules.Payments;
 using Microsoft.Extensions.Options;
 
@@ -15,10 +16,10 @@ namespace MasarHub.Infrastructure.Services
             _frontendURLsSettings = options.Value;
         }
         public PaymentProvider Provider => PaymentProvider.Mock;
-        public Task<Result<PaymentCreationResult>> CreateSessionAsync(Guid orderId, decimal amount, Guid userId, CancellationToken ct = default)
+        public Task<Result<PaymentCreationResult>> CreateSessionAsync(Order order, IReadOnlyCollection<OrderItem> items, CancellationToken ct = default)
         {
             var providerReference = $"mock_txn_{Guid.CreateVersion7():N}";
-            var paymentUrl = $"{_frontendURLsSettings.BaseURL}/checkout/{orderId}?transactionId={providerReference}";
+            var paymentUrl = $"{_frontendURLsSettings.BaseURL}/checkout/{order.Id}?transactionId={providerReference}";
 
             return Task.FromResult(Result<PaymentCreationResult>.Success(new PaymentCreationResult(providerReference, paymentUrl)));
         }
