@@ -7,6 +7,9 @@ namespace MasarHub.Application.Features.Payments.Commands.InitiatePayment
     {
         public InitiatePaymentCommandValidator()
         {
+            RuleFor(x => x.UserId)
+                .ValidGuid("UserId");
+
             RuleFor(x => x.OrderId)
                 .ValidGuid("OrderId");
 
