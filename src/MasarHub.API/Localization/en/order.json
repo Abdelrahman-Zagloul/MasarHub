@@ -6,6 +6,13 @@
   "order.duplicate_course": "Course already exists in the order.",
   "order.empty_order": "Cannot place an order with no items.",
   "order.not_found": "Order not found.",
-  "order.not_owned": "You do not have permission to cancel this order.",
-  "order.invalid_status_for_deletion": "Cannot delete order in this status."
+  "order.not_owned": "You do not have permission for this order.",
+  "order.invalid_status_for_deletion": "Cannot delete order in this status.",
+  "order.payment_not_allowed": "Payment is not allowed for the current order status.",
+
+
+  "payment.not_found": "Payment not found.",
+  "payment.provider_not_supported": "The payment method is not supported currently.",
+  "payment.cannot_change_final_status": "Cannot change the status of a payment that is already finalized."
+
 }

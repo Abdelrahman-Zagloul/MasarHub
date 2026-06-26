@@ -19,14 +19,8 @@ namespace MasarHub.Application.Features.Orders.Commands.CreateOrder
         {
             var domainEvent = notification.DomainEvent;
 
-            _backgroundJobService.Enqueue<IOrderJob>(x =>
-                x.SendCreatedEmailAsync(
-                    domainEvent.UserId,
-                    domainEvent.OrderNumber,
-                    domainEvent.FinalAmount,
-                    domainEvent.OrderId
-                )
-            );
+            _backgroundJobService.Enqueue<IEmailJob>(x =>
+                x.SendOrderCreatedEmailAsync(domainEvent.UserId, domainEvent.OrderNumber, domainEvent.FinalAmount, domainEvent.OrderId));
         }
     }
 }

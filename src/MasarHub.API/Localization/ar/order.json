@@ -6,6 +6,11 @@
   "order.duplicate_course": "الكورس موجود بالفعل في الطلب.",
   "order.empty_order": "لا يمكن إنشاء طلب بدون عناصر.",
   "order.not_found": "الطلب غير موجود.",
-  "order.not_owned": "ليس لديك صلاحية إلغاء هذا الطلب.",
-  "order.invalid_status_for_deletion": "لا يمكن حذف الطلب في هذه الحاله."
+  "order.not_owned": "ليس لديك صلاحية هذا الطلب.",
+  "order.invalid_status_for_deletion": "لا يمكن حذف الطلب في هذه الحاله.",
+  "order.payment_not_allowed": "لا يمكن دفع هذا الطلب في حالته الحالية.",
+
+  "payment.not_found": "لم يتم العثور على عملية الدفع.",
+  "payment.provider_not_supported": "طريقة الدفع المختارة غير مدعومة حالياً.",
+  "payment.cannot_change_final_status": "لا يمكن تعديل حالة عملية الدفع بعد اكتمالها أو إلغائها"
 }

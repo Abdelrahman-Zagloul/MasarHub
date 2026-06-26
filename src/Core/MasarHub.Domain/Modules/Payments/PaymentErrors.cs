@@ -4,7 +4,7 @@ namespace MasarHub.Domain.Modules.Payments
 {
     public static class PaymentErrors
     {
-        public static readonly DomainError InvalidStatusTransition = new("Payment.InvalidStatusTransition");
+        public static readonly DomainError CannotChangeFinalPaymentStatus = new("payment.cannot_change_final_status");
     }
 
     public static class CouponErrors

@@ -1,6 +1,7 @@
 using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -26,11 +27,12 @@ namespace MasarHub.Domain.Modules.Courses
             EnrolledAt = DateTimeOffset.UtcNow;
         }
 
-        public static DomainResult<CourseEnrollment> Create(Guid userId, Guid courseId, Guid orderId, decimal paidAmount)
+        public static DomainResult<CourseEnrollment> Create(Guid userId, Guid courseId, string courseTitle, Guid orderId, decimal paidAmount)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(userId, nameof(userId)),
                 Guard.AgainstEmptyGuid(courseId, nameof(courseId)),
+                Guard.AgainstNullOrWhiteSpace(courseTitle, nameof(courseTitle)),
                 Guard.AgainstEmptyGuid(orderId, nameof(orderId)),
                 Guard.AgainstNegative(paidAmount, nameof(paidAmount))
             );
@@ -38,7 +40,9 @@ namespace MasarHub.Domain.Modules.Courses
             if (error is not null)
                 return error;
 
-            return new CourseEnrollment(userId, courseId, orderId, paidAmount);
+            var enrollment = new CourseEnrollment(userId, courseId, orderId, paidAmount);
+            enrollment.RaiseDomainEvent(new CourseEnrollmentCreatedDomainEvent(enrollment.Id, userId, courseId, courseTitle, orderId, paidAmount));
+            return enrollment;
         }
 
         public DomainResult MarkCompleted()

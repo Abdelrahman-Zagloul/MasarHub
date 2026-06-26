@@ -19,13 +19,8 @@ namespace MasarHub.Application.Features.Orders.Commands.CancelOrder
         {
             var domainEvent = notification.DomainEvent;
 
-            _backgroundJobService.Enqueue<IOrderJob>(x =>
-                x.SendCancelledEmailAsync(
-                    domainEvent.UserId,
-                    domainEvent.OrderNumber,
-                    domainEvent.OrderId
-                )
-            );
+            _backgroundJobService.Enqueue<IEmailJob>(x =>
+                x.SendOrderCancelledEmailAsync(domainEvent.UserId, domainEvent.OrderNumber, domainEvent.OrderId));
         }
     }
 }

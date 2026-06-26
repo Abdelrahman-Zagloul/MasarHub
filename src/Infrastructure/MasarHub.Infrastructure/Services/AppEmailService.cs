@@ -177,5 +177,47 @@ namespace MasarHub.Infrastructure.Services
 
             await _mailService.SendEmailAsync(email, "Order Cancelled", emailBody, null);
         }
+
+        public async Task SendPaymentSucceededEmailAsync(string fullName, string email, string orderNumber, string amount, string actionUrl)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "PaymentSucceeded.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{OrderNumber}", orderNumber)
+                .Replace("{Amount}", amount)
+                .Replace("{ActionUrl}", _settings.BaseURL + actionUrl);
+
+            await _mailService.SendEmailAsync(email, "Payment Received", emailBody, null);
+        }
+
+        public async Task SendPaymentFailedEmailAsync(string fullName, string email, string orderNumber, string amount, string actionUrl)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "PaymentFailed.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{OrderNumber}", orderNumber)
+                .Replace("{Amount}", amount)
+                .Replace("{ActionUrl}", _settings.BaseURL + actionUrl);
+
+            await _mailService.SendEmailAsync(email, "Payment Failed", emailBody, null);
+        }
+
+        public async Task SendCourseEnrollmentCreatedEmailAsync(string fullName, string email, string courseTitle, string paidAmount, string actionUrl)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "CourseEnrollmentCreated.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{CourseTitle}", courseTitle)
+                .Replace("{PaidAmount}", paidAmount)
+                .Replace("{ActionUrl}", _settings.BaseURL + actionUrl);
+
+            await _mailService.SendEmailAsync(email, $"You're Enrolled in {courseTitle}", emailBody, null);
+        }
     }
 }

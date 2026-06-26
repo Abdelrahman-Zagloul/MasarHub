@@ -2,6 +2,7 @@ using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Payments.Events;
 
 namespace MasarHub.Domain.Modules.Payments
 {
@@ -12,64 +13,92 @@ namespace MasarHub.Domain.Modules.Payments
         public DateTimeOffset? PaidAt { get; private set; }
         public PaymentStatus Status { get; private set; }
         public PaymentProvider Provider { get; private set; }
-        public string? ExternalId { get; private set; }
-        public string? IdempotencyKey { get; private set; }
+        public string? ProviderReference { get; private set; }
 
         private Payment() { }
 
-        private Payment(Guid orderId, decimal amount, PaymentProvider provider, string idempotencyKey)
+        private Payment(Guid orderId, decimal amount, PaymentProvider provider, string? providerReference)
         {
             OrderId = orderId;
             Amount = Math.Round(amount, 2);
             Provider = provider;
-            IdempotencyKey = idempotencyKey;
+            ProviderReference = providerReference;
             Status = PaymentStatus.Pending;
         }
-
-        public static DomainResult<Payment> Create(Guid orderId, decimal amount, PaymentProvider provider, string idempotencyKey)
+        public static DomainResult<Payment> Create(Guid orderId, decimal amount, PaymentProvider provider, string? providerReference)
         {
             var error = GuardExtensions.FirstError(
                 Guard.AgainstEmptyGuid(orderId, nameof(orderId)),
                 Guard.AgainstNegativeOrZero(amount, nameof(amount)),
                 Guard.AgainstEnumOutOfRange(provider, nameof(provider)),
-                Guard.AgainstNullOrWhiteSpace(idempotencyKey, nameof(idempotencyKey))
+                Guard.AgainstNullOrWhiteSpace(providerReference, nameof(providerReference))
             );
 
             if (error is not null)
                 return error;
 
-            return new Payment(orderId, amount, provider, idempotencyKey);
+            return new Payment(orderId, amount, provider, providerReference);
         }
-
-        public DomainResult MarkSucceeded(string externalId)
+        public DomainResult UpdateProviderReference(string providerReference)
         {
-            var pendingResult = EnsurePending();
-            if (pendingResult.IsFailure)
-                return pendingResult;
-
-            var error = Guard.AgainstNullOrWhiteSpace(externalId, nameof(externalId));
+            var error = Guard.AgainstNullOrWhiteSpace(providerReference, nameof(providerReference));
             if (error != DomainError.None)
                 return error;
 
-            ExternalId = externalId;
-            Status = PaymentStatus.Succeeded;
-            PaidAt = DateTimeOffset.UtcNow;
+            ProviderReference = providerReference;
             MarkAsUpdated();
-
             return DomainResult.Success();
         }
-
-        public DomainResult MarkFailed()
+        public DomainResult MarkSucceeded(Guid userId, string orderNumber)
         {
             var pendingResult = EnsurePending();
             if (pendingResult.IsFailure)
                 return pendingResult;
 
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstNullOrWhiteSpace(orderNumber, nameof(orderNumber))
+            );
+
+            if (error is not null)
+                return error;
+
+            Status = PaymentStatus.Succeeded;
+            PaidAt = DateTimeOffset.UtcNow;
+            MarkAsUpdated();
+            RaiseDomainEvent(new PaymentSucceededDomainEvent(Id, OrderId, userId, orderNumber, Amount, Provider, ProviderReference!));
+
+            return DomainResult.Success();
+        }
+        public DomainResult MarkFailed(Guid userId, string orderNumber)
+        {
+            var pendingResult = EnsurePending();
+            if (pendingResult.IsFailure)
+                return pendingResult;
+
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstNullOrWhiteSpace(orderNumber, nameof(orderNumber))
+            );
+
+            if (error is not null)
+                return error;
+
             Status = PaymentStatus.Failed;
+            MarkAsUpdated();
+            RaiseDomainEvent(new PaymentFailedDomainEvent(Id, OrderId, userId, orderNumber, Amount, Provider, ProviderReference!));
+            return DomainResult.Success();
+        }
+        public DomainResult MarkExpired()
+        {
+            var pendingResult = EnsurePending();
+            if (pendingResult.IsFailure)
+                return pendingResult;
+
+            Status = PaymentStatus.Expired;
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         public DomainResult MarkCancelled()
         {
             var pendingResult = EnsurePending();
@@ -80,12 +109,11 @@ namespace MasarHub.Domain.Modules.Payments
             MarkAsUpdated();
             return DomainResult.Success();
         }
-
         private DomainResult EnsurePending()
         {
             return Status == PaymentStatus.Pending
                 ? DomainResult.Success()
-                : PaymentErrors.InvalidStatusTransition;
+                : PaymentErrors.CannotChangeFinalPaymentStatus;
         }
     }
 }
