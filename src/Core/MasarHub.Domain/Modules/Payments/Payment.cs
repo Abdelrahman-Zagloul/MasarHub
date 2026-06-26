@@ -94,7 +94,7 @@ namespace MasarHub.Domain.Modules.Payments
         {
             return Status == PaymentStatus.Pending
                 ? DomainResult.Success()
-                : PaymentErrors.InvalidStatusTransition;
+                : PaymentErrors.CannotChangeFinalPaymentStatus;
         }
     }
 }

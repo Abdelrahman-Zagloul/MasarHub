@@ -23,9 +23,14 @@ namespace MasarHub.Infrastructure.Services
             return Task.FromResult(Result<PaymentCreationResult>.Success(new PaymentCreationResult(providerReference, paymentUrl)));
         }
 
-        public Task<Result<PaymentWebhookValidationResult>> ValidateWebhookAsync(string rawBody, IDictionary<string, string> headers, CancellationToken ct = default)
+        public async Task<Result<PaymentWebhookValidationResult>> ValidateWebhookAsync(string rawBody, IDictionary<string, string> headers, CancellationToken ct = default)
         {
-            throw new NotImplementedException();
+            return new PaymentWebhookValidationResult("mock_txn_019eff88c2d6745b9cc0558dc200cda2", PaymentStatus.Succeeded);
+            //return new PaymentWebhookValidationResult("mock_txn_019eff88c2d6745b9cc0558dc200cda2", PaymentStatus.Cancelled);
+            //return new PaymentWebhookValidationResult("mock_txn_019eff88c2d6745b9cc0558dc200cda2", PaymentStatus.Expired);
+            //return new PaymentWebhookValidationResult("mock_txn_019eff88c2d6745b9cc0558dc200cda2", PaymentStatus.Failed);
         }
+
+        private sealed record MockWebhookPayload(string? TransactionId, string? Status);
     }
 }

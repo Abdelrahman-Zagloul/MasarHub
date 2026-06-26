@@ -12,6 +12,7 @@
 
 
   "payment.not_found": "Payment not found.",
-  "payment.provider_not_supported": "The payment method is not supported currently."
+  "payment.provider_not_supported": "The payment method is not supported currently.",
+  "payment.cannot_change_final_status": "Cannot change the status of a payment that is already finalized."
 
 }

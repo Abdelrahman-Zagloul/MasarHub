@@ -11,5 +11,6 @@
   "order.payment_not_allowed": "لا يمكن دفع هذا الطلب في حالته الحالية.",
 
   "payment.not_found": "لم يتم العثور على عملية الدفع.",
-  "payment.provider_not_supported": "طريقة الدفع المختارة غير مدعومة حالياً."
+  "payment.provider_not_supported": "طريقة الدفع المختارة غير مدعومة حالياً.",
+  "payment.cannot_change_final_status": "لا يمكن تعديل حالة عملية الدفع بعد اكتمالها أو إلغائها"
 }
