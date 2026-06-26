@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Welcome to Your Course</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 35px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.08);
+        }
+
+        h1 {
+            color: #28a745;
+            margin-bottom: 10px;
+        }
+
+        p {
+            color: #555;
+            line-height: 1.7;
+        }
+
+        .details {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 18px;
+            margin: 25px 0;
+            border-radius: 6px;
+        }
+
+            .details p {
+                margin: 8px 0;
+            }
+
+        .btn-wrapper {
+            text-align: center;
+            margin: 35px 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background: #007bff;
+            color: white !important;
+            text-decoration: none;
+            padding: 14px 32px;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 35px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-size: 13px;
+            color: #888;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>You're Enrolled!</h1>
+
+        <p>Hello <strong>{FullName}</strong>,</p>
+
+        <p>
+            Congratulations! Your payment has been confirmed and you are now officially enrolled in your course.
+            You can start learning immediately.
+        </p>
+
+        <div class="details">
+            <p><strong>Course:</strong> {CourseTitle}</p>
+            <p><strong>Amount Paid:</strong> ${PaidAmount}</p>
+        </div>
+
+        <div class="btn-wrapper">
+            <a href="{ActionUrl}" class="btn">
+                Start Learning
+            </a>
+        </div>
+
+        <p>
+            We’re excited to have you on board and can't wait to see what you'll achieve.
+            If you have any questions, our support team is always here to help.
+        </p>
+
+        <div class="footer">
+            <p>Thank you for choosing <strong>MasarHub</strong>.</p>
+            <p>Happy Learning!</p>
+        </div>
+
+    </div>
+</body>
+</html>

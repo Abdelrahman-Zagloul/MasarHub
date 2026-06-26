@@ -41,7 +41,11 @@ namespace MasarHub.Application.Features.Payments.Commands.PaymentWebhook
 
             if (webhookResult.Value.Status == PaymentStatus.Succeeded)
             {
-                var markResult = payment.MarkSucceeded();
+                var order = await _orderRepository.GetAsync(x => x.Id == payment.OrderId, cancellationToken, x => x.Items);
+                if (order == null)
+                    return Error.NotFound(OrderErrors.NotFound);
+
+                var markResult = payment.MarkSucceeded(order.UserId, order.OrderNumber);
                 if (markResult.IsFailure)
                 {
                     // handle Idempotency
@@ -51,17 +55,13 @@ namespace MasarHub.Application.Features.Payments.Commands.PaymentWebhook
                     return markResult.Error;
                 }
 
-                var order = await _orderRepository.GetAsync(x => x.Id == payment.OrderId, cancellationToken, x => x.Items);
-                if (order == null)
-                    return Error.NotFound(OrderErrors.NotFound);
-
                 var paidResult = order.MarkPaid();
                 if (paidResult.IsFailure)
                     return paidResult.Error;
 
                 foreach (var item in order.Items)
                 {
-                    var enrollmentResult = CourseEnrollment.Create(order.UserId, item.CourseId, order.Id, item.FinalPrice);
+                    var enrollmentResult = CourseEnrollment.Create(order.UserId, item.CourseId, item.CourseTitle, order.Id, item.FinalPrice);
                     if (enrollmentResult.IsFailure)
                         return enrollmentResult.Error;
 
@@ -70,13 +70,25 @@ namespace MasarHub.Application.Features.Payments.Commands.PaymentWebhook
             }
             else if (webhookResult.Value.Status == PaymentStatus.Expired)
             {
+                var order = await _orderRepository.GetByIdAsync(payment.OrderId, cancellationToken);
+                if (order == null)
+                    return Error.NotFound(OrderErrors.NotFound);
+
                 var markResult = payment.MarkExpired();
                 if (markResult.IsFailure)
                     return markResult.Error;
+
+                var failedResult = order.MarkFailed();
+                if (failedResult.IsFailure)
+                    return failedResult.Error;
             }
             else
             {
-                var markResult = payment.MarkFailed();
+                var order = await _orderRepository.GetByIdAsync(payment.OrderId, cancellationToken);
+                if (order == null)
+                    return Error.NotFound(OrderErrors.NotFound);
+
+                var markResult = payment.MarkFailed(order.UserId, order.OrderNumber);
                 if (markResult.IsFailure)
                     return markResult.Error;
             }

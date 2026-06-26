@@ -2,6 +2,7 @@ using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Payments.Events;
 
 namespace MasarHub.Domain.Modules.Payments
 {
@@ -48,26 +49,44 @@ namespace MasarHub.Domain.Modules.Payments
             MarkAsUpdated();
             return DomainResult.Success();
         }
-        public DomainResult MarkSucceeded()
+        public DomainResult MarkSucceeded(Guid userId, string orderNumber)
         {
             var pendingResult = EnsurePending();
             if (pendingResult.IsFailure)
                 return pendingResult;
+
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstNullOrWhiteSpace(orderNumber, nameof(orderNumber))
+            );
+
+            if (error is not null)
+                return error;
 
             Status = PaymentStatus.Succeeded;
             PaidAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
+            RaiseDomainEvent(new PaymentSucceededDomainEvent(Id, OrderId, userId, orderNumber, Amount, Provider, ProviderReference!));
 
             return DomainResult.Success();
         }
-        public DomainResult MarkFailed()
+        public DomainResult MarkFailed(Guid userId, string orderNumber)
         {
             var pendingResult = EnsurePending();
             if (pendingResult.IsFailure)
                 return pendingResult;
 
+            var error = GuardExtensions.FirstError(
+                Guard.AgainstEmptyGuid(userId, nameof(userId)),
+                Guard.AgainstNullOrWhiteSpace(orderNumber, nameof(orderNumber))
+            );
+
+            if (error is not null)
+                return error;
+
             Status = PaymentStatus.Failed;
             MarkAsUpdated();
+            RaiseDomainEvent(new PaymentFailedDomainEvent(Id, OrderId, userId, orderNumber, Amount, Provider, ProviderReference!));
             return DomainResult.Success();
         }
         public DomainResult MarkExpired()
