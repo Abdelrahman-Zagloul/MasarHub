@@ -36,17 +36,47 @@ namespace MasarHub.API.Filters
                 .FirstOrDefault(p => p.ParameterType.GetInterfaces()
                     .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequest<>)));
 
-            if (mediatRParam is null)
+            if (mediatRParam is not null)
+            {
+                var requestInterface = mediatRParam.ParameterType.GetInterfaces()
+                    .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequest<>));
+
+                var responseType = requestInterface.GetGenericArguments()[0];
+                if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
+                    return responseType.GetGenericArguments()[0];
+
                 return null;
+            }
 
-            var requestInterface = mediatRParam.ParameterType.GetInterfaces()
-                .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequest<>));
-
-            var responseType = requestInterface.GetGenericArguments()[0];
-            if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
-                return responseType.GetGenericArguments()[0];
+            foreach (var name in new[] { $"{action.ActionName}Query", $"{action.ActionName}Command" })
+            {
+                if (_requestByName.TryGetValue(name, out var requestType))
+                {
+                    var requestInterface = requestType.GetInterfaces()
+                        .First(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequest<>));
+                    var responseType = requestInterface.GetGenericArguments()[0];
+                    if (responseType.IsGenericType && responseType.GetGenericTypeDefinition() == typeof(Result<>))
+                        return responseType.GetGenericArguments()[0];
+                }
+            }
 
             return null;
+        }
+
+        private static readonly IReadOnlyDictionary<string, Type> _requestByName = BuildRequestNameIndex();
+
+        private static Dictionary<string, Type> BuildRequestNameIndex()
+        {
+            return AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a =>
+                {
+                    try { return a.GetTypes(); }
+                    catch { return []; }
+                })
+                .Where(t => !t.IsAbstract && t.GetInterfaces().Any(i =>
+                    i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IRequest<>)))
+                .DistinctBy(t => t.Name)
+                .ToDictionary(t => t.Name, t => t);
         }
         private static void RemoveExistingSuccessResponses(OpenApiOperation operation)
         {
@@ -71,14 +101,14 @@ namespace MasarHub.API.Filters
 
             var schema = context.SchemaGenerator.GenerateSchema(successType, context.SchemaRepository);
 
-            if (schema is OpenApiSchema openApiSchema)
+            if (schema is not null)
             {
                 operation.Responses?.TryAdd(statusCode, new OpenApiResponse
                 {
                     Description = "Success",
                     Content = new Dictionary<string, OpenApiMediaType>
                     {
-                        ["application/json"] = new() { Schema = openApiSchema }
+                        ["application/json"] = new() { Schema = schema }
                     }
                 });
             }
