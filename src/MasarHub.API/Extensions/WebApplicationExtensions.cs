@@ -28,6 +28,7 @@ namespace MasarHub.API.Extensions
             app.UseForwardedHeaders();
             app.UseRateLimiter();
 
+            app.MapHealthChecks();
             app.UseAuthentication();
             app.UseAuthorization();
             app.MapControllers();
