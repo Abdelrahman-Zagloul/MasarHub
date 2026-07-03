@@ -15,7 +15,8 @@ namespace MasarHub.API.Extensions
                 .AddProblemDetails()
                 .AddVersioning()
                 .AddRateLimitingConfiguration()
-                .AddProxyConfiguration();
+                .AddProxyConfiguration()
+                .AddAppHealthChecks(configuration);
 
 
             return services;
