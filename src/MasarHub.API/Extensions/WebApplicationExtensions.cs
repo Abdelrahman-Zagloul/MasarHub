@@ -19,9 +19,9 @@ namespace MasarHub.API.Extensions
             else
             {
                 app.UseCors(CorsSettings.ProductionPolicy);
+                app.UseHttpsRedirection();
             }
 
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
 
