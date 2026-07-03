@@ -3,6 +3,9 @@
     <File Path=".gitignore" />
     <File Path="LICENSE" />
     <File Path="README.md" />
+    <File Path="Dockerfile" />
+    <File Path=".dockerignore" />
+    <File Path="docker-compose.yml" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/MasarHub.API/MasarHub.API.csproj" />

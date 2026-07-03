@@ -1,0 +1,61 @@
+version: "3.9"
+
+services:
+  api:
+    image: abdelrahmanzagloul/masarhub-api
+    container_name: masarhub-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:80
+      ConnectionStrings__DefaultConnection: >
+        Server=sqlserver;
+        Database=MasarHubDB;
+        User Id=sa;
+        Password=MasarHub@2026;
+        TrustServerCertificate=True;
+      ConnectionStrings__Redis: redis:6379
+      Serilog__WriteTo__0__Args__serverUrl: http://seq:5341
+    depends_on:
+      - sqlserver
+      - redis
+      - seq
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: masarhub-sql
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "MasarHub@2026"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+
+  redis:
+    image: redis:latest
+    container_name: masarhub-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  seq:
+   image: datalust/seq:latest
+   container_name: masarhub-seq
+   ports:
+    - "5341:80"
+   environment:
+    ACCEPT_EULA: "Y"
+    SEQ_FIRSTRUN_ADMINPASSWORD: "MasarHub@2026"
+   volumes:
+    - seq_data:/data
+
+volumes:
+  sqlserver_data:
+  redis_data:
+  seq_data:
