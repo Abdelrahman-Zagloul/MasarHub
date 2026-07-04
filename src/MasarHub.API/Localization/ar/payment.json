@@ -1,0 +1,15 @@
+{
+  "stripe.session_creation_failed": "فشل إنشاء جلسة دفع Stripe للطلب رقم {OrderId}",
+  "stripe.webhook_missing_signature": "رأس توقيع Stripe مفقود في طلب الويب هوك",
+  "stripe.webhook_invalid_session": "حدث الويب هوك من Stripe لا يحتوي على كائن جلسة صالح",
+  "stripe.webhook_unknown_payment_status": "حالة دفع غير معروفة في الويب هوك من Stripe",
+  "stripe.webhook_validation_failed": "فشل التحقق من الويب هوك Stripe",
+
+  "paymob.intention_creation_failed": "فشل إنشاء نية دفع Paymob للطلب رقم {OrderId}",
+  "paymob.session_creation_failed": "فشل إنشاء جلسة دفع Paymob للطلب رقم {OrderId}",
+  "paymob.webhook_missing_hmac": "رأس HMAC مفقود في طلب الويب هوك من Paymob",
+  "paymob.webhook_invalid_payload": "بيانات الويب هوك من Paymob غير صالحة أو تفتقد حقول مطلوبة",
+  "paymob.webhook_invalid_hmac": "توقيع HMAC للويب هوك من Paymob غير صالح",
+  "paymob.webhook_invalid_json": "بيانات الويب هوك من Paymob ليست JSON صالحة",
+  "paymob.webhook_validation_failed": "فشل التحقق من الويب هوك Paymob"
+}

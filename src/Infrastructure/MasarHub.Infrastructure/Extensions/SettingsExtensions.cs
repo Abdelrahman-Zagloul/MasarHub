@@ -20,7 +20,8 @@ namespace MasarHub.Infrastructure.Extensions
                 .AddAndValidateSettings<ExternalAuthSettings>(configuration, nameof(ExternalAuthSettings))
                 .AddAndValidateSettings<FileStorageSettings>(configuration, nameof(FileStorageSettings))
                 .AddAndValidateSettings<CloudinarySettings>(configuration, nameof(CloudinarySettings))
-                .AddAndValidateSettings<StripeSettings>(configuration, nameof(StripeSettings));
+                .AddAndValidateSettings<StripeSettings>(configuration, nameof(StripeSettings))
+                .AddAndValidateSettings<PaymobSettings>(configuration, nameof(PaymobSettings));
 
 
             return services;

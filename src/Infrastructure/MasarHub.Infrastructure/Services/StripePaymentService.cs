@@ -59,7 +59,7 @@ namespace MasarHub.Infrastructure.Services
             catch (StripeException ex)
             {
                 _logger.LogError(ex, "Stripe session creation failed for order {OrderId}", order.Id);
-                return Error.Failure("stripe.session_creation_failed");
+                return new Error("stripe.session_creation_failed", ErrorType.Failure, new() { ["OrderId"] = order.Id.ToString() });
             }
         }
 

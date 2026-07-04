@@ -1,0 +1,15 @@
+{
+  "stripe.session_creation_failed": "Stripe payment session creation failed for order {OrderId}",
+  "stripe.webhook_missing_signature": "Stripe webhook signature header is missing",
+  "stripe.webhook_invalid_session": "Stripe webhook event did not contain a valid session object",
+  "stripe.webhook_unknown_payment_status": "Stripe webhook received an unknown payment status",
+  "stripe.webhook_validation_failed": "Stripe webhook validation failed",
+
+  "paymob.intention_creation_failed": "Paymob payment intention creation failed for order {OrderId}",
+  "paymob.session_creation_failed": "Paymob payment session creation failed for order {OrderId}",
+  "paymob.webhook_missing_hmac": "Paymob webhook HMAC header is missing",
+  "paymob.webhook_invalid_payload": "Paymob webhook payload is invalid or missing required fields",
+  "paymob.webhook_invalid_hmac": "Paymob webhook HMAC signature is invalid",
+  "paymob.webhook_invalid_json": "Paymob webhook payload is not valid JSON",
+  "paymob.webhook_validation_failed": "Paymob webhook validation failed"
+}

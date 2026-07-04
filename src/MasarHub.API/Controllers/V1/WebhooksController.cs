@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MasarHub.API.Controllers.V1
 {
+    [AllowAnonymous]
     [ApiVersion(1.0)]
     [Tags("Webhooks")]
     [Route("api/v{version:apiVersion}/webhooks")]
@@ -21,17 +22,35 @@ namespace MasarHub.API.Controllers.V1
             _sender = sender;
         }
 
-        [AllowAnonymous]
-        [HttpPost("{provider}/payments")]
-        [EndpointSummary("Payment webhook")]
-        [EndpointDescription("Receives payment result from the payment provider and updates the order.")]
-        public async Task<IActionResult> PaymentWebhook([FromRoute] PaymentProvider provider)
+        [HttpPost("stripe/payments")]
+        [EndpointSummary("Stripe Payment webhook")]
+        [EndpointDescription("Receives payment result from the payment provider(Stripe) and updates the order.")]
+        public async Task<IActionResult> StripePaymentWebhook()
         {
             using var reader = new StreamReader(Request.Body);
             var rawBody = await reader.ReadToEndAsync();
             var headers = Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
 
-            var result = await _sender.Send(new PaymentWebhookCommand(provider, rawBody, headers));
+            var result = await _sender.Send(new PaymentWebhookCommand(PaymentProvider.Stripe, rawBody, headers));
+            return result.IsFailure
+                ? await HandleError(result)
+                : Ok(result.Value);
+        }
+
+
+        [HttpPost("paymob/payments")]
+        [EndpointSummary("Paymob Payment webhook")]
+        [EndpointDescription("Receives payment result from the payment provider(Paymob) and updates the order.")]
+        public async Task<IActionResult> PaymobPaymentWebhook(string hmac)
+        {
+            using var reader = new StreamReader(Request.Body);
+            var rawBody = await reader.ReadToEndAsync();
+            var headers = Request.Headers.ToDictionary(h => h.Key, h => h.Value.ToString());
+
+            if (!headers.ContainsKey("hmac") && !string.IsNullOrEmpty(hmac))
+                headers.Add("hmac", hmac);
+
+            var result = await _sender.Send(new PaymentWebhookCommand(PaymentProvider.Paymob, rawBody, headers));
             return result.IsFailure
                 ? await HandleError(result)
                 : Ok(result.Value);
