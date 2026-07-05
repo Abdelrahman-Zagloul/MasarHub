@@ -3,7 +3,6 @@ using MasarHub.API.Middlewares;
 using MasarHub.Application.Extensions;
 using MasarHub.Infrastructure.Extensions;
 using Serilog;
-using System.Text.Json.Serialization;
 
 namespace MasarHub.API
 {
@@ -14,19 +13,11 @@ namespace MasarHub.API
             try
             {
                 var builder = WebApplication.CreateBuilder(args);
-
                 builder.AddSerilog();
-                builder.Services.AddControllers()
-                    .AddJsonOptions(cfg =>
-                    {
-                        cfg.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                    });
-
-                builder.Services.AddOpenApi();
 
                 builder.Services
                     .AddAPI(builder.Configuration)
-                    .AddApplication()
+                    .AddApplication(builder.Configuration["MediatR:LicenseKey"])
                     .AddInfrastructure(builder.Configuration);
 
 

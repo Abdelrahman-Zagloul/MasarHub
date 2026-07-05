@@ -7,9 +7,13 @@ namespace MasarHub.Application.Extensions
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
+        public static IServiceCollection AddApplication(this IServiceCollection services, string? mediatRLicenseKey)
         {
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(IApplicationAssemblyMarker).Assembly));
+            services.AddMediatR(cfg =>
+            {
+                cfg.LicenseKey = mediatRLicenseKey;
+                cfg.RegisterServicesFromAssembly(typeof(IApplicationAssemblyMarker).Assembly);
+            });
 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
