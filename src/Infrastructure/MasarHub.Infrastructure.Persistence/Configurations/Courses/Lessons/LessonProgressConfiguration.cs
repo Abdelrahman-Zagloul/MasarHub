@@ -13,12 +13,7 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses.Lessons
         {
             ConfigureSoftDelete(builder);
 
-            builder.ToTable("LessonProgress", "courses", tb =>
-            {
-                tb.HasCheckConstraint(
-                    "CK_LessonProgress_CompletedAt_WhenCompleted",
-                    "[IsCompleted] = 0 OR [CompletedAt] IS NOT NULL");
-            });
+            builder.ToTable("LessonProgress", "courses");
 
             builder.Property(p => p.UserId)
                    .HasColumnType("uniqueidentifier")
@@ -36,12 +31,6 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses.Lessons
                    .HasColumnType("uniqueidentifier")
                    .IsRequired();
 
-            builder.Property(p => p.IsCompleted)
-                   .IsRequired();
-
-            builder.Property(p => p.CompletedAt)
-                   .IsRequired(false);
-
             builder.HasOne<Lesson>()
                    .WithMany()
                    .HasForeignKey(p => p.LessonId)
@@ -52,13 +41,10 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses.Lessons
                    .HasForeignKey(p => p.UserId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-
             builder.HasIndex(p => p.CourseId);
             builder.HasIndex(p => p.ModuleId);
             builder.HasIndex(p => new { p.UserId, p.LessonId })
                    .IsUnique();
-
-
         }
     }
 }

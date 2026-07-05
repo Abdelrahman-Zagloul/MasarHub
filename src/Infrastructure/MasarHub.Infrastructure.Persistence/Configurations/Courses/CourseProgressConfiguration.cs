@@ -17,8 +17,6 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses
                 tb.HasCheckConstraint("CK_CourseProgress_CompletedLessons_NonNegative", "[CompletedLessons] >= 0");
                 tb.HasCheckConstraint("CK_CourseProgress_TotalLessons_Positive", "[TotalLessons] > 0");
                 tb.HasCheckConstraint("CK_CourseProgress_TotalLessonsLessThanCompleted", "[TotalLessons] >= [CompletedLessons]");
-                tb.HasCheckConstraint("CK_CourseProgress_Percentage_Range", "[ProgressPercentage] >= 0 AND [ProgressPercentage] <= 100");
-
             });
 
             builder.Property(x => x.UserId)
@@ -33,14 +31,6 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses
             builder.Property(x => x.TotalLessons)
                 .IsRequired();
 
-            builder.Property(x => x.ProgressPercentage)
-                .HasPrecision(5, 2)
-                .IsRequired();
-
-            builder.Property(x => x.IsCompleted)
-                .IsRequired()
-                .HasDefaultValue(false);
-
             builder.Property(x => x.CompletedAt);
 
             builder.HasOne<Course>()
@@ -48,13 +38,9 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Courses
                 .HasForeignKey(x => x.CourseId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-
-            builder.HasIndex(x => new { x.UserId, x.CourseId })
-                .IsUnique();
-
+            builder.HasIndex(x => new { x.UserId, x.CourseId }).IsUnique();
             builder.HasIndex(x => x.CourseId);
             builder.HasIndex(x => x.UserId);
-            builder.HasIndex(x => x.IsCompleted);
         }
     }
 }

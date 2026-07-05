@@ -29,6 +29,7 @@
   "course.already_published": "الكورس منشور بالفعل.",
   "course.already_rejected": "الكورس مرفوض بالفعل.",
   "course.thumbnail_not_found": "لم يتم العثور على غلاف لهذا الكورس.",
+  "course.not_enrolled": "أنت غير مسجل في هذا الكورس.",
 
   "module.not_found": "الموديول المطلوب غير موجود.",
   "module.duplicate_reorder_module_ids": "تكرار معرفات الموديول في إعادة الترتيب.",
@@ -54,5 +55,9 @@
   "lesson.reorder_failed": "حدث خطأ أثناء إعادة ترتيب الدروس. يرجى المحاولة مرة أخرى.",
   "lesson.not_video_lesson": "هذا الدرس ليس درس فيديو.",
 
-  "attachment.not_found": "لم يتم العثور على المرفق."
+  "attachment.not_found": "لم يتم العثور على المرفق.",
+
+
+  "progress.already_completed": "الدرس مكتمل بالفعل"
+
 }
