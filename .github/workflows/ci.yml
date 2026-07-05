@@ -1,0 +1,39 @@
+name: MasarHub CI
+on:
+  push:
+    branches:
+      - master
+
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore MasarHub.slnx
+
+      - name: Build solution
+        run: dotnet build MasarHub.slnx --configuration Release --no-restore
+
+      - name: Run Domain Unit Tests
+        run: dotnet test tests/Unit/MasarHub.Domain.UnitTests/MasarHub.Domain.UnitTests.csproj --configuration Release --no-build
+
+      - name: Run Application Unit Tests
+        run: dotnet test tests/Unit/MasarHub.Application.UnitTests/MasarHub.Application.UnitTests.csproj --configuration Release --no-build
+
+      - name: Run Infrastructure Unit Tests
+        run: dotnet test tests/Unit/MasarHub.Infrastructure.UnitTests/MasarHub.Infrastructure.UnitTests.csproj --configuration Release --no-build
+
+      - name: Run Architecture Tests
+        run: dotnet test tests/Architecture/MasarHub.ArchitectureTests/MasarHub.ArchitectureTests.csproj --configuration Release --no-build
