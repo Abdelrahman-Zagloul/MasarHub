@@ -6,6 +6,7 @@ using MasarHub.Application.Features.Modules.Commands.CreateModule;
 using MasarHub.Application.Features.Modules.Commands.DeleteModule;
 using MasarHub.Application.Features.Modules.Commands.ReorderModules;
 using MasarHub.Application.Features.Modules.Commands.UpdateModule;
+using MasarHub.Application.Features.Modules.Queries.GetModuleById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,11 +40,12 @@ namespace MasarHub.API.Controllers.V1
 
 
         [HttpGet("{moduleId:guid}")]
-        [EndpointSummary("Get module by ID (stub)")]
-        [EndpointDescription("Retrieves a specific module within a course. Currently a stub endpoint returning OK.")]
+        [EndpointSummary("Get module by ID")]
+        [EndpointDescription("Retrieves a specific module with its lessons.")]
         public async Task<IActionResult> GetModuleById(Guid courseId, Guid moduleId)
         {
-            return Ok();
+            var result = await _sender.Send(new GetModuleByIdQuery(courseId, moduleId));
+            return await ToOkResultAsync(result);
         }
 
 

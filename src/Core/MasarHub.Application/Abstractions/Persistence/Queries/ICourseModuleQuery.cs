@@ -1,4 +1,5 @@
 ﻿using MasarHub.Application.Common.DependencyInjection;
+using MasarHub.Application.Features.Modules.Queries.GetModuleById;
 
 namespace MasarHub.Application.Abstractions.Persistence.Queries
 {
@@ -9,6 +10,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<ModuleDeleteData> GetDeleteDataAsync(Guid courseId, Guid moduleId, Guid instructorId, CancellationToken ct);
         Task<List<Guid>> GetModuleIdsByCourseIdAsync(Guid courseId, CancellationToken ct = default);
         Task<bool> BulkUpdateDisplayOrderAsync(Guid courseId, IReadOnlyList<Guid> orderedModuleIds, CancellationToken ct = default);
+        Task<ModuleDetailsResponse?> GetModuleByIdAsync(Guid courseId, Guid moduleId, CancellationToken ct = default);
     }
 
 }

@@ -117,6 +117,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                     u.FullName AS InstructorName, 
                     c.CategoryId, 
                     cat.Name AS CategoryName,
+                    c.ThumbnailPublicId,
                     c.RejectionReason
                 FROM courses.Courses c
                 LEFT JOIN [identity].[Users] u ON c.InstructorId = u.Id
@@ -126,6 +127,19 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 SELECT Value FROM courses.CoursePrerequisites WHERE CourseId = @CourseId;
                 SELECT Value FROM courses.CourseRequirements WHERE CourseId = @CourseId;
                 SELECT Value FROM courses.CourseLearningObjectives WHERE CourseId = @CourseId;
+
+                SELECT
+                    m.Id AS ModuleId,
+                    m.Title,
+                    m.Description,
+                    m.DisplayOrder,
+                    COUNT(l.Id) AS LessonCount
+                FROM courses.CourseModules m
+                LEFT JOIN courses.Lessons l 
+                ON m.Id = l.ModuleId AND l.IsDeleted = 0
+                WHERE m.CourseId = @CourseId AND m.IsDeleted = 0
+                GROUP BY m.Id, m.Title, m.Description, m.DisplayOrder
+                ORDER BY m.DisplayOrder;
             ";
 
 
@@ -140,6 +154,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             course.Prerequisites = (await multi.ReadAsync<string>()).ToList();
             course.Requirements = (await multi.ReadAsync<string>()).ToList();
             course.LearningObjectives = (await multi.ReadAsync<string>()).ToList();
+            course.Modules = (await multi.ReadAsync<ModuleResponse>()).AsList();
             return course;
         }
         public async Task<CourseThumbnailDetails> GetThumbnailDetailsAsync(Guid courseId, CancellationToken ct)
@@ -234,7 +249,8 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                     c.InstructorId,
                     u.FullName AS InstructorName, 
                     c.CategoryId,
-                    cat.Name AS CategoryName
+                    cat.Name AS CategoryName,
+                    c.ThumbnailPublicId
                 FROM courses.Courses c
                 LEFT JOIN [identity].Users u ON c.InstructorId = u.Id
                 LEFT JOIN categories.Categories cat ON c.CategoryId = cat.Id

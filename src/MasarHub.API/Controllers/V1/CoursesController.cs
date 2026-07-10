@@ -14,7 +14,6 @@ using MasarHub.Application.Features.Courses.Commands.UpdateCourseRequirements;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseThumbnail;
 using MasarHub.Application.Features.Courses.Queries.GetCourseById;
 using MasarHub.Application.Features.Courses.Queries.GetCourses;
-using MasarHub.Application.Features.Courses.Queries.GetCourseThumbnail;
 using MasarHub.Application.Features.Courses.Queries.GetInstructorCourses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -50,7 +49,7 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpGet("{id:guid}")]
         [EndpointSummary("Get course by ID")]
-        [EndpointDescription("Retrieves detailed information about a specific course including its modules, lessons, and metadata.")]
+        [EndpointDescription("Retrieves detailed information about a specific course including prerequisites, requirements, learning objectives and its modules.")]
         public async Task<IActionResult> GetCourseById(Guid id)
         {
             var result = await _sender.Send(new GetCourseByIdQuery(id));
@@ -75,16 +74,6 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> GetInstructorCourses([FromQuery] GetInstructorCoursesQuery query)
         {
             var result = await _sender.Send(query);
-            return await ToOkResultAsync(result);
-        }
-
-
-        [HttpGet("{id:guid}/thumbnail")]
-        [EndpointSummary("Get course thumbnail URL")]
-        [EndpointDescription("Retrieves the URL of the course thumbnail image.")]
-        public async Task<IActionResult> GetThumbnail(Guid id)
-        {
-            var result = await _sender.Send(new GetCourseThumbnailQuery(id));
             return await ToOkResultAsync(result);
         }
 

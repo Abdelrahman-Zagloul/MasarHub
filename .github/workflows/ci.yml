@@ -1,12 +1,16 @@
 name: MasarHub CI
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
-  pull_request:
-    branches:
-      - master
+  # Temporarily disabled to avoid running CI on every push and pull request.
+  # Use workflow_dispatch to trigger the workflow manually.
+  # push:
+  #   branches:
+  #     - master
+
+  # pull_request:
+  #   branches:
+  #   - master
 
 jobs:
   build-and-test:
