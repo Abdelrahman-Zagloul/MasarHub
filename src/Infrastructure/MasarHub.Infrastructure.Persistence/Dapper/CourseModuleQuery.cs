@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Features.Modules.Queries.GetModuleById;
 using System.Text;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
@@ -153,6 +154,40 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             var affectedRows = await connection.ExecuteAsync(command);
             return affectedRows > 0;
+        }
+        public async Task<ModuleDetailsResponse?> GetModuleByIdAsync(Guid courseId, Guid moduleId, CancellationToken ct)
+        {
+            const string sql = @"
+                SELECT
+                    m.Id AS ModuleId,
+                    m.Title,
+                    m.Description,
+                    m.DisplayOrder
+                FROM courses.CourseModules m
+                WHERE m.Id = @ModuleId AND m.CourseId = @CourseId AND m.IsDeleted = 0;
+
+                SELECT
+                    l.Id AS LessonId,
+                    l.Title,
+                    l.Description,
+                    l.DisplayOrder,
+                    l.IsPreviewable,
+                    l.LessonType,
+                    l.VideoPublicId
+                FROM courses.Lessons l
+                WHERE l.ModuleId = @ModuleId AND l.IsDeleted = 0 AND l.LessonStatus = 'Active'
+                ORDER BY l.DisplayOrder;";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { CourseId = courseId, ModuleId = moduleId }, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var module = await multi.ReadFirstOrDefaultAsync<ModuleDetailsResponse>();
+            if (module is null)
+                return null;
+
+            module.Lessons = (await multi.ReadAsync<LessonResponse>()).AsList();
+            return module;
         }
     }
 }
