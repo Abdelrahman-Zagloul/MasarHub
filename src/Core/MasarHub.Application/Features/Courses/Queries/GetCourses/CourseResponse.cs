@@ -13,6 +13,10 @@
          Guid InstructorId,
          string InstructorName,
          Guid CategoryId,
-         string CategoryName
-    );
+         string CategoryName,
+         string? ThumbnailPublicId
+    )
+    {
+        public string? ThumbnailUrl { get; set; }
+    }
 }

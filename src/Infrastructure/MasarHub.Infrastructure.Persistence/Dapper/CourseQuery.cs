@@ -249,7 +249,8 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                     c.InstructorId,
                     u.FullName AS InstructorName, 
                     c.CategoryId,
-                    cat.Name AS CategoryName
+                    cat.Name AS CategoryName,
+                    c.ThumbnailPublicId
                 FROM courses.Courses c
                 LEFT JOIN [identity].Users u ON c.InstructorId = u.Id
                 LEFT JOIN categories.Categories cat ON c.CategoryId = cat.Id
