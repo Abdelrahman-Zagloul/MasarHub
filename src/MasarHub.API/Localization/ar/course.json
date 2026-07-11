@@ -18,6 +18,7 @@
   "MaxPrice": "أعلى سعر",
   "OrderedModuleIds": "معرفات الموديلات",
   "OrderedLessonIds": "معرفات الدروس",
+  "Importance": "الأهمية",
 
 
   "course.not_found": "الكورس غير موجود.",

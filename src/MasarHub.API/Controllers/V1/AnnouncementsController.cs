@@ -1,0 +1,45 @@
+using Asp.Versioning;
+using MasarHub.API.Controllers.Shared;
+using MasarHub.Application.Abstractions.Services.Localization;
+using MasarHub.Application.Common.Models;
+using MasarHub.Application.Features.Courses.Commands.CreateCourseAnnouncement;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace MasarHub.API.Controllers.V1
+{
+    [ApiVersion(1.0)]
+    [Tags("Announcements")]
+    [Route("api/v{version:apiVersion}/courses/{courseId:guid}/announcements")]
+    public sealed class AnnouncementsController : ApiControllerBase
+    {
+        private readonly ISender _sender;
+        public AnnouncementsController(ILocalizationService localizationService, ISender sender) : base(localizationService)
+        {
+            _sender = sender;
+        }
+
+
+        [HttpPost]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Create course announcement")]
+        [EndpointDescription("Creates a new draft announcement for the course. Instructor only.")]
+        public async Task<IActionResult> CreateCourseAnnouncement(Guid courseId, CreateCourseAnnouncementRequest request)
+        {
+            var command = new CreateCourseAnnouncementCommand(courseId, GetUserId(), request.Title, request.Content, request.Importance);
+
+            var result = await _sender.Send(command);
+            return result.IsFailure
+                ? await HandleError(result)
+                : CreatedAtAction(nameof(GetById), new { courseId, id = result.Value.Id }, result.Value);
+        }
+
+        [HttpGet("{id:guid}")]
+        public IActionResult GetById(Guid courseId, Guid id)
+        {
+            return Ok();
+        }
+    }
+
+}
