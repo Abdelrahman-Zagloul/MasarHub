@@ -37,5 +37,23 @@ namespace MasarHub.Application.Features.Courses.Queries.GetCourseById
         string? Description,
         int DisplayOrder,
         int LessonCount
-    );
+    )
+    {
+        public List<LessonPreviewResponse> Lessons { get; set; } = [];
+    }
+
+    public sealed record LessonPreviewResponse
+    (
+        Guid LessonId,
+        string Title,
+        string? Description,
+        int DisplayOrder,
+        bool IsPreviewable,
+        string LessonType,
+        string? VideoPublicId,
+        Guid ModuleId
+    )
+    {
+        public string? VideoUrl { get; set; }
+    }
 }

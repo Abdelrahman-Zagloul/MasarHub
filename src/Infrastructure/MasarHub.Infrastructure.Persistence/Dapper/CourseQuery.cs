@@ -140,6 +140,20 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 WHERE m.CourseId = @CourseId AND m.IsDeleted = 0
                 GROUP BY m.Id, m.Title, m.Description, m.DisplayOrder
                 ORDER BY m.DisplayOrder;
+
+                SELECT
+                    l.Id AS LessonId,
+                    l.Title,
+                    l.Description,
+                    l.DisplayOrder,
+                    l.IsPreviewable,
+                    l.LessonType,
+                    l.VideoPublicId,
+                    l.ModuleId
+                FROM courses.Lessons l
+                INNER JOIN courses.CourseModules m ON m.Id = l.ModuleId
+                WHERE m.CourseId = @CourseId AND m.IsDeleted = 0 AND l.IsDeleted = 0 AND l.LessonStatus = 'Active'
+                ORDER BY m.DisplayOrder, l.DisplayOrder;
             ";
 
 
@@ -154,7 +168,13 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             course.Prerequisites = (await multi.ReadAsync<string>()).ToList();
             course.Requirements = (await multi.ReadAsync<string>()).ToList();
             course.LearningObjectives = (await multi.ReadAsync<string>()).ToList();
-            course.Modules = (await multi.ReadAsync<ModuleResponse>()).AsList();
+            var modules = (await multi.ReadAsync<ModuleResponse>()).AsList();
+            var lessons = (await multi.ReadAsync<LessonPreviewResponse>()).AsList();
+
+            foreach (var module in modules)
+                module.Lessons = lessons.Where(l => l.ModuleId == module.ModuleId).ToList();
+
+            course.Modules = modules;
             return course;
         }
         public async Task<CourseThumbnailDetails> GetThumbnailDetailsAsync(Guid courseId, CancellationToken ct)
@@ -327,5 +347,6 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { CourseId = courseId }, cancellationToken: ct);
             return await connection.QuerySingleOrDefaultAsync<CourseCartData>(command);
         }
+
     }
 }
