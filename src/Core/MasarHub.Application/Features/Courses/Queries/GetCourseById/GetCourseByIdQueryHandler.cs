@@ -27,6 +27,18 @@ namespace MasarHub.Application.Features.Courses.Queries.GetCourseById
             if (!string.IsNullOrWhiteSpace(course.ThumbnailPublicId))
                 course.ThumbnailUrl = _fileStorageService.GetUrl(course.ThumbnailPublicId, FileType.Image);
 
+            foreach (var module in course.Modules)
+            {
+                foreach (var lesson in module.Lessons)
+                {
+                    if (lesson.IsPreviewable && !string.IsNullOrWhiteSpace(lesson.VideoPublicId))
+                        lesson.VideoUrl = _fileStorageService.GetUrl(lesson.VideoPublicId, FileType.Video);
+                }
+            }
+
+            course.ModuleCount = course.Modules.Count;
+            course.LessonCount = course.Modules.Sum(m => m.LessonCount);
+
             return course;
         }
     }

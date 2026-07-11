@@ -84,11 +84,84 @@ namespace MasarHub.Application.UnitTests.Features.Courses.Queries.GetCourseById
         }
 
         [Fact]
-        public async Task Handle_CourseFound_ReturnsModules()
+        public async Task Handle_CourseFound_ReturnsModulesWithTotals()
         {
             var courseId = Guid.NewGuid();
             var query = new GetCourseByIdQuery(courseId);
-            var module = new ModuleResponse(Guid.NewGuid(), "Module 1", null, 1, 5);
+            var modules = new List<ModuleResponse>
+            {
+                new(Guid.NewGuid(), "Module 1", null, 1, 5),
+                new(Guid.NewGuid(), "Module 2", null, 2, 3),
+            };
+            var course = new CourseDetailsResponse(
+                courseId, "Title", "slug", "desc", 0, CourseLanguage.Arabic, CourseStatus.Published,
+                CourseLevel.AllLevels, DateTimeOffset.UtcNow, Guid.NewGuid(), "Instructor",
+                Guid.NewGuid(), "Category", null, null
+            )
+            { Modules = modules };
+
+            _courseQueryMock
+                .Setup(x => x.GetDetailsByIdAsync(courseId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(course);
+
+            var result = await _sut.Handle(query, CancellationToken.None);
+
+            result.IsSuccess.Should().BeTrue();
+            result.Value.ModuleCount.Should().Be(2);
+            result.Value.LessonCount.Should().Be(8);
+            result.Value.Modules.Should().HaveCount(2);
+            result.Value.Modules[0].LessonCount.Should().Be(5);
+        }
+
+        [Fact]
+        public async Task Handle_ModulesWithPreviewableLessons_ResolvesVideoUrls()
+        {
+            var courseId = Guid.NewGuid();
+            var moduleId = Guid.NewGuid();
+            var query = new GetCourseByIdQuery(courseId);
+            var module = new ModuleResponse(moduleId, "Module 1", null, 1, 2)
+            {
+                Lessons =
+                [
+                    new LessonPreviewResponse(Guid.NewGuid(), "Lesson 1", "desc", 1, true, "Video", "vid-pub-1", moduleId),
+                    new LessonPreviewResponse(Guid.NewGuid(), "Lesson 2", null, 2, false, "Article", null, moduleId),
+                ]
+            };
+            var course = new CourseDetailsResponse(
+                courseId, "Title", "slug", "desc", 0, CourseLanguage.Arabic, CourseStatus.Published,
+                CourseLevel.AllLevels, DateTimeOffset.UtcNow, Guid.NewGuid(), "Instructor",
+                Guid.NewGuid(), "Category", null, null
+            )
+            { Modules = [module] };
+
+            _courseQueryMock
+                .Setup(x => x.GetDetailsByIdAsync(courseId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(course);
+
+            _fileStorageServiceMock
+                .Setup(x => x.GetUrl("vid-pub-1", FileType.Video))
+                .Returns("https://example.com/vid1.mp4");
+
+            var result = await _sut.Handle(query, CancellationToken.None);
+
+            result.IsSuccess.Should().BeTrue();
+            result.Value.Modules[0].Lessons[0].VideoUrl.Should().Be("https://example.com/vid1.mp4");
+            result.Value.Modules[0].Lessons[1].VideoUrl.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Handle_PreviewableLessonWithoutVideoPublicId_DoesNotResolveUrl()
+        {
+            var courseId = Guid.NewGuid();
+            var moduleId = Guid.NewGuid();
+            var query = new GetCourseByIdQuery(courseId);
+            var module = new ModuleResponse(moduleId, "Module 1", null, 1, 1)
+            {
+                Lessons =
+                [
+                    new LessonPreviewResponse(Guid.NewGuid(), "Lesson 1", null, 1, true, "Article", null, moduleId),
+                ]
+            };
             var course = new CourseDetailsResponse(
                 courseId, "Title", "slug", "desc", 0, CourseLanguage.Arabic, CourseStatus.Published,
                 CourseLevel.AllLevels, DateTimeOffset.UtcNow, Guid.NewGuid(), "Instructor",
@@ -103,8 +176,33 @@ namespace MasarHub.Application.UnitTests.Features.Courses.Queries.GetCourseById
             var result = await _sut.Handle(query, CancellationToken.None);
 
             result.IsSuccess.Should().BeTrue();
-            result.Value.Modules.Should().HaveCount(1);
-            result.Value.Modules[0].LessonCount.Should().Be(5);
+            result.Value.Modules[0].Lessons[0].VideoUrl.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Handle_ModuleWithNoLessons_ReturnsEmptyLessonsList()
+        {
+            var courseId = Guid.NewGuid();
+            var moduleId = Guid.NewGuid();
+            var query = new GetCourseByIdQuery(courseId);
+            var module = new ModuleResponse(moduleId, "Module 1", null, 1, 0);
+            var course = new CourseDetailsResponse(
+                courseId, "Title", "slug", "desc", 0, CourseLanguage.Arabic, CourseStatus.Published,
+                CourseLevel.AllLevels, DateTimeOffset.UtcNow, Guid.NewGuid(), "Instructor",
+                Guid.NewGuid(), "Category", null, null
+            )
+            { Modules = [module] };
+
+            _courseQueryMock
+                .Setup(x => x.GetDetailsByIdAsync(courseId, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(course);
+
+            var result = await _sut.Handle(query, CancellationToken.None);
+
+            result.IsSuccess.Should().BeTrue();
+            result.Value.Modules[0].Lessons.Should().BeEmpty();
+            result.Value.ModuleCount.Should().Be(1);
+            result.Value.LessonCount.Should().Be(0);
         }
     }
 }

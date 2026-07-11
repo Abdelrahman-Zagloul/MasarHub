@@ -49,7 +49,7 @@ namespace MasarHub.API.Controllers.V1
 
         [HttpGet("{id:guid}")]
         [EndpointSummary("Get course by ID")]
-        [EndpointDescription("Retrieves detailed information about a specific course including prerequisites, requirements, learning objectives and its modules.")]
+        [EndpointDescription("Retrieves detailed information about a specific course including prerequisites, requirements, learning objectives and its modules and lessons.")]
         public async Task<IActionResult> GetCourseById(Guid id)
         {
             var result = await _sender.Send(new GetCourseByIdQuery(id));
