@@ -84,17 +84,21 @@ namespace MasarHub.Application.UnitTests.Features.Courses.Queries.GetCourseById
         }
 
         [Fact]
-        public async Task Handle_CourseFound_ReturnsModules()
+        public async Task Handle_CourseFound_ReturnsModulesWithTotals()
         {
             var courseId = Guid.NewGuid();
             var query = new GetCourseByIdQuery(courseId);
-            var module = new ModuleResponse(Guid.NewGuid(), "Module 1", null, 1, 5);
+            var modules = new List<ModuleResponse>
+            {
+                new(Guid.NewGuid(), "Module 1", null, 1, 5),
+                new(Guid.NewGuid(), "Module 2", null, 2, 3),
+            };
             var course = new CourseDetailsResponse(
                 courseId, "Title", "slug", "desc", 0, CourseLanguage.Arabic, CourseStatus.Published,
                 CourseLevel.AllLevels, DateTimeOffset.UtcNow, Guid.NewGuid(), "Instructor",
                 Guid.NewGuid(), "Category", null, null
             )
-            { Modules = [module] };
+            { Modules = modules };
 
             _courseQueryMock
                 .Setup(x => x.GetDetailsByIdAsync(courseId, It.IsAny<CancellationToken>()))
@@ -103,7 +107,9 @@ namespace MasarHub.Application.UnitTests.Features.Courses.Queries.GetCourseById
             var result = await _sut.Handle(query, CancellationToken.None);
 
             result.IsSuccess.Should().BeTrue();
-            result.Value.Modules.Should().HaveCount(1);
+            result.Value.ModuleCount.Should().Be(2);
+            result.Value.LessonCount.Should().Be(8);
+            result.Value.Modules.Should().HaveCount(2);
             result.Value.Modules[0].LessonCount.Should().Be(5);
         }
     }

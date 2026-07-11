@@ -22,6 +22,8 @@ namespace MasarHub.Application.Features.Courses.Queries.GetCourseById
     )
     {
         public string? ThumbnailUrl { get; set; }
+        public int ModuleCount { get; set; }
+        public int LessonCount { get; set; }
         public List<string> Prerequisites { get; set; } = [];
         public List<string> Requirements { get; set; } = [];
         public List<string> LearningObjectives { get; set; } = [];
