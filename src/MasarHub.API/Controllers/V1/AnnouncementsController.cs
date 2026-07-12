@@ -6,6 +6,7 @@ using MasarHub.Application.Features.Announcements.Commands.CreateCourseAnnouncem
 using MasarHub.Application.Features.Announcements.Commands.PublishCourseAnnouncement;
 using MasarHub.Application.Features.Announcements.Commands.ScheduleCourseAnnouncement;
 using MasarHub.Application.Features.Announcements.Commands.SetAnnouncementPin;
+using MasarHub.Application.Features.Announcements.Commands.UpdateCourseAnnouncement;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -36,6 +37,17 @@ namespace MasarHub.API.Controllers.V1
             return result.IsFailure
                 ? await HandleError(result)
                 : CreatedAtAction(nameof(GetById), new { courseId, id = result.Value.Id }, result.Value);
+        }
+
+        [HttpPut("{announcementId:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Update course announcement")]
+        [EndpointDescription("Updates title, content, and importance of a draft announcement. Instructor only.")]
+        public async Task<IActionResult> UpdateCourseAnnouncement(Guid courseId, Guid announcementId, UpdateCourseAnnouncementRequest request)
+        {
+            var command = new UpdateCourseAnnouncementCommand(courseId, announcementId, GetUserId(), request.Title, request.Content, request.Importance);
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
         }
 
         [HttpPut("{announcementId:guid}/publish")]

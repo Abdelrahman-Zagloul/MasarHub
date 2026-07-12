@@ -5,22 +5,22 @@ using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses;
 using MediatR;
 
-namespace MasarHub.Application.Features.Announcements.Commands.ScheduleCourseAnnouncement
+namespace MasarHub.Application.Features.Announcements.Commands.UpdateCourseAnnouncement
 {
-    public sealed class ScheduleCourseAnnouncementCommandHandler : IRequestHandler<ScheduleCourseAnnouncementCommand, Result>
+    public sealed class UpdateCourseAnnouncementCommandHandler : IRequestHandler<UpdateCourseAnnouncementCommand, Result>
     {
         private readonly ICourseQuery _courseQuery;
         private readonly IRepository<CourseAnnouncement> _announcementRepository;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ScheduleCourseAnnouncementCommandHandler(ICourseQuery courseQuery, IRepository<CourseAnnouncement> announcementRepository, IUnitOfWork unitOfWork)
+        public UpdateCourseAnnouncementCommandHandler(ICourseQuery courseQuery, IRepository<CourseAnnouncement> announcementRepository, IUnitOfWork unitOfWork)
         {
             _courseQuery = courseQuery;
             _announcementRepository = announcementRepository;
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<Result> Handle(ScheduleCourseAnnouncementCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(UpdateCourseAnnouncementCommand request, CancellationToken cancellationToken)
         {
             var accessData = await _courseQuery.GetCourseAccessData(request.CourseId, request.InstructorId, cancellationToken);
             if (!accessData.CourseExist)
@@ -32,12 +32,28 @@ namespace MasarHub.Application.Features.Announcements.Commands.ScheduleCourseAnn
             if (announcement == null || announcement.CourseId != request.CourseId)
                 return Error.NotFound("course_announcement.not_found");
 
-            var result = announcement.Schedule(request.ScheduledAt);
-            if (result.IsFailure)
-                return result.Error;
+            if (request.Title != null)
+            {
+                var result = announcement.UpdateTitle(request.Title);
+                if (result.IsFailure)
+                    return result.Error;
+            }
+
+            if (request.Content != null)
+            {
+                var result = announcement.UpdateContent(request.Content);
+                if (result.IsFailure)
+                    return result.Error;
+            }
+
+            if (request.Importance != null)
+            {
+                var result = announcement.SetImportance(request.Importance.Value);
+                if (result.IsFailure)
+                    return result.Error;
+            }
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
-
             return Result.Success();
         }
     }
