@@ -21,7 +21,7 @@ namespace MasarHub.Application.Features.Announcements.Commands.PublishCourseAnno
             var domainEvent = notification.DomainEvent;
 
             _backgroundJobService.Enqueue<IAnnouncementJob>(x =>
-                x.ExecuteAsync(
+                x.NotifyAsync(
                     domainEvent.AnnouncementId,
                     domainEvent.CourseId,
                     domainEvent.Title,

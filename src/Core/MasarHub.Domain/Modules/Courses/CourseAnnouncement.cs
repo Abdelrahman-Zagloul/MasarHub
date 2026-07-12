@@ -108,11 +108,15 @@ namespace MasarHub.Domain.Modules.Courses
             if (IsPublished)
                 return CourseAnnouncementErrors.AlreadyPublished;
 
+            if (ScheduledAt.HasValue)
+                return CourseAnnouncementErrors.AlreadyScheduled;
+
             if (scheduledAt <= DateTimeOffset.UtcNow)
                 return CourseAnnouncementErrors.InvalidScheduleTime;
 
             ScheduledAt = scheduledAt;
             MarkAsUpdated();
+            RaiseDomainEvent(new CourseAnnouncementScheduledDomainEvent(Id, CourseId, scheduledAt));
             return DomainResult.Success();
         }
 
