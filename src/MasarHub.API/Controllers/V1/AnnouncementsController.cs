@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Announcements.Commands.CreateCourseAnnouncement;
+using MasarHub.Application.Features.Announcements.Commands.DeleteCourseAnnouncement;
 using MasarHub.Application.Features.Announcements.Commands.PublishCourseAnnouncement;
 using MasarHub.Application.Features.Announcements.Commands.ScheduleCourseAnnouncement;
 using MasarHub.Application.Features.Announcements.Commands.SetAnnouncementPin;
@@ -46,6 +47,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> UpdateCourseAnnouncement(Guid courseId, Guid announcementId, UpdateCourseAnnouncementRequest request)
         {
             var command = new UpdateCourseAnnouncementCommand(courseId, announcementId, GetUserId(), request.Title, request.Content, request.Importance);
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpDelete("{announcementId:guid}")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Delete course announcement")]
+        [EndpointDescription("Delete a course announcement. Instructor only.")]
+        public async Task<IActionResult> DeleteCourseAnnouncement(Guid courseId, Guid announcementId)
+        {
+            var command = new DeleteCourseAnnouncementCommand(courseId, announcementId, GetUserId());
             var result = await _sender.Send(command);
             return await ToNoContentResultAsync(result);
         }
