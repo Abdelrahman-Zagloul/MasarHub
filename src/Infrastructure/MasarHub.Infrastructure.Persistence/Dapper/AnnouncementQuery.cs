@@ -1,6 +1,7 @@
 using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForInstructor;
+using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForStudent;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -48,6 +49,38 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             using var connection = _connectionFactory.CreateConnection();
             var command = new CommandDefinition(sql, new { AnnouncementId = announcementId, CourseId = courseId, InstructorId = instructorId }, cancellationToken: ct);
             return await connection.QueryFirstOrDefaultAsync<InstructorCourseAnnouncementResponse>(command);
+        }
+
+        public async Task<StudentAnnouncementResult> GetByIdForStudentAsync(Guid courseId, Guid announcementId, Guid studentId, CancellationToken ct)
+        {
+            const string sql = @"
+                SELECT CAST(CASE WHEN EXISTS (
+                    SELECT 1 FROM courses.CourseEnrollments
+                    WHERE CourseId = @CourseId AND UserId = @StudentId AND IsDeleted = 0 AND Status = 'Active'
+                ) THEN 1 ELSE 0 END AS BIT);
+
+                SELECT
+                    Id,
+                    CourseId,
+                    Title,
+                    Content,
+                    PublishedAt,
+                    Importance,
+                    IsPinned,
+                    CreatedAt
+                FROM courses.CourseAnnouncements
+                WHERE Id = @AnnouncementId AND CourseId = @CourseId AND IsPublished = 1 AND IsDeleted = 0";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { AnnouncementId = announcementId, CourseId = courseId, StudentId = studentId }, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var isEnrolled = await multi.ReadSingleAsync<bool>();
+            if (!isEnrolled)
+                return new StudentAnnouncementResult(false, null);
+
+            var announcement = await multi.ReadFirstOrDefaultAsync<StudentCourseAnnouncementResponse>();
+            return new StudentAnnouncementResult(isEnrolled, announcement);
         }
     }
 }

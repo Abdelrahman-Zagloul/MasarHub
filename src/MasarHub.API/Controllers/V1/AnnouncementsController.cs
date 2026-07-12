@@ -9,6 +9,7 @@ using MasarHub.Application.Features.Announcements.Commands.ScheduleCourseAnnounc
 using MasarHub.Application.Features.Announcements.Commands.SetAnnouncementPin;
 using MasarHub.Application.Features.Announcements.Commands.UpdateCourseAnnouncement;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForInstructor;
+using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForStudent;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -96,13 +97,24 @@ namespace MasarHub.API.Controllers.V1
             return await ToNoContentResultAsync(result);
         }
 
-        [HttpGet("{announcementId:guid}")]
+        [HttpGet("{announcementId:guid}/instructor")]
         [Authorize(Roles = Roles.Instructor)]
-        [EndpointSummary("Get course announcement by id (Instructor)")]
+        [EndpointSummary("Get course announcement by id (instructor)")]
         [EndpointDescription("Returns a course announcement by its id. Instructor only.")]
         public async Task<IActionResult> GetById(Guid courseId, Guid announcementId)
         {
             var query = new GetCourseAnnouncementByIdForInstructorQuery(courseId, announcementId, GetUserId());
+            var result = await _sender.Send(query);
+            return await ToOkResultAsync(result);
+        }
+
+        [HttpGet("{announcementId:guid}/student")]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Get course announcement by id (student)")]
+        [EndpointDescription("Returns a published announcement for an enrolled student.")]
+        public async Task<IActionResult> GetByIdForStudent(Guid courseId, Guid announcementId)
+        {
+            var query = new GetCourseAnnouncementByIdForStudentQuery(courseId, announcementId, GetUserId());
             var result = await _sender.Send(query);
             return await ToOkResultAsync(result);
         }
