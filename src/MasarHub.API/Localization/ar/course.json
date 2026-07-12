@@ -59,6 +59,12 @@
   "attachment.not_found": "لم يتم العثور على المرفق.",
 
 
-  "progress.already_completed": "الدرس مكتمل بالفعل"
+  "progress.already_completed": "الدرس مكتمل بالفعل",
+
+  "course_announcement.not_found": "الإعلان غير موجود.",
+  "course_announcement.already_published": "الإعلان منشور بالفعل.",
+  "course_announcement.cannot_edit_after_publish": "لا يمكن تعديل الإعلان بعد نشره.",
+  "course_announcement.invalid_schedule_time": "يجب أن يكون وقت الجدولة في المستقبل.",
+  "course_announcement.invalid_expiration_time": "يجب أن يكون وقت الانتهاء في المستقبل."
 
 }

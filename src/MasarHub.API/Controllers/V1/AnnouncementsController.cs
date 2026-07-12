@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Courses.Commands.CreateCourseAnnouncement;
+using MasarHub.Application.Features.Courses.Commands.PublishCourseAnnouncement;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -35,8 +36,19 @@ namespace MasarHub.API.Controllers.V1
                 : CreatedAtAction(nameof(GetById), new { courseId, id = result.Value.Id }, result.Value);
         }
 
-        [HttpGet("{id:guid}")]
-        public IActionResult GetById(Guid courseId, Guid id)
+        [HttpPut("{announcementId:guid}/publish")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Publish course announcement")]
+        [EndpointDescription("Publishes a draft announcement and notifies enrolled students. Instructor only.")]
+        public async Task<IActionResult> PublishCourseAnnouncement(Guid courseId, Guid announcementId)
+        {
+            var command = new PublishCourseAnnouncementCommand(courseId, announcementId, GetUserId());
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpGet("{announcementId:guid}")]
+        public IActionResult GetById(Guid courseId, Guid announcementId)
         {
             return Ok();
         }
