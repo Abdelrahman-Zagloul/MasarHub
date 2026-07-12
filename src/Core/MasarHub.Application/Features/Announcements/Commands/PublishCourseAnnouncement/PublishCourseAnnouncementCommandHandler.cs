@@ -5,7 +5,7 @@ using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses;
 using MediatR;
 
-namespace MasarHub.Application.Features.Courses.Commands.PublishCourseAnnouncement
+namespace MasarHub.Application.Features.Announcements.Commands.PublishCourseAnnouncement
 {
     public sealed class PublishCourseAnnouncementCommandHandler : IRequestHandler<PublishCourseAnnouncementCommand, Result>
     {

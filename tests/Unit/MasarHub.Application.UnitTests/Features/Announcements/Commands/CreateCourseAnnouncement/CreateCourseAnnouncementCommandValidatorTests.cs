@@ -1,10 +1,10 @@
 using FluentAssertions;
-using MasarHub.Application.Features.Courses.Commands.CreateCourseAnnouncement;
+using MasarHub.Application.Features.Announcements.Commands.CreateCourseAnnouncement;
 using MasarHub.Domain.Modules.Courses;
 
-namespace MasarHub.Application.UnitTests.Features.Courses.Commands.CreateCourseAnnouncement
+namespace MasarHub.Application.UnitTests.Features.Announcements.Commands.CreateCourseAnnouncement
 {
-    [Trait("UnitTests.Feature.CourseAnnouncement", "CreateCourseAnnouncement")]
+    [Trait("UnitTests.Feature.Announcements", "CreateCourseAnnouncement")]
     public sealed class CreateCourseAnnouncementCommandValidatorTests
     {
         private readonly CreateCourseAnnouncementCommandValidator _sut = new();

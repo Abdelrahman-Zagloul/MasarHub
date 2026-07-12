@@ -4,7 +4,7 @@ using MasarHub.Application.Common.DomainEvents;
 using MasarHub.Domain.Modules.Courses.Events;
 using MediatR;
 
-namespace MasarHub.Application.Features.Courses.Commands.PublishCourseAnnouncement
+namespace MasarHub.Application.Features.Announcements.Commands.PublishCourseAnnouncement
 {
     public sealed class CourseAnnouncementPublishedNotificationEventHandler
         : INotificationHandler<DomainEventNotification<CourseAnnouncementPublishedDomainEvent>>

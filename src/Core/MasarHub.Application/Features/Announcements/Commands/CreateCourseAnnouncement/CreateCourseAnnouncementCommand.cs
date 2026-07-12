@@ -2,7 +2,7 @@ using MasarHub.Application.Common.Results;
 using MasarHub.Domain.Modules.Courses;
 using MediatR;
 
-namespace MasarHub.Application.Features.Courses.Commands.CreateCourseAnnouncement
+namespace MasarHub.Application.Features.Announcements.Commands.CreateCourseAnnouncement
 {
     public sealed record CreateCourseAnnouncementCommand
     (

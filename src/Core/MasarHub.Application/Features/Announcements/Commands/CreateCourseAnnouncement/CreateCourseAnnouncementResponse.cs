@@ -1,6 +1,6 @@
 using MasarHub.Domain.Modules.Courses;
 
-namespace MasarHub.Application.Features.Courses.Commands.CreateCourseAnnouncement
+namespace MasarHub.Application.Features.Announcements.Commands.CreateCourseAnnouncement
 {
     public sealed record CreateCourseAnnouncementResponse
     (

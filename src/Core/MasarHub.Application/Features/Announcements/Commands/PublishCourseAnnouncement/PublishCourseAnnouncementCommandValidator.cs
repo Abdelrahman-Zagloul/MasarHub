@@ -1,7 +1,7 @@
 using FluentValidation;
 using MasarHub.Application.Common.Extensions;
 
-namespace MasarHub.Application.Features.Courses.Commands.PublishCourseAnnouncement
+namespace MasarHub.Application.Features.Announcements.Commands.PublishCourseAnnouncement
 {
     public sealed class PublishCourseAnnouncementCommandValidator : AbstractValidator<PublishCourseAnnouncementCommand>
     {
