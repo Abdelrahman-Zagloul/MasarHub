@@ -139,6 +139,9 @@ namespace MasarHub.Domain.Modules.Courses
 
         public DomainResult Pin()
         {
+            if (IsPinned)
+                return CourseAnnouncementErrors.AlreadyPinned;
+
             IsPinned = true;
             MarkAsUpdated();
             return DomainResult.Success();
@@ -146,6 +149,9 @@ namespace MasarHub.Domain.Modules.Courses
 
         public DomainResult Unpin()
         {
+            if (!IsPinned)
+                return CourseAnnouncementErrors.AlreadyUnpinned;
+
             IsPinned = false;
             MarkAsUpdated();
             return DomainResult.Success();

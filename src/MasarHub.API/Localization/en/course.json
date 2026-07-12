@@ -64,6 +64,8 @@
   "course_announcement.already_published": "Announcement is already published.",
   "course_announcement.cannot_edit_after_publish": "Cannot edit announcement after it has been published.",
   "course_announcement.invalid_schedule_time": "Schedule time must be in the future.",
-  "course_announcement.invalid_expiration_time": "Expiration time must be in the future."
+  "course_announcement.invalid_expiration_time": "Expiration time must be in the future.",
+  "course_announcement.already_pinned": "Announcement is already pinned.",
+  "course_announcement.already_unpinned": "Announcement is already unpinned."
 
 }

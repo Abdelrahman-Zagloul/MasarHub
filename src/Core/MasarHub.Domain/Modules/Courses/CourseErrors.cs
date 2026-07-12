@@ -22,5 +22,7 @@ namespace MasarHub.Domain.Modules.Courses
         public static readonly DomainError CannotEditAfterPublish = new("course_announcement.cannot_edit_after_publish");
         public static readonly DomainError InvalidScheduleTime = new("course_announcement.invalid_schedule_time", "ScheduledAt");
         public static readonly DomainError InvalidExpirationTime = new("course_announcement.invalid_expiration_time", "ExpiresAt");
+        public static readonly DomainError AlreadyPinned = new("course_announcement.already_pinned");
+        public static readonly DomainError AlreadyUnpinned = new("course_announcement.already_unpinned");
     }
 }

@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Announcements.Commands.CreateCourseAnnouncement;
 using MasarHub.Application.Features.Announcements.Commands.PublishCourseAnnouncement;
+using MasarHub.Application.Features.Announcements.Commands.SetAnnouncementPin;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,6 +44,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> PublishCourseAnnouncement(Guid courseId, Guid announcementId)
         {
             var command = new PublishCourseAnnouncementCommand(courseId, announcementId, GetUserId());
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpPut("{announcementId:guid}/pin")]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("Set announcement pin")]
+        [EndpointDescription("Pins or unpins a course announcement. Instructor only.")]
+        public async Task<IActionResult> SetAnnouncementPin(Guid courseId, Guid announcementId, SetAnnouncementPinRequest request)
+        {
+            var command = new SetAnnouncementPinCommand(courseId, announcementId, GetUserId(), request.IsPinned);
             var result = await _sender.Send(command);
             return await ToNoContentResultAsync(result);
         }
