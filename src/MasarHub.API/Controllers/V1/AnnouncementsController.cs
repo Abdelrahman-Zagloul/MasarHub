@@ -10,6 +10,7 @@ using MasarHub.Application.Features.Announcements.Commands.SetAnnouncementPin;
 using MasarHub.Application.Features.Announcements.Commands.UpdateCourseAnnouncement;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForInstructor;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForStudent;
+using MasarHub.Application.Features.Announcements.Queries.GetInstructorCourseAnnouncements;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -119,7 +120,16 @@ namespace MasarHub.API.Controllers.V1
             return await ToOkResultAsync(result);
         }
 
-
+        [HttpGet]
+        [Authorize(Roles = Roles.Instructor)]
+        [EndpointSummary("List course announcements (instructor)")]
+        [EndpointDescription("Returns a paginated list of announcements for a course with optional filtering. Instructor only.")]
+        public async Task<IActionResult> GetInstructorCourseAnnouncements(Guid courseId, [FromQuery] GetInstructorCourseAnnouncementsRequest request)
+        {
+            var query = new GetInstructorCourseAnnouncementsQuery(courseId, GetUserId(), request.Importance, request.IsPublished, request.IsPinned, request.Search, request.PageNumber, request.PageSize);
+            var result = await _sender.Send(query);
+            return await ToOkResultAsync(result);
+        }
     }
 
 }

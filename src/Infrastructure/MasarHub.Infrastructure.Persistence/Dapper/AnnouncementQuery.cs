@@ -1,7 +1,9 @@
 using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForInstructor;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForStudent;
+using MasarHub.Application.Features.Announcements.Queries.GetInstructorCourseAnnouncements;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -81,6 +83,80 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             var announcement = await multi.ReadFirstOrDefaultAsync<StudentCourseAnnouncementResponse>();
             return new StudentAnnouncementResult(isEnrolled, announcement);
+        }
+
+        public async Task<PagedResult<InstructorCourseAnnouncementResponse>> GetInstructorListAsync(GetInstructorCourseAnnouncementsQuery query, CancellationToken ct)
+        {
+            var conditions = new List<string> { "ca.IsDeleted = 0" };
+            var parameters = new DynamicParameters();
+
+            parameters.Add("CourseId", query.CourseId);
+            conditions.Add("ca.CourseId = @CourseId");
+
+            parameters.Add("InstructorId", query.InstructorId);
+            conditions.Add("ca.InstructorId = @InstructorId");
+
+            if (query.Importance.HasValue)
+            {
+                parameters.Add("Importance", query.Importance.Value);
+                conditions.Add("ca.Importance = @Importance");
+            }
+
+            if (query.IsPublished.HasValue)
+            {
+                parameters.Add("IsPublished", query.IsPublished.Value);
+                conditions.Add("ca.IsPublished = @IsPublished");
+            }
+
+            if (query.IsPinned.HasValue)
+            {
+                parameters.Add("IsPinned", query.IsPinned.Value);
+                conditions.Add("ca.IsPinned = @IsPinned");
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                parameters.Add("Search", $"%{query.Search}%");
+                conditions.Add("(ca.Title LIKE @Search OR ca.Content LIKE @Search)");
+            }
+
+            string whereClause = "WHERE " + string.Join(" AND ", conditions);
+
+            string sql = $@"
+                SELECT COUNT(1)
+                FROM courses.CourseAnnouncements ca
+                {whereClause};
+
+                SELECT
+                    ca.Id,
+                    ca.CourseId,
+                    ca.InstructorId,
+                    ca.Title,
+                    ca.Content,
+                    ca.IsPublished,
+                    ca.PublishedAt,
+                    ca.ScheduledAt,
+                    ca.ExpiresAt,
+                    ca.Importance,
+                    ca.IsPinned,
+                    ca.CreatedAt,
+                    ca.UpdatedAt
+                FROM courses.CourseAnnouncements ca
+                {whereClause}
+                ORDER BY ca.CreatedAt DESC
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+
+            int offset = (query.PageNumber - 1) * query.PageSize;
+            parameters.Add("Offset", offset);
+            parameters.Add("PageSize", query.PageSize);
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, parameters, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var totalCount = await multi.ReadFirstAsync<int>();
+            var items = (await multi.ReadAsync<InstructorCourseAnnouncementResponse>()).ToList();
+            return new PagedResult<InstructorCourseAnnouncementResponse>(items, totalCount);
         }
     }
 }
