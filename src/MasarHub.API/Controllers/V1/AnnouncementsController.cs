@@ -11,6 +11,7 @@ using MasarHub.Application.Features.Announcements.Commands.UpdateCourseAnnouncem
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForInstructor;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForStudent;
 using MasarHub.Application.Features.Announcements.Queries.GetInstructorCourseAnnouncements;
+using MasarHub.Application.Features.Announcements.Queries.GetStudentCourseAnnouncements;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -120,7 +121,8 @@ namespace MasarHub.API.Controllers.V1
             return await ToOkResultAsync(result);
         }
 
-        [HttpGet]
+
+        [HttpGet("instructor")]
         [Authorize(Roles = Roles.Instructor)]
         [EndpointSummary("List course announcements (instructor)")]
         [EndpointDescription("Returns a paginated list of announcements for a course with optional filtering. Instructor only.")]
@@ -130,6 +132,16 @@ namespace MasarHub.API.Controllers.V1
             var result = await _sender.Send(query);
             return await ToOkResultAsync(result);
         }
-    }
 
+        [HttpGet("student")]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("List course announcements (student)")]
+        [EndpointDescription("Returns a paginated list of published announcements for an enrolled student.")]
+        public async Task<IActionResult> GetStudentCourseAnnouncements(Guid courseId, [FromQuery] GetStudentCourseAnnouncementsRequest request)
+        {
+            var query = new GetStudentCourseAnnouncementsQuery(courseId, GetUserId(), request.Importance, request.IsPinned, request.Search, request.PageNumber, request.PageSize);
+            var result = await _sender.Send(query);
+            return await ToOkResultAsync(result);
+        }
+    }
 }

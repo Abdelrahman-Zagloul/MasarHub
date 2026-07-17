@@ -4,6 +4,7 @@ using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForInstructor;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForStudent;
 using MasarHub.Application.Features.Announcements.Queries.GetInstructorCourseAnnouncements;
+using MasarHub.Application.Features.Announcements.Queries.GetStudentCourseAnnouncements;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -98,7 +99,7 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             if (query.Importance.HasValue)
             {
-                parameters.Add("Importance", query.Importance.Value);
+                parameters.Add("Importance", query.Importance.Value.ToString());
                 conditions.Add("ca.Importance = @Importance");
             }
 
@@ -158,5 +159,84 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var items = (await multi.ReadAsync<InstructorCourseAnnouncementResponse>()).ToList();
             return new PagedResult<InstructorCourseAnnouncementResponse>(items, totalCount);
         }
+
+        public async Task<StudentAnnouncementPaginatedResult> GetStudentListAsync(GetStudentCourseAnnouncementsQuery query, CancellationToken ct)
+        {
+            var conditions = new List<string>
+            {
+                "ca.IsDeleted = 0",
+                "ca.IsPublished = 1",
+                "ca.CourseId = @CourseId"
+            };
+            var parameters = new DynamicParameters();
+
+            parameters.Add("CourseId", query.CourseId);
+            parameters.Add("StudentId", query.StudentId);
+
+            if (query.Importance.HasValue)
+            {
+                parameters.Add("Importance", query.Importance.Value.ToString());
+                conditions.Add("ca.Importance = @Importance");
+            }
+
+            if (query.IsPinned.HasValue)
+            {
+                parameters.Add("IsPinned", query.IsPinned.Value);
+                conditions.Add("ca.IsPinned = @IsPinned");
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.Search))
+            {
+                parameters.Add("Search", $"%{query.Search}%");
+                conditions.Add("(ca.Title LIKE @Search OR ca.Content LIKE @Search)");
+            }
+
+            string whereClause = "WHERE " + string.Join(" AND ", conditions);
+
+            int offset = (query.PageNumber - 1) * query.PageSize;
+            parameters.Add("Offset", offset);
+            parameters.Add("PageSize", query.PageSize);
+
+            string sql = $@"
+               -- Check if the student is enrolled in the course
+               SELECT CAST(CASE WHEN EXISTS (
+                    SELECT 1 FROM courses.CourseEnrollments
+                    WHERE CourseId = @CourseId AND UserId = @StudentId AND IsDeleted = 0 AND Status = 'Active'
+                ) THEN 1 ELSE 0 END AS BIT);
+
+               
+                SELECT COUNT(1)
+                FROM courses.CourseAnnouncements ca
+                {whereClause};
+
+                SELECT
+                    ca.Id,
+                    ca.CourseId,
+                    ca.Title,
+                    ca.Content,
+                    ca.PublishedAt,
+                    ca.Importance,
+                    ca.IsPinned,
+                    ca.CreatedAt
+                FROM courses.CourseAnnouncements ca
+                {whereClause}
+                ORDER BY ca.CreatedAt DESC
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, parameters, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var isEnrolled = await multi.ReadFirstAsync<bool>();
+            if (!isEnrolled)
+                return new StudentAnnouncementPaginatedResult(false, null);
+
+            var totalCount = await multi.ReadFirstAsync<int>();
+            var items = (await multi.ReadAsync<StudentCourseAnnouncementResponse>()).ToList();
+            var pagedResult = new PagedResult<StudentCourseAnnouncementResponse>(items, totalCount);
+
+            return new StudentAnnouncementPaginatedResult(true, pagedResult);
+        }
+
     }
 }

@@ -3,6 +3,7 @@ using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForInstructor;
 using MasarHub.Application.Features.Announcements.Queries.GetCourseAnnouncementByIdForStudent;
 using MasarHub.Application.Features.Announcements.Queries.GetInstructorCourseAnnouncements;
+using MasarHub.Application.Features.Announcements.Queries.GetStudentCourseAnnouncements;
 
 namespace MasarHub.Application.Abstractions.Persistence.Queries
 {
@@ -12,6 +13,8 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<InstructorCourseAnnouncementResponse?> GetByIdForInstructorAsync(Guid courseId, Guid announcementId, Guid instructorId, CancellationToken ct = default);
         Task<StudentAnnouncementResult> GetByIdForStudentAsync(Guid courseId, Guid announcementId, Guid studentId, CancellationToken ct = default);
         Task<PagedResult<InstructorCourseAnnouncementResponse>> GetInstructorListAsync(GetInstructorCourseAnnouncementsQuery query, CancellationToken ct = default);
+        Task<StudentAnnouncementPaginatedResult> GetStudentListAsync(GetStudentCourseAnnouncementsQuery query, CancellationToken ct = default);
     }
     public sealed record StudentAnnouncementResult(bool IsEnrolled, StudentCourseAnnouncementResponse? Announcement);
+    public sealed record StudentAnnouncementPaginatedResult(bool IsEnrolled, PagedResult<StudentCourseAnnouncementResponse>? Announcement);
 }
