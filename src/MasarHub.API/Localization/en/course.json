@@ -18,7 +18,8 @@
   "MaxPrice": "Maximum Price",
   "OrderedModuleIds": "Ordered Module IDs",
   "OrderedLessonIds": "Ordered Lesson IDs",
-
+  "Importance": "Importance",
+  
   "course.not_found": "Course not found.",
   "course.access_denied": "You do not have permission to access this course.",
   "course.cannot_submit_empty_course": "Cannot submit an empty course. Please add lessons before submitting.",
@@ -57,6 +58,15 @@
   "attachment.not_found": "The attachment was not found.",
 
 
-  "progress.already_completed": "Lesson already completed"
+  "progress.already_completed": "Lesson already completed",
+
+  "course_announcement.not_found": "Announcement not found.",
+  "course_announcement.already_published": "Announcement is already published.",
+  "course_announcement.cannot_edit_after_publish": "Cannot edit announcement after it has been published.",
+  "course_announcement.invalid_schedule_time": "Schedule time must be in the future.",
+  "course_announcement.invalid_expiration_time": "Expiration time must be in the future.",
+  "course_announcement.already_scheduled": "Announcement is already scheduled.",
+  "course_announcement.already_pinned": "Announcement is already pinned.",
+  "course_announcement.already_unpinned": "Announcement is already unpinned."
 
 }

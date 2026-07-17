@@ -18,6 +18,7 @@
   "MaxPrice": "أعلى سعر",
   "OrderedModuleIds": "معرفات الموديلات",
   "OrderedLessonIds": "معرفات الدروس",
+  "Importance": "الأهمية",
 
 
   "course.not_found": "الكورس غير موجود.",
@@ -58,6 +59,15 @@
   "attachment.not_found": "لم يتم العثور على المرفق.",
 
 
-  "progress.already_completed": "الدرس مكتمل بالفعل"
+  "progress.already_completed": "الدرس مكتمل بالفعل",
+
+  "course_announcement.not_found": "الإعلان غير موجود.",
+  "course_announcement.already_published": "الإعلان منشور بالفعل.",
+  "course_announcement.cannot_edit_after_publish": "لا يمكن تعديل الإعلان بعد نشره.",
+  "course_announcement.invalid_schedule_time": "يجب أن يكون وقت الجدولة في المستقبل.",
+  "course_announcement.invalid_expiration_time": "يجب أن يكون وقت الانتهاء في المستقبل.",
+  "course_announcement.already_scheduled": "الإعلان مجدول بالفعل.",
+  "course_announcement.already_pinned": "الإعلان مثبت بالفعل.",
+  "course_announcement.already_unpinned": "الإعلان غير مثبت بالفعل."
 
 }

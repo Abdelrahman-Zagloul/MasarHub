@@ -2,6 +2,7 @@ using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Courses.Events;
 
 namespace MasarHub.Domain.Modules.Courses
 {
@@ -98,6 +99,7 @@ namespace MasarHub.Domain.Modules.Courses
             IsPublished = true;
             PublishedAt = DateTimeOffset.UtcNow;
             MarkAsUpdated();
+            RaiseDomainEvent(new CourseAnnouncementPublishedDomainEvent(Id, CourseId, InstructorId, Title, Content, Importance, IsPinned));
             return DomainResult.Success();
         }
 
@@ -106,11 +108,15 @@ namespace MasarHub.Domain.Modules.Courses
             if (IsPublished)
                 return CourseAnnouncementErrors.AlreadyPublished;
 
+            if (ScheduledAt.HasValue)
+                return CourseAnnouncementErrors.AlreadyScheduled;
+
             if (scheduledAt <= DateTimeOffset.UtcNow)
                 return CourseAnnouncementErrors.InvalidScheduleTime;
 
             ScheduledAt = scheduledAt;
             MarkAsUpdated();
+            RaiseDomainEvent(new CourseAnnouncementScheduledDomainEvent(Id, CourseId, scheduledAt));
             return DomainResult.Success();
         }
 
@@ -137,6 +143,9 @@ namespace MasarHub.Domain.Modules.Courses
 
         public DomainResult Pin()
         {
+            if (IsPinned)
+                return CourseAnnouncementErrors.AlreadyPinned;
+
             IsPinned = true;
             MarkAsUpdated();
             return DomainResult.Success();
@@ -144,6 +153,9 @@ namespace MasarHub.Domain.Modules.Courses
 
         public DomainResult Unpin()
         {
+            if (!IsPinned)
+                return CourseAnnouncementErrors.AlreadyUnpinned;
+
             IsPinned = false;
             MarkAsUpdated();
             return DomainResult.Success();
