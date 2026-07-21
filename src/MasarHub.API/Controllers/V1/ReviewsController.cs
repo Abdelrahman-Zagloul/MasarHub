@@ -1,0 +1,37 @@
+using Asp.Versioning;
+using MasarHub.API.Controllers.Shared;
+using MasarHub.Application.Abstractions.Services.Localization;
+using MasarHub.Application.Common.Models;
+using MasarHub.Application.Features.Courses.Commands.CreateCourseReview;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace MasarHub.API.Controllers.V1
+{
+    [ApiVersion(1.0)]
+    [Tags("Reviews")]
+    [Route("api/v{version:apiVersion}/courses/{courseId:guid}/reviews")]
+    public sealed class ReviewsController : ApiControllerBase
+    {
+        private readonly ISender _sender;
+
+        public ReviewsController(ILocalizationService localizationService, ISender sender) : base(localizationService)
+        {
+            _sender = sender;
+        }
+
+        [HttpPost]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Create course review")]
+        [EndpointDescription("Creates a rating and review for a course. Student must be enrolled.")]
+        public async Task<IActionResult> CreateCourseReview(Guid courseId, CreateCourseReviewRequest request)
+        {
+            var command = new CreateCourseReviewCommand(courseId, GetUserId(), request.Rating, request.ReviewContent);
+            var result = await _sender.Send(command);
+            return result.IsFailure
+                ? await HandleError(result)
+                : CreatedAtAction(null, new { courseId }, result.Value);
+        }
+    }
+}

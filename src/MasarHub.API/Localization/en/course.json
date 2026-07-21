@@ -67,6 +67,11 @@
   "course_announcement.invalid_expiration_time": "Expiration time must be in the future.",
   "course_announcement.already_scheduled": "Announcement is already scheduled.",
   "course_announcement.already_pinned": "Announcement is already pinned.",
-  "course_announcement.already_unpinned": "Announcement is already unpinned."
+  "course_announcement.already_unpinned": "Announcement is already unpinned.",
 
+  "course_review.invalid_rating": "Rating must be between 1 and 5.",
+  "course_review.already_reviewed": "You have already reviewed this course.",
+  "course_review.not_found": "Review not found.",
+  "validation.rating_invalid": "Rating must be between 1 and 5.",
+  "validation.at_least_one": "At least one field must be provided."
 }
