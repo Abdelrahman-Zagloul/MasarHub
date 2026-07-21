@@ -13,6 +13,7 @@
   "LearningObjective": "Learning Objective",
   "CourseId": "Course ID",
   "Reason": "Reason",
+  "ReviewId": "Review ID",
   "InstructorId": "Instructor ID",
   "MinPrice": "Minimum Price",
   "MaxPrice": "Maximum Price",

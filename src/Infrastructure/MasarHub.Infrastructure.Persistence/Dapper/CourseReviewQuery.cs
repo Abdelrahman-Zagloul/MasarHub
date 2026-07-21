@@ -1,5 +1,6 @@
 using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Features.Reviews.Queries.GetCourseReviewById;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -33,6 +34,27 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var hasExistingReview = await multi.ReadSingleAsync<bool>();
 
             return new CreateReviewCheckResult(isEnrolled, hasExistingReview);
+        }
+
+        public async Task<CourseReviewResponse?> GetByIdAsync(Guid courseId, Guid reviewId, CancellationToken ct)
+        {
+            const string sql = @"
+                SELECT
+                    r.Id,
+                    r.CourseId,
+                    r.UserId,
+                    u.FullName,
+                    CAST(r.Rating AS FLOAT) AS Rating,
+                    r.ReviewContent,
+                    r.CreatedAt,
+                    r.EditedAt
+                FROM courses.CourseReviews r
+                INNER JOIN [identity].Users u ON r.UserId = u.Id
+                WHERE r.Id = @ReviewId AND r.CourseId = @CourseId AND r.IsDeleted = 0";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { ReviewId = reviewId, CourseId = courseId }, cancellationToken: ct);
+            return await connection.QueryFirstOrDefaultAsync<CourseReviewResponse>(command);
         }
     }
 }

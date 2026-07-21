@@ -13,6 +13,7 @@
   "LearningObjective": "هدف التعلم",
   "CourseId": "معرف الكورس",
   "Reason": "السبب",
+  "ReviewId": "معرف المراجعة",
   "InstructorId": "معرف المدرب",
   "MinPrice": "أدنى سعر",
   "MaxPrice": "أعلى سعر",
