@@ -1,7 +1,7 @@
 using FluentAssertions;
-using MasarHub.Application.Features.Courses.Commands.CreateCourseReview;
+using MasarHub.Application.Features.Reviews.Commands.CreateCourseReview;
 
-namespace MasarHub.Application.UnitTests.Features.Courses.Commands.CreateCourseReview
+namespace MasarHub.Application.UnitTests.Features.Reviews.Commands.CreateCourseReview
 {
     [Trait("UnitTests.Feature.Courses", "CreateCourseReview")]
     public sealed class CreateCourseReviewCommandValidatorTests

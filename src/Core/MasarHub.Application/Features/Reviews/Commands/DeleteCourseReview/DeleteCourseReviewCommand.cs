@@ -1,7 +1,7 @@
 using MasarHub.Application.Common.Results;
 using MediatR;
 
-namespace MasarHub.Application.Features.Courses.Commands.DeleteCourseReview
+namespace MasarHub.Application.Features.Reviews.Commands.DeleteCourseReview
 {
     public sealed record DeleteCourseReviewCommand
     (

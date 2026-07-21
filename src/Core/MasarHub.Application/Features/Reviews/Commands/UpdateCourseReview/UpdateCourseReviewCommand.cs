@@ -1,7 +1,7 @@
 using MasarHub.Application.Common.Results;
 using MediatR;
 
-namespace MasarHub.Application.Features.Courses.Commands.UpdateCourseReview
+namespace MasarHub.Application.Features.Reviews.Commands.UpdateCourseReview
 {
     public sealed record UpdateCourseReviewCommand
     (

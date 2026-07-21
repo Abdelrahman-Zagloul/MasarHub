@@ -1,8 +1,8 @@
 using FluentAssertions;
 using FluentValidation.TestHelper;
-using MasarHub.Application.Features.Courses.Commands.UpdateCourseReview;
+using MasarHub.Application.Features.Reviews.Commands.UpdateCourseReview;
 
-namespace MasarHub.Application.UnitTests.Features.Courses.Commands.UpdateCourseReview
+namespace MasarHub.Application.UnitTests.Features.Reviews.Commands.UpdateCourseReview
 {
     [Trait("UnitTests.Feature.Courses", "UpdateCourseReview")]
     public sealed class UpdateCourseReviewCommandValidatorTests

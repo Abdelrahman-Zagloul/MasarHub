@@ -1,7 +1,7 @@
 using FluentValidation;
 using MasarHub.Application.Common.Extensions;
 
-namespace MasarHub.Application.Features.Courses.Commands.DeleteCourseReview
+namespace MasarHub.Application.Features.Reviews.Commands.DeleteCourseReview
 {
     public sealed class DeleteCourseReviewCommandValidator : AbstractValidator<DeleteCourseReviewCommand>
     {

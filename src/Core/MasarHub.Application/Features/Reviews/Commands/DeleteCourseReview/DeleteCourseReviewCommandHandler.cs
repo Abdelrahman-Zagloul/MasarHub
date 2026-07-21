@@ -4,7 +4,7 @@ using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses;
 using MediatR;
 
-namespace MasarHub.Application.Features.Courses.Commands.DeleteCourseReview
+namespace MasarHub.Application.Features.Reviews.Commands.DeleteCourseReview
 {
     public sealed class DeleteCourseReviewCommandHandler : IRequestHandler<DeleteCourseReviewCommand, Result>
     {

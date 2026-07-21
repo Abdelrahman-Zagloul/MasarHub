@@ -1,7 +1,7 @@
 using FluentValidation;
 using MasarHub.Application.Common.Extensions;
 
-namespace MasarHub.Application.Features.Courses.Commands.CreateCourseReview
+namespace MasarHub.Application.Features.Reviews.Commands.CreateCourseReview
 {
     public sealed class CreateCourseReviewCommandValidator : AbstractValidator<CreateCourseReviewCommand>
     {

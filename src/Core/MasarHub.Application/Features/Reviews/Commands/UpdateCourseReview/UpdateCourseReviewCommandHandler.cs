@@ -4,7 +4,7 @@ using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Domain.Modules.Courses;
 using MediatR;
 
-namespace MasarHub.Application.Features.Courses.Commands.UpdateCourseReview
+namespace MasarHub.Application.Features.Reviews.Commands.UpdateCourseReview
 {
     public sealed class UpdateCourseReviewCommandHandler : IRequestHandler<UpdateCourseReviewCommand, Result>
     {

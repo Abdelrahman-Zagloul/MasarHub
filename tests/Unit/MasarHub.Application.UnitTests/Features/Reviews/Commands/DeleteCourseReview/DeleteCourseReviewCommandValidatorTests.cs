@@ -1,8 +1,8 @@
 using FluentAssertions;
 using FluentValidation.TestHelper;
-using MasarHub.Application.Features.Courses.Commands.DeleteCourseReview;
+using MasarHub.Application.Features.Reviews.Commands.DeleteCourseReview;
 
-namespace MasarHub.Application.UnitTests.Features.Courses.Commands.DeleteCourseReview
+namespace MasarHub.Application.UnitTests.Features.Reviews.Commands.DeleteCourseReview
 {
     [Trait("UnitTests.Feature.Courses", "DeleteCourseReview")]
     public sealed class DeleteCourseReviewCommandValidatorTests

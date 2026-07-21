@@ -1,4 +1,4 @@
-namespace MasarHub.Application.Features.Courses.Commands.UpdateCourseReview
+namespace MasarHub.Application.Features.Reviews.Commands.UpdateCourseReview
 {
     public sealed record UpdateCourseReviewRequest
     (
