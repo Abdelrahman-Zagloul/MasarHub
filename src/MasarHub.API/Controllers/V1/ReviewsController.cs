@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Courses.Commands.CreateCourseReview;
+using MasarHub.Application.Features.Courses.Commands.UpdateCourseReview;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,17 @@ namespace MasarHub.API.Controllers.V1
             return result.IsFailure
                 ? await HandleError(result)
                 : CreatedAtAction(null, new { courseId }, result.Value);
+        }
+
+        [HttpPut("{reviewId:guid}")]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Update course review")]
+        [EndpointDescription("Updates a rating and/or review content. Student must own the review.")]
+        public async Task<IActionResult> UpdateCourseReview(Guid courseId, Guid reviewId, UpdateCourseReviewRequest request)
+        {
+            var command = new UpdateCourseReviewCommand(courseId, reviewId, GetUserId(), request.Rating, request.ReviewContent);
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
         }
     }
 }
