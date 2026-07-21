@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Courses.Commands.CreateCourseReview;
+using MasarHub.Application.Features.Courses.Commands.DeleteCourseReview;
 using MasarHub.Application.Features.Courses.Commands.UpdateCourseReview;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -42,6 +43,17 @@ namespace MasarHub.API.Controllers.V1
         public async Task<IActionResult> UpdateCourseReview(Guid courseId, Guid reviewId, UpdateCourseReviewRequest request)
         {
             var command = new UpdateCourseReviewCommand(courseId, reviewId, GetUserId(), request.Rating, request.ReviewContent);
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
+        }
+
+        [HttpDelete("{reviewId:guid}")]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Delete course review")]
+        [EndpointDescription("Soft deletes a course review. Student must own the review.")]
+        public async Task<IActionResult> DeleteCourseReview(Guid courseId, Guid reviewId)
+        {
+            var command = new DeleteCourseReviewCommand(courseId, reviewId, GetUserId());
             var result = await _sender.Send(command);
             return await ToNoContentResultAsync(result);
         }
