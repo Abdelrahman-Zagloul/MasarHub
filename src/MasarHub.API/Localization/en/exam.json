@@ -33,5 +33,7 @@
   "exam.multiple_choice_must_have_between_3_and_10": "Multiple choice questions must have between 3 and 10 options.",
   "exam.option_not_found": "Option with ID {OptionId} not found.",
   "exam.question_not_found": "Question not found in the exam.",
-  "exam.duplicate_option_text": "Option texts must be unique within the same question."
+  "exam.duplicate_option_text": "Option texts must be unique within the same question.",
+  "exam.no_answers_submitted": "No answers were submitted for this attempt.",
+  "exam_attempt.max_attempts_reached": "You have reached the maximum number of attempts for this exam."
 }

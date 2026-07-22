@@ -33,5 +33,7 @@
   "exam.multiple_choice_must_have_between_3_and_10": "يجب أن يحتوي سؤال الاختيارات المتعددة على 3 إلى 10 اختيارات.",
   "exam.option_not_found": "الاختيار ذو المعرف {OptionId} غير موجود.",
   "exam.question_not_found": "السؤال غير موجود في هذا الاختبار.",
-  "exam.duplicate_option_text": "يجب أن تكون نصوص الخيارات فريدة داخل السؤال نفسه."
+  "exam.duplicate_option_text": "يجب أن تكون نصوص الخيارات فريدة داخل السؤال نفسه.",
+  "exam.no_answers_submitted": "لم يتم تقديم أي إجابات لهذه المحاولة.",
+  "exam_attempt.max_attempts_reached": "لقد وصلت إلى الحد الأقصى لعدد المحاولات المسموح بها لهذا الاختبار."
 }
