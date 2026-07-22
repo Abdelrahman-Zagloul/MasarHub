@@ -13,6 +13,7 @@
   "LearningObjective": "هدف التعلم",
   "CourseId": "معرف الكورس",
   "Reason": "السبب",
+  "ReviewId": "معرف المراجعة",
   "InstructorId": "معرف المدرب",
   "MinPrice": "أدنى سعر",
   "MaxPrice": "أعلى سعر",
@@ -68,6 +69,11 @@
   "course_announcement.invalid_expiration_time": "يجب أن يكون وقت الانتهاء في المستقبل.",
   "course_announcement.already_scheduled": "الإعلان مجدول بالفعل.",
   "course_announcement.already_pinned": "الإعلان مثبت بالفعل.",
-  "course_announcement.already_unpinned": "الإعلان غير مثبت بالفعل."
+  "course_announcement.already_unpinned": "الإعلان غير مثبت بالفعل.",
 
+  "course_review.invalid_rating": "التقييم يجب أن يكون بين 1 و 5.",
+  "course_review.already_reviewed": "لقد قمت بتقييم هذا الكورس بالفعل.",
+  "course_review.not_found": "التقييم غير موجود.",
+  "validation.rating_invalid": "التقييم يجب أن يكون بين 1 و 5.",
+  "validation.at_least_one": "يجب توفير حقل واحد على الأقل."
 }

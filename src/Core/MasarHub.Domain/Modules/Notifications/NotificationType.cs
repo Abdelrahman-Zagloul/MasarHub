@@ -17,6 +17,7 @@
         PaymentReceived,
         PaymentFailed,
         CourseEnrollmentCreated,
-        CourseAnnouncementPublished
+        CourseAnnouncementPublished,
+        CourseReviewCreated
     }
 }

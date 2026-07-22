@@ -9,6 +9,7 @@ namespace MasarHub.Domain.Modules.Courses
         public static readonly DomainError AlreadyPublished = new("course.already_published");
         public static readonly DomainError AlreadyRejected = new("course.already_rejected");
         public static readonly DomainError InvalidRating = new("course_review.invalid_rating", "Rating");
+        public static readonly DomainError AlreadyReviewed = new("course_review.already_reviewed");
     }
 
     public static class CourseEnrollmentErrors
