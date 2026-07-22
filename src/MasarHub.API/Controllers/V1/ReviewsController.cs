@@ -28,7 +28,7 @@ namespace MasarHub.API.Controllers.V1
         [HttpGet]
         [EndpointSummary("List course reviews")]
         [EndpointDescription("Returns a paginated list of reviews for a course.")]
-        public async Task<IActionResult> GetCourseReviewsList(Guid courseId, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetCourseReviews(Guid courseId, int pageNumber = 1, int pageSize = 10)
         {
             var result = await _sender.Send(new GetCourseReviewsQuery(courseId, pageNumber, pageSize));
             return await ToOkResultAsync(result);
