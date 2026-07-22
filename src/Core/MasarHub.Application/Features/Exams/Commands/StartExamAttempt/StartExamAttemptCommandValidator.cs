@@ -7,6 +7,9 @@ namespace MasarHub.Application.Features.Exams.Commands.StartExamAttempt
     {
         public StartExamAttemptCommandValidator()
         {
+            RuleFor(x => x.CourseId)
+                .ValidGuid("CourseId");
+
             RuleFor(x => x.ExamId)
                 .ValidGuid("ExamId");
 
