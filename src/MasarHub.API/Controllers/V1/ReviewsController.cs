@@ -6,6 +6,7 @@ using MasarHub.Application.Features.Reviews.Commands.CreateCourseReview;
 using MasarHub.Application.Features.Reviews.Commands.DeleteCourseReview;
 using MasarHub.Application.Features.Reviews.Commands.UpdateCourseReview;
 using MasarHub.Application.Features.Reviews.Queries.GetCourseReviewById;
+using MasarHub.Application.Features.Reviews.Queries.GetCourseReviews;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,6 +23,15 @@ namespace MasarHub.API.Controllers.V1
         public ReviewsController(ILocalizationService localizationService, ISender sender) : base(localizationService)
         {
             _sender = sender;
+        }
+
+        [HttpGet]
+        [EndpointSummary("List course reviews")]
+        [EndpointDescription("Returns a paginated list of reviews for a course.")]
+        public async Task<IActionResult> GetCourseReviewsList(Guid courseId, int pageNumber = 1, int pageSize = 10)
+        {
+            var result = await _sender.Send(new GetCourseReviewsQuery(courseId, pageNumber, pageSize));
+            return await ToOkResultAsync(result);
         }
 
         [HttpGet("{reviewId:guid}")]
