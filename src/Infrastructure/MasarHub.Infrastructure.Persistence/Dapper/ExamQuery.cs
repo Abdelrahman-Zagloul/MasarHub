@@ -1,12 +1,12 @@
 using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Domain.Modules.Exams;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
     public sealed class ExamQuery : IExamQuery
     {
         private readonly IDbConnectionFactory _connectionFactory;
-
         public ExamQuery(IDbConnectionFactory connectionFactory)
         {
             _connectionFactory = connectionFactory;
@@ -71,6 +71,63 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             var command = new CommandDefinition(sql, new { examId, instructorId }, cancellationToken: ct);
             var result = await connection.QuerySingleOrDefaultAsync<ExamState>(command);
             return result ?? new ExamState(false, false, false);
+        }
+
+        public async Task<Exam?> GetExamDetailsAsync(Guid examId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                SELECT Id, CourseId, ModuleId, Title, Description, PassingScorePercentage, DurationInMinutes, MaxAttempts, IsPublished, CreatedAt, UpdatedAt, IsDeleted, DeletedAt
+                FROM exams.Exams WHERE Id = @ExamId AND IsDeleted = 0;
+            
+                SELECT Id, ExamId, QuestionText, QuestionMark, QuestionType, CreatedAt, UpdatedAt   
+                FROM exams.Questions WHERE ExamId = @ExamId;
+                
+                SELECT o.Id, o.QuestionId, o.Text, o.IsCorrect, o.CreatedAt, o.UpdatedAt 
+                FROM exams.Options o INNER JOIN exams.Questions q ON q.Id = o.QuestionId WHERE q.ExamId = @ExamId;
+            ";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { ExamId = examId }, cancellationToken: ct);
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var exam = await multi.ReadSingleOrDefaultAsync<Exam>();
+            if (exam is null)
+                return null;
+
+            var questions = (await multi.ReadAsync<Question>()).ToList();
+
+            var optionsByQuestion = (await multi.ReadAsync<Option>())
+                .GroupBy(o => o.QuestionId)
+                .ToDictionary(g => g.Key, g => g.AsEnumerable());
+
+            foreach (var question in questions)
+                if (optionsByQuestion.TryGetValue(question.Id, out var options))
+                    question.LoadOptions(options);
+
+            exam.LoadQuestions(questions);
+            return exam;
+        }
+
+        public async Task<ExamAttemptStartData?> GetAttemptStartDataAsync(Guid examId, Guid courseId, Guid userId, CancellationToken ct = default)
+        {
+            const string sql = @"
+                 SELECT CAST(CASE WHEN EXISTS (
+                    SELECT 1 FROM courses.CourseEnrollments
+                    WHERE CourseId = @CourseId AND UserId = @userId AND IsDeleted = 0 AND Status = 'Active'
+                ) THEN 1 ELSE 0 END AS BIT);
+
+                SELECT
+                    COUNT(CASE WHEN Status IN ('Submitted', 'Cancelled') THEN 1 END) AS CompletedCount,
+                    MAX(CASE WHEN Status = 'InProgress' THEN Id END) AS InProgressId
+                FROM exams.ExamAttempts WHERE ExamId = @ExamId AND UserId = @UserId AND IsDeleted = 0;";
+
+            using var connection = _connectionFactory.CreateConnection();
+            var command = new CommandDefinition(sql, new { examId, courseId, userId }, cancellationToken: ct);
+
+            using var multi = await connection.QueryMultipleAsync(command);
+            var isEnrolled = await multi.ReadSingleOrDefaultAsync<bool>();
+            var (completedCount, inProgressId) = await multi.ReadSingleOrDefaultAsync<(int, Guid?)>();
+            return new ExamAttemptStartData(isEnrolled, completedCount, inProgressId);
         }
     }
 }

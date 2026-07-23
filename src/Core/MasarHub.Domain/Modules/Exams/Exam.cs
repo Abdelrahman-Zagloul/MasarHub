@@ -77,6 +77,12 @@ namespace MasarHub.Domain.Modules.Exams
             return new Exam(courseId, title, passingScorePercentage, maxAttempts, moduleId, description, durationMinutes);
         }
 
+        // For Dapper mapping
+        public void LoadQuestions(IEnumerable<Question> questions)
+        {
+            _questions.Clear();
+            _questions.AddRange(questions);
+        }
         public DomainResult UpdateTitle(string title)
         {
             var draftResult = EnsureDraft();

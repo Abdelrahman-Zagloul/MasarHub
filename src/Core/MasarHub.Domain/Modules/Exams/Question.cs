@@ -27,6 +27,12 @@ namespace MasarHub.Domain.Modules.Exams
             QuestionType = questionType;
         }
 
+        // for dapper mapping
+        public void LoadOptions(IEnumerable<Option> options)
+        {
+            _options.Clear();
+            _options.AddRange(options);
+        }
         public static DomainResult<Question> Create(
             Guid examId,
             string questionText,

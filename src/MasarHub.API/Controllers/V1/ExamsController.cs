@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Exams.Commands.CreateExam;
 using MasarHub.Application.Features.Exams.Commands.DeleteExam;
+using MasarHub.Application.Features.Exams.Commands.StartExamAttempt;
 using MasarHub.Application.Features.Exams.Commands.ToggleExamPublished;
 using MasarHub.Application.Features.Exams.Commands.UpdateExam;
 using MediatR;
@@ -77,6 +78,17 @@ namespace MasarHub.API.Controllers.V1
         public IActionResult GetExamById(Guid id)
         {
             return Ok();
+        }
+
+        [HttpPost("{examId:guid}/attempts/start")]
+        [Authorize(Roles = Roles.Student)]
+        [EndpointSummary("Start an exam attempt")]
+        [EndpointDescription("Starts a new exam attempt. Returns all questions (without correct answers) and options. Returns existing in-progress attempt if one exists.")]
+        public async Task<IActionResult> StartExamAttempt(Guid examId, [FromQuery] Guid courseId)
+        {
+            var command = new StartExamAttemptCommand(courseId, examId, GetUserId());
+            var result = await _sender.Send(command);
+            return await ToOkResultAsync(result);
         }
     }
 }
