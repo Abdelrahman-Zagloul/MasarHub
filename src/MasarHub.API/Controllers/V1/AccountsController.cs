@@ -3,6 +3,7 @@ using MasarHub.API.Controllers.Shared;
 using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Accounts.Commands.ApproveInstructor;
+using MasarHub.Application.Features.Accounts.Commands.RejectInstructor;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,14 @@ namespace MasarHub.API.Controllers.V1
             return await ToNoContentResultAsync(result);
         }
 
-
+        [HttpPut("{instructorUserId:guid}/reject")]
+        [Authorize(Roles = Roles.Admin)]
+        [EndpointSummary("Reject an instructor account")]
+        [EndpointDescription("Rejects a pending instructor account by user ID with a reason. Admin only.")]
+        public async Task<IActionResult> RejectInstructor(Guid instructorUserId, RejectInstructorRequest request)
+        {
+            var result = await _sender.Send(new RejectInstructorCommand(instructorUserId, GetUserId(), request.Reason));
+            return await ToNoContentResultAsync(result);
+        }
     }
 }

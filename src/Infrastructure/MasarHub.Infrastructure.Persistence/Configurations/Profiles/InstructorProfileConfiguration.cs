@@ -39,6 +39,14 @@ namespace MasarHub.Infrastructure.Persistence.Configurations.Profiles
                 .HasMaxLength(20)
                 .IsRequired();
 
+            builder.Property(x => x.RejectionReason)
+                   .HasColumnType("nvarchar")
+                   .HasMaxLength(500)
+                   .IsRequired(false);
+
+            builder.Property(x => x.AdminId)
+                   .IsRequired(false);
+
 
             builder.HasOne<ApplicationUser>()
                    .WithOne()
