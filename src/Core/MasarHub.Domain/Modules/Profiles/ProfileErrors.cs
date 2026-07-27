@@ -8,5 +8,6 @@ namespace MasarHub.Domain.Modules.Profiles
         public static readonly DomainError DuplicateSocialLink = new("profile.duplicate_social_link");
         public static readonly DomainError AlreadyApproved = new("profile.already_approved");
         public static readonly DomainError AlreadyRejected = new("profile.already_rejected");
+        public static readonly DomainError ProfileNotFound = new("profile.not_found");
     }
 }

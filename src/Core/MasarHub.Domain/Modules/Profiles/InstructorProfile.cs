@@ -2,6 +2,7 @@ using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Profiles.Events;
 
 namespace MasarHub.Domain.Modules.Profiles
 {
@@ -14,6 +15,7 @@ namespace MasarHub.Domain.Modules.Profiles
         public string? Bio { get; private set; }
         public string? Company { get; private set; }
         public VerificationStatus VerificationStatus { get; private set; }
+        public string? RejectionReason { get; private set; }
         public IReadOnlyCollection<SocialLink> SocialLinks => _socialLinks.AsReadOnly();
         private InstructorProfile() { }
         private InstructorProfile(Guid userId, string headline, string? bio, string? company)
@@ -67,15 +69,17 @@ namespace MasarHub.Domain.Modules.Profiles
 
             VerificationStatus = VerificationStatus.Approved;
             MarkAsUpdated();
+            RaiseDomainEvent(new InstructorApprovedDomainEvent(UserId));
 
             return DomainResult.Success();
         }
-        public DomainResult Reject()
+        public DomainResult Reject(string rejectionReason)
         {
             if (VerificationStatus == VerificationStatus.Rejected)
                 return ProfileErrors.AlreadyRejected;
 
             VerificationStatus = VerificationStatus.Rejected;
+            RejectionReason = rejectionReason;
             MarkAsUpdated();
             return DomainResult.Success();
         }
