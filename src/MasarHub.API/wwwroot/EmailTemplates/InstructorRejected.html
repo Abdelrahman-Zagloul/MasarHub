@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Instructor Account Rejected</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px; margin: 0; }
+        .container { max-width: 600px; margin: 40px auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        h2 { color: #c0392b; margin-bottom: 15px; }
+        p { color: #555; line-height: 1.6; margin: 10px 0; }
+        .reason-box { margin: 20px 0; padding: 15px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 4px; }
+        .reason-box strong { color: #856404; }
+        .reason-box p { margin: 5px 0 0 0; color: #666; font-style: italic; }
+        .btn { display: inline-block; margin: 30px auto; padding: 14px 32px; background-color: #dc3545; color: #fff !important; text-decoration: none; font-size: 16px; font-weight: bold; border-radius: 6px; }
+        .btn-wrapper { text-align: center; }
+        .footer { margin-top: 35px; font-size: 12px; color: #888; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Account Rejected</h2>
+        <p>Hello <strong>{FullName}</strong>,</p>
+        <p>We regret to inform you that your instructor account has been <strong>rejected</strong> by our administration team.</p>
+        <div class="reason-box">
+            <strong>Reason:</strong>
+            <p>{RejectionReason}</p>
+        </div>
+        <p>If you believe this decision was made in error, please feel free to contact our support team for further assistance.</p>
+        <div class="btn-wrapper">
+            <a href="{FrontendUrl}" class="btn">Contact Support</a>
+        </div>
+        <div class="footer">
+            <p>We appreciate your interest in becoming an instructor at MasarHub.</p>
+        </div>
+    </div>
+</body>
+</html>

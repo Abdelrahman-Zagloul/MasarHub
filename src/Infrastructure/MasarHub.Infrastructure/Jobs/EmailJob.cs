@@ -74,6 +74,31 @@ namespace MasarHub.Infrastructure.Jobs
                 $"/orders/{orderId}");
         }
 
+        public async Task SendInstructorApprovedEmailAsync(Guid instructorUserId)
+        {
+            var userInfo = await _courseQuery.GetUserInfoAsync(instructorUserId);
+            if (userInfo == null)
+                return;
+
+            await _appEmailService.SendInstructorApprovedEmailAsync(
+                userInfo.FullName,
+                userInfo.Email
+            );
+        }
+
+        public async Task SendInstructorRejectedEmailAsync(Guid instructorUserId, string reason)
+        {
+            var userInfo = await _courseQuery.GetUserInfoAsync(instructorUserId);
+            if (userInfo == null)
+                return;
+
+            await _appEmailService.SendInstructorRejectedEmailAsync(
+                userInfo.FullName,
+                userInfo.Email,
+                reason
+            );
+        }
+
         public async Task SendCourseEnrollmentCreatedEmailAsync(Guid userId, string courseTitle, decimal paidAmount, Guid courseId)
         {
             var userInfo = await _courseQuery.GetUserInfoAsync(userId);
