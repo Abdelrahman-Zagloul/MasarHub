@@ -9,5 +9,7 @@ namespace MasarHub.Domain.Modules.Profiles
         public static readonly DomainError AlreadyApproved = new("profile.already_approved");
         public static readonly DomainError AlreadyRejected = new("profile.already_rejected");
         public static readonly DomainError ProfileNotFound = new("profile.not_found");
+        public static readonly DomainError InstructorPendingApproval = new("auth.instructor_pending_approval");
+        public static readonly DomainError InstructorRejected = new("auth.instructor_rejected");
     }
 }

@@ -3,6 +3,7 @@ using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Courses.Queries.GetCourseById;
 using MasarHub.Application.Features.Courses.Queries.GetCourses;
 using MasarHub.Domain.Modules.Courses;
+using MasarHub.Domain.Modules.Profiles;
 
 namespace MasarHub.Application.Abstractions.Persistence.Queries
 {
@@ -17,6 +18,7 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<PagedResult<CourseResponse>> GetAllAsync(GetCoursesQuery query, CourseStatus? status, CancellationToken ct = default);
         Task<CourseAccessData> GetCourseAccessData(Guid courseId, Guid instructorId, CancellationToken ct = default);
         Task<CourseCartData?> GetCourseCartDataAsync(Guid courseId, CancellationToken ct = default);
+        Task<VerificationStatus?> GetInstructorStatusAsync(Guid userId, CancellationToken ct = default);
     }
     public sealed record CourseCreationData(bool CategoryExists, int SlugCount);
     public sealed record UserInfo(string FullName, string Email);
