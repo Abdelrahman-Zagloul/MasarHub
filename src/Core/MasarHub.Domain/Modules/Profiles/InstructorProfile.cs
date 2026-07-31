@@ -2,6 +2,7 @@ using MasarHub.Domain.Common.Base;
 using MasarHub.Domain.Common.Errors;
 using MasarHub.Domain.Common.Guards;
 using MasarHub.Domain.Common.Results;
+using MasarHub.Domain.Modules.Profiles.Events;
 
 namespace MasarHub.Domain.Modules.Profiles
 {
@@ -11,9 +12,11 @@ namespace MasarHub.Domain.Modules.Profiles
 
         public Guid UserId { get; private set; }
         public string Headline { get; private set; } = null!;
+        public VerificationStatus VerificationStatus { get; private set; }
         public string? Bio { get; private set; }
         public string? Company { get; private set; }
-        public VerificationStatus VerificationStatus { get; private set; }
+        public string? RejectionReason { get; private set; }
+        public Guid? AdminId { get; private set; } // for approval/rejection tracking
         public IReadOnlyCollection<SocialLink> SocialLinks => _socialLinks.AsReadOnly();
         private InstructorProfile() { }
         private InstructorProfile(Guid userId, string headline, string? bio, string? company)
@@ -60,23 +63,28 @@ namespace MasarHub.Domain.Modules.Profiles
             MarkAsUpdated();
             return DomainResult.Success();
         }
-        public DomainResult Approve()
+        public DomainResult Approve(Guid approvedByAdminId)
         {
             if (VerificationStatus == VerificationStatus.Approved)
                 return ProfileErrors.AlreadyApproved;
 
             VerificationStatus = VerificationStatus.Approved;
+            AdminId = approvedByAdminId;
             MarkAsUpdated();
+            RaiseDomainEvent(new InstructorApprovedDomainEvent(approvedByAdminId, UserId));
 
             return DomainResult.Success();
         }
-        public DomainResult Reject()
+        public DomainResult Reject(Guid rejectedByAdminId, string rejectionReason)
         {
             if (VerificationStatus == VerificationStatus.Rejected)
                 return ProfileErrors.AlreadyRejected;
 
             VerificationStatus = VerificationStatus.Rejected;
+            AdminId = rejectedByAdminId;
+            RejectionReason = rejectionReason;
             MarkAsUpdated();
+            RaiseDomainEvent(new InstructorRejectedDomainEvent(rejectedByAdminId, UserId, rejectionReason));
             return DomainResult.Success();
         }
 

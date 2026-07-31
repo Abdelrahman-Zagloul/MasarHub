@@ -9,5 +9,7 @@ namespace MasarHub.Application.Abstractions.Jobs
         Task SendPaymentSucceededEmailAsync(Guid userId, string orderNumber, decimal amount, Guid orderId);
         Task SendPaymentFailedEmailAsync(Guid userId, string orderNumber, decimal amount, Guid orderId);
         Task SendCourseEnrollmentCreatedEmailAsync(Guid userId, string courseTitle, decimal paidAmount, Guid courseId);
+        Task SendInstructorApprovedEmailAsync(Guid instructorUserId);
+        Task SendInstructorRejectedEmailAsync(Guid instructorUserId, string reason);
     }
 }

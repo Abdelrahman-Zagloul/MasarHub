@@ -1,5 +1,7 @@
 using MasarHub.Application.Abstractions.Identity;
+using MasarHub.Application.Common.Models;
 using MasarHub.Application.Common.Results;
+using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEmail.Events;
 using MasarHub.Application.Features.Authentication.Shared;
 using MediatR;
@@ -29,6 +31,8 @@ namespace MasarHub.Application.Features.Authentication.Commands.Email.ConfirmEma
             if (confirmResult.IsFailure)
                 return confirmResult.Errors[0];
 
+            if (confirmResult.Value.Roles.Any(x => x == Roles.Instructor))
+                return Error.Forbidden("auth.instructor_pending_approval");
 
             var accessToken = await _tokenService.GenerateTokenAsync(confirmResult.Value);
             var refreshTokenResult = await _refreshTokenService.CreateAsync(confirmResult.Value, _currentUserService.IpAddress, cancellationToken);

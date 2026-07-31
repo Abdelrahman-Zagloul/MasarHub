@@ -28,6 +28,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 .idea/
+
+# Seed/SQL scripts (not tracked in git)
+**/scripts/
 .dotnet/
 # Application logs
 Logs/

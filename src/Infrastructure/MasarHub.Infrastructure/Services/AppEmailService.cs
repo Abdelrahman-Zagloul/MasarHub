@@ -206,6 +206,31 @@ namespace MasarHub.Infrastructure.Services
             await _mailService.SendEmailAsync(email, "Payment Failed", emailBody, null);
         }
 
+        public async Task SendInstructorApprovedEmailAsync(string fullName, string email)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "InstructorApproved.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{FrontendUrl}", _settings.BaseURL);
+
+            await _mailService.SendEmailAsync(email, "Your Instructor Account Has Been Approved", emailBody, null);
+        }
+
+        public async Task SendInstructorRejectedEmailAsync(string fullName, string email, string reason)
+        {
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "InstructorRejected.html");
+            var templateContent = await File.ReadAllTextAsync(path);
+
+            var emailBody = templateContent
+                .Replace("{FullName}", fullName)
+                .Replace("{RejectionReason}", reason)
+                .Replace("{FrontendUrl}", _settings.BaseURL);
+
+            await _mailService.SendEmailAsync(email, "Your Instructor Account Has Been Rejected", emailBody, null);
+        }
+
         public async Task SendCourseEnrollmentCreatedEmailAsync(string fullName, string email, string courseTitle, string paidAmount, string actionUrl)
         {
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "EmailTemplates", "CourseEnrollmentCreated.html");

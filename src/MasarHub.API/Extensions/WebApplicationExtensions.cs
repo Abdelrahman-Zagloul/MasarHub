@@ -18,7 +18,10 @@ namespace MasarHub.API.Extensions
             }
             else
             {
-                app.UseCors(CorsSettings.ProductionPolicy);
+                app.MapOpenApi();
+                app.UseSwaggerDocumentation();
+                app.UseScalarDocumentation();
+                app.UseCors(CorsSettings.DevelopmentPolicy);
                 app.UseHttpsRedirection();
             }
 

@@ -1,4 +1,6 @@
 ﻿using MasarHub.Application.Abstractions.Identity;
+using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Common.Models;
 using MasarHub.Application.Common.Results;
 using MasarHub.Application.Common.Results.Errors;
 using MasarHub.Application.Features.Authentication.Commands.Account.Login;
@@ -17,11 +19,13 @@ namespace MasarHub.Infrastructure.Identity
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IAccountQuery _accountQuery;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IAccountQuery accountQuery)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _accountQuery = accountQuery;
         }
         public async Task<Result<RegisterUserResult>> RegisterUserAsync(
             string fullName,
@@ -79,6 +83,17 @@ namespace MasarHub.Infrastructure.Identity
                 return new AuthenticateUserResult(true, new TokenUser(user.Id, user.FullName, user.Email!, []), user.PreferredTwoFactorProvider);
 
             var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles.Contains(Roles.Instructor))
+            {
+                var status = await _accountQuery.GetInstructorStatusAsync(user.Id, ct);
+                if (status == VerificationStatus.Pending)
+                    return Error.Forbidden("auth.instructor_pending_approval");
+
+                if (status == VerificationStatus.Rejected)
+                    return Error.Forbidden("auth.instructor_rejected");
+            }
+
             return new AuthenticateUserResult(false, new TokenUser(user.Id, user.FullName, user.Email!, roles), user.PreferredTwoFactorProvider);
         }
 
