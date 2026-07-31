@@ -1,5 +1,7 @@
 using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
+using MasarHub.Application.Common.Pagination;
+using MasarHub.Application.Features.Accounts.Queries.GetAllAccounts;
 using MasarHub.Application.Features.Accounts.Queries.GetCurrentUser;
 using MasarHub.Domain.Modules.Profiles;
 
@@ -161,5 +163,113 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
                 }
             };
         }
+
+        public async Task<PagedResult<AccountResponse>> GetAllAsync(GetAllAccountsQuery query, CancellationToken ct)
+        {
+            var conditions = new List<string>();
+            var parameters = new DynamicParameters();
+
+            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+            {
+                conditions.Add("(u.FullName LIKE @SearchTerm)");
+                parameters.Add("SearchTerm", $"%{query.SearchTerm}%");
+            }
+
+            if (query.Role.HasValue)
+            {
+                conditions.Add(@"EXISTS (
+                    SELECT 1
+                    FROM [identity].[UserRoles] ur
+                    INNER JOIN [identity].[Roles] r ON ur.RoleId = r.Id
+                    WHERE ur.UserId = u.Id AND r.Name = @Role
+                )");
+                parameters.Add("Role", query.Role.Value.ToString());
+            }
+
+            if (query.EmailConfirmed.HasValue)
+            {
+                conditions.Add("u.EmailConfirmed = @EmailConfirmed");
+                parameters.Add("EmailConfirmed", query.EmailConfirmed.Value);
+            }
+
+            if (query.TwoFactorEnabled.HasValue)
+            {
+                conditions.Add("u.TwoFactorEnabled = @TwoFactorEnabled");
+                parameters.Add("TwoFactorEnabled", query.TwoFactorEnabled.Value);
+            }
+
+            if (query.IsLocked.HasValue)
+            {
+                conditions.Add("(u.LockoutEnd > SYSUTCDATETIME()) = @IsLocked");
+                parameters.Add("IsLocked", query.IsLocked.Value);
+            }
+
+            string whereConditions = conditions.Count > 0
+                ? "WHERE " + string.Join(" AND ", conditions)
+                : string.Empty;
+
+            string sql = $@"
+                -- Get total count for pagination
+                SELECT COUNT(1)
+                FROM [identity].[Users] u
+                {whereConditions};
+
+                -- Get paginated results
+                SELECT
+                    u.Id,
+                    u.FullName,
+                    u.UserName,
+                    u.Email,
+                    u.PhoneNumber,
+                    u.Gender,
+                    u.EmailConfirmed,
+                    u.PhoneNumberConfirmed,
+                    u.TwoFactorEnabled,
+                    u.PreferredTwoFactorProvider,
+                    CASE WHEN u.LockoutEnd > SYSUTCDATETIME() THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsLocked,
+                    u.ProfileImagePublicId
+                FROM [identity].[Users] u
+                {whereConditions}
+                ORDER BY u.FullName, u.Id
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+                -- Get roles for the current page
+                SELECT ur.UserId, r.Name
+                FROM [identity].[UserRoles] ur
+                INNER JOIN [identity].[Roles] r ON ur.RoleId = r.Id
+                WHERE ur.UserId IN (
+                    SELECT u.Id
+                    FROM [identity].[Users] u
+                    {whereConditions}
+                    ORDER BY u.FullName, u.Id
+                    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+                );";
+
+            int offset = (query.PageNumber - 1) * query.PageSize;
+            parameters.Add("Offset", offset);
+            parameters.Add("PageSize", query.PageSize);
+
+            using var connection = _connectionFactory.CreateConnection();
+            using var multi = await connection.QueryMultipleAsync(
+                new CommandDefinition(sql, parameters, cancellationToken: ct));
+
+            var totalCount = await multi.ReadFirstAsync<int>();
+            var accounts = (await multi.ReadAsync<AccountResponse>()).ToList();
+            var roles = await multi.ReadAsync<UserRoleRow>();
+
+            var rolesLookup = roles
+                .GroupBy(r => r.UserId)
+                .ToDictionary(g => g.Key, g => g.Select(r => r.Name).ToArray());
+
+            foreach (var account in accounts)
+            {
+                if (rolesLookup.TryGetValue(account.Id, out var accountRoles))
+                    account.Roles = accountRoles;
+            }
+
+            return new PagedResult<AccountResponse>(accounts, totalCount);
+        }
+
+        private sealed record UserRoleRow(Guid UserId, string Name);
     }
 }
