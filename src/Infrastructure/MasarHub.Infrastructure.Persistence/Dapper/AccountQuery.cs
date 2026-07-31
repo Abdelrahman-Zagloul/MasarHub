@@ -363,6 +363,89 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             return new PagedResult<InstructorAccountResponse>(instructors, totalCount);
         }
 
+        public async Task<CurrentUserResponse?> GetAccountByIdAsync(Guid userId, CancellationToken ct)
+        {
+            const string sql = @"
+                SELECT
+                    u.Id,
+                    u.FullName,
+                    u.UserName,
+                    u.Email,
+                    u.PhoneNumber,
+                    u.Gender,
+                    u.ProfileImagePublicId,
+                    u.EmailConfirmed,
+                    u.PhoneNumberConfirmed,
+                    u.TwoFactorEnabled,
+                    u.PreferredTwoFactorProvider,
+                    CASE WHEN u.LockoutEnd > SYSUTCDATETIME() THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsLocked,
+                    ip.Id AS InstructorProfileId,
+                    ip.Headline,
+                    ip.Bio,
+                    ip.Company,
+                    ip.VerificationStatus,
+                    ip.RejectionReason
+                FROM [identity].[Users] u
+                LEFT JOIN [users].[InstructorProfiles] ip ON u.Id = ip.UserId
+                WHERE u.Id = @UserId;
+
+                SELECT r.Name
+                FROM [identity].[UserRoles] ur
+                INNER JOIN [identity].[Roles] r ON ur.RoleId = r.Id
+                WHERE ur.UserId = @UserId;
+
+                SELECT Platform, Url
+                FROM [users].[InstructorSocialLinks]
+                WHERE InstructorProfileId IN (
+                    SELECT Id FROM [users].[InstructorProfiles] WHERE UserId = @UserId
+                );";
+
+            using var connection = _connectionFactory.CreateConnection();
+            using var multi = await connection.QueryMultipleAsync(
+                new CommandDefinition(sql, new { UserId = userId }, cancellationToken: ct));
+
+            var user = await multi.ReadFirstOrDefaultAsync();
+            if (user is null)
+                return null;
+
+            var roles = (await multi.ReadAsync<string>()).ToArray();
+
+            var account = new CurrentUserResponse
+            {
+                Id = user.Id,
+                FullName = user.FullName,
+                UserName = user.UserName,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Gender = user.Gender,
+                ProfileImagePublicId = user.ProfileImagePublicId,
+                EmailConfirmed = user.EmailConfirmed,
+                PhoneNumberConfirmed = user.PhoneNumberConfirmed,
+                TwoFactorEnabled = user.TwoFactorEnabled,
+                PreferredTwoFactorProvider = user.PreferredTwoFactorProvider,
+                IsLocked = user.IsLocked,
+                Roles = roles,
+                InstructorProfile = null
+            };
+
+            if (user.InstructorProfileId is not null)
+            {
+                var socialLinks = (await multi.ReadAsync<SocialLinkResponse>()).AsList();
+
+                account.InstructorProfile = new InstructorProfileInfo
+                {
+                    Headline = user.Headline,
+                    Bio = user.Bio,
+                    Company = user.Company,
+                    VerificationStatus = Enum.TryParse<VerificationStatus>((string)user.VerificationStatus, out var status) ? status : VerificationStatus.Pending,
+                    RejectionReason = user.RejectionReason,
+                    SocialLinks = socialLinks
+                };
+            }
+
+            return account;
+        }
+
         private sealed record UserRoleRow(Guid UserId, string Name);
         private sealed record InstructorSocialLinkRow(string Platform, string Url, Guid InstructorProfileId);
     }

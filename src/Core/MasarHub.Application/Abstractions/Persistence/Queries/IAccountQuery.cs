@@ -14,5 +14,6 @@ namespace MasarHub.Application.Abstractions.Persistence.Queries
         Task<CurrentUserResponse?> GetInstructorProfileAsync(Guid userId, CancellationToken ct = default);
         Task<PagedResult<AccountResponse>> GetAllAsync(GetAllAccountsQuery query, CancellationToken ct = default);
         Task<PagedResult<InstructorAccountResponse>> GetAllInstructorsAsync(GetAllInstructorsQuery query, CancellationToken ct = default);
+        Task<CurrentUserResponse?> GetAccountByIdAsync(Guid userId, CancellationToken ct = default);
     }
 }

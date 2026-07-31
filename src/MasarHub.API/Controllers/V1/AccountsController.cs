@@ -4,6 +4,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Accounts.Commands.ApproveInstructor;
 using MasarHub.Application.Features.Accounts.Commands.RejectInstructor;
+using MasarHub.Application.Features.Accounts.Queries.GetAccountById;
 using MasarHub.Application.Features.Accounts.Queries.GetAllAccounts;
 using MasarHub.Application.Features.Accounts.Queries.GetAllInstructors;
 using MasarHub.Application.Features.Accounts.Queries.GetCurrentUser;
@@ -32,6 +33,16 @@ namespace MasarHub.API.Controllers.V1
         {
             var result = await _sender.Send(new ApproveInstructorCommand(instructorUserId, GetUserId()));
             return await ToNoContentResultAsync(result);
+        }
+
+        [HttpGet("{userId:guid}")]
+        [Authorize(Roles = Roles.Admin)]
+        [EndpointSummary("Get account by ID")]
+        [EndpointDescription("Retrieves an account by user ID, including instructor profile data if the account is an instructor. Admin only.")]
+        public async Task<IActionResult> GetAccountById(Guid userId)
+        {
+            var result = await _sender.Send(new GetAccountByIdQuery(userId));
+            return await ToOkResultAsync(result);
         }
 
         [HttpGet]
