@@ -5,6 +5,7 @@ using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Accounts.Commands.ApproveInstructor;
 using MasarHub.Application.Features.Accounts.Commands.RejectInstructor;
 using MasarHub.Application.Features.Accounts.Queries.GetAllAccounts;
+using MasarHub.Application.Features.Accounts.Queries.GetAllInstructors;
 using MasarHub.Application.Features.Accounts.Queries.GetCurrentUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -38,6 +39,16 @@ namespace MasarHub.API.Controllers.V1
         [EndpointSummary("Get all accounts")]
         [EndpointDescription("Retrieves a paginated list of all accounts with optional filtering. Admin only.")]
         public async Task<IActionResult> GetAllAccounts([FromQuery] GetAllAccountsQuery query, CancellationToken cancellationToken)
+        {
+            var result = await _sender.Send(query, cancellationToken);
+            return await ToOkResultAsync(result);
+        }
+
+        [HttpGet("instructors")]
+        [Authorize(Roles = Roles.Admin)]
+        [EndpointSummary("Get all instructors")]
+        [EndpointDescription("Retrieves a paginated list of all instructors with their profile info, optionally filtered by verification status. Admin only.")]
+        public async Task<IActionResult> GetAllInstructors([FromQuery] GetAllInstructorsQuery query, CancellationToken cancellationToken)
         {
             var result = await _sender.Send(query, cancellationToken);
             return await ToOkResultAsync(result);

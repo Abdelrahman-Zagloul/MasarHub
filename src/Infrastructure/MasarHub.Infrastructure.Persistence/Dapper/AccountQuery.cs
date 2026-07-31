@@ -2,6 +2,7 @@ using Dapper;
 using MasarHub.Application.Abstractions.Persistence.Queries;
 using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Accounts.Queries.GetAllAccounts;
+using MasarHub.Application.Features.Accounts.Queries.GetAllInstructors;
 using MasarHub.Application.Features.Accounts.Queries.GetCurrentUser;
 using MasarHub.Domain.Modules.Profiles;
 
@@ -270,6 +271,99 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
             return new PagedResult<AccountResponse>(accounts, totalCount);
         }
 
+        public async Task<PagedResult<InstructorAccountResponse>> GetAllInstructorsAsync(GetAllInstructorsQuery query, CancellationToken ct)
+        {
+            var conditions = new List<string>();
+            var parameters = new DynamicParameters();
+
+            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+            {
+                conditions.Add("(u.FullName LIKE @SearchTerm OR u.UserName LIKE @SearchTerm OR u.Email LIKE @SearchTerm)");
+                parameters.Add("SearchTerm", $"%{query.SearchTerm}%");
+            }
+
+            if (query.VerificationStatus.HasValue)
+            {
+                conditions.Add("ip.VerificationStatus = @VerificationStatus");
+                parameters.Add("VerificationStatus", query.VerificationStatus.Value.ToString());
+            }
+
+            string whereConditions = conditions.Count > 0
+                ? "WHERE " + string.Join(" AND ", conditions)
+                : string.Empty;
+
+            string sql = $@"
+                -- Get total count for pagination
+                SELECT COUNT(1)
+                FROM [users].[InstructorProfiles] ip
+                INNER JOIN [identity].[Users] u ON u.Id = ip.UserId
+                {whereConditions};
+
+                -- Get paginated results
+                SELECT
+                    u.Id,
+                    u.FullName,
+                    u.UserName,
+                    u.Email,
+                    u.PhoneNumber,
+                    u.Gender,
+                    u.EmailConfirmed,
+                    CASE WHEN u.LockoutEnd > SYSUTCDATETIME() THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS IsLocked,
+                    u.ProfileImagePublicId,
+                    ip.Headline,
+                    ip.Bio,
+                    ip.Company,
+                    ip.VerificationStatus,
+                    ip.RejectionReason,
+                    ip.CreatedAt,
+                    ip.AdminId,
+                    ip.Id AS InstructorProfileId
+                FROM [users].[InstructorProfiles] ip
+                INNER JOIN [identity].[Users] u ON u.Id = ip.UserId
+                {whereConditions}
+                ORDER BY ip.CreatedAt DESC, u.Id
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+
+                -- Get social links for the current page
+                SELECT sl.Platform, sl.Url, sl.InstructorProfileId
+                FROM [users].[InstructorSocialLinks] sl
+                WHERE sl.InstructorProfileId IN (
+                    SELECT ip.Id
+                    FROM [users].[InstructorProfiles] ip
+                    INNER JOIN [identity].[Users] u ON u.Id = ip.UserId
+                    {whereConditions}
+                    ORDER BY ip.CreatedAt DESC, u.Id
+                    OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+                );";
+
+            int offset = (query.PageNumber - 1) * query.PageSize;
+            parameters.Add("Offset", offset);
+            parameters.Add("PageSize", query.PageSize);
+
+            using var connection = _connectionFactory.CreateConnection();
+            using var multi = await connection.QueryMultipleAsync(
+                new CommandDefinition(sql, parameters, cancellationToken: ct));
+
+            var totalCount = await multi.ReadFirstAsync<int>();
+            var instructors = (await multi.ReadAsync<InstructorAccountResponse>()).ToList();
+            var socialLinks = await multi.ReadAsync<InstructorSocialLinkRow>();
+
+            var linksLookup = socialLinks
+                .GroupBy(l => l.InstructorProfileId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.Select(l => new SocialLinkResponse(l.Platform, l.Url)).ToList());
+
+            foreach (var instructor in instructors)
+            {
+                if (linksLookup.TryGetValue(instructor.InstructorProfileId, out var links))
+                    instructor.SocialLinks = links;
+            }
+
+            return new PagedResult<InstructorAccountResponse>(instructors, totalCount);
+        }
+
         private sealed record UserRoleRow(Guid UserId, string Name);
+        private sealed record InstructorSocialLinkRow(string Platform, string Url, Guid InstructorProfileId);
     }
 }
