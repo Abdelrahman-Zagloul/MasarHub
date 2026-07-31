@@ -19,13 +19,13 @@ namespace MasarHub.Infrastructure.Identity
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ICourseQuery _courseQuery;
+        private readonly IAccountQuery _accountQuery;
 
-        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ICourseQuery courseQuery)
+        public AuthService(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IAccountQuery accountQuery)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _courseQuery = courseQuery;
+            _accountQuery = accountQuery;
         }
         public async Task<Result<RegisterUserResult>> RegisterUserAsync(
             string fullName,
@@ -86,7 +86,7 @@ namespace MasarHub.Infrastructure.Identity
 
             if (roles.Contains(Roles.Instructor))
             {
-                var status = await _courseQuery.GetInstructorStatusAsync(user.Id, ct);
+                var status = await _accountQuery.GetInstructorStatusAsync(user.Id, ct);
                 if (status == VerificationStatus.Pending)
                     return Error.Forbidden("auth.instructor_pending_approval");
 

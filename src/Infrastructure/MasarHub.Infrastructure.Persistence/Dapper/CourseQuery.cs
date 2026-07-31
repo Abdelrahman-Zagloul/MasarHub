@@ -4,7 +4,6 @@ using MasarHub.Application.Common.Pagination;
 using MasarHub.Application.Features.Courses.Queries.GetCourseById;
 using MasarHub.Application.Features.Courses.Queries.GetCourses;
 using MasarHub.Domain.Modules.Courses;
-using MasarHub.Domain.Modules.Profiles;
 
 namespace MasarHub.Infrastructure.Persistence.Dapper
 {
@@ -332,23 +331,6 @@ namespace MasarHub.Infrastructure.Persistence.Dapper
 
             return await connection.QuerySingleAsync<CourseAccessData>(command);
         }
-        public async Task<VerificationStatus?> GetInstructorStatusAsync(Guid userId, CancellationToken ct)
-        {
-            const string sql = @"
-                SELECT VerificationStatus
-                FROM [users].[InstructorProfiles]
-                WHERE UserId = @UserId;";
-
-            using var connection = _connectionFactory.CreateConnection();
-            var command = new CommandDefinition(sql, new { UserId = userId }, cancellationToken: ct);
-
-            var statusString = await connection.QueryFirstOrDefaultAsync<string>(command);
-            if (statusString is null)
-                return null;
-
-            return Enum.TryParse<VerificationStatus>(statusString, out var status) ? status : null;
-        }
-
         public async Task<CourseCartData?> GetCourseCartDataAsync(Guid courseId, CancellationToken ct)
         {
             const string sql = @"
