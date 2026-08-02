@@ -217,6 +217,15 @@ namespace MasarHub.Application.Common.Extensions
                 "validation.invalid_otp",
                 propertyName);
         }
+        public static IRuleBuilderOptions<T, string?> ValidEgyptianPhoneNumber<T>(
+            this IRuleBuilder<T, string?> ruleBuilder,
+            string propertyName)
+        {
+            return ApplyValidation(
+                ruleBuilder.Matches(@"^(01[0125][0-9]{8}|0[2-8][0-9]{8})$"),
+                "validation.invalid_phone_number",
+                propertyName);
+        }
 
         #endregion
 
