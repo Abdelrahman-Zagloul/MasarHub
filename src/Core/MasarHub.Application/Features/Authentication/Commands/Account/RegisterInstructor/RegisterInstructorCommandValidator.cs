@@ -23,7 +23,7 @@ namespace MasarHub.Application.Features.Authentication.Commands.Account.Register
 
             RuleFor(x => x.PhoneNumber)
                 .Required("PhoneNumber")
-                .ValidLength(11, "PhoneNumber");
+                .ValidEgyptianPhoneNumber("PhoneNumber");
 
             RuleFor(x => x.Headline)
                 .Required("Headline")

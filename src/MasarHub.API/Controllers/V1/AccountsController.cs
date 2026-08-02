@@ -5,6 +5,7 @@ using MasarHub.Application.Abstractions.Services.Localization;
 using MasarHub.Application.Common.Models;
 using MasarHub.Application.Features.Accounts.Commands.ApproveInstructor;
 using MasarHub.Application.Features.Accounts.Commands.RejectInstructor;
+using MasarHub.Application.Features.Accounts.Commands.UpdateAccount;
 using MasarHub.Application.Features.Accounts.Commands.UpdateProfileImage;
 using MasarHub.Application.Features.Accounts.Queries.GetAccountById;
 using MasarHub.Application.Features.Accounts.Queries.GetAllAccounts;
@@ -77,7 +78,18 @@ namespace MasarHub.API.Controllers.V1
             return await ToOkResultAsync(result);
         }
 
+
+        [HttpPut]
         [Authorize]
+        [EndpointSummary("Update account")]
+        [EndpointDescription("Updates optional account fields: phone number, gender, and preferred two-factor provider.")]
+        public async Task<IActionResult> UpdateAccount(UpdateAccountRequest request)
+        {
+            var command = new UpdateAccountCommand(GetUserId(), request.PhoneNumber, request.Gender, request.PreferredTwoFactorProvider);
+            var result = await _sender.Send(command);
+            return await ToNoContentResultAsync(result);
+        }
+
         [HttpPut("profile-image")]
         [EndpointSummary("Update profile image")]
         [EndpointDescription("Uploads a new profile image for the authenticated user.")]

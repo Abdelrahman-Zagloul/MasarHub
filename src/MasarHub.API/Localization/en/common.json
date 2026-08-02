@@ -18,6 +18,7 @@
 
   "validation.invalid_enum": "{PropertyName} is invalid",
   "validation.invalid_guid": "{PropertyName} is invalid",
+  "validation.invalid_phone_number": "{PropertyName} must be a valid Egyptian phone number (digits only)",
   "validation.invalid_url": "The URL format is invalid.",
   "validation.page_number_invalid": "Page number must be greater than 0.",
   "validation.page_size_invalid": "Page size must be greater than 0.",
